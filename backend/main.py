@@ -84,7 +84,7 @@ async def lint_sql(request: Request) -> Dict[str, Any]:
         body = await request.json()
         sql = body.get("text", "")
         config_toml = body.get("config", "")
-        fix_enabled = body.get("fix", False)  # 🔑 Fix is controlled by frontend
+        fix_enabled = body.get("fix", False)  # Fix is controlled by frontend
 
         if not sql:
             return {
@@ -93,7 +93,7 @@ async def lint_sql(request: Request) -> Dict[str, Any]:
             }
 
         config = create_config(config_toml)
-        config.lint.fix = fix_enabled   # 🔑 Dynamically set fix behavior here
+        config.lint.fix = fix_enabled   # Dynamically set fix behavior here
 
         linter = core.Linter(config=config, formatters=core.load_formatters)
 
