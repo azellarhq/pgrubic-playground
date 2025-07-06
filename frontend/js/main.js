@@ -137,14 +137,14 @@ async function lintAndFix() {
     }
 
   } catch (error) {
-    lintOutput.innerHTML = `<span style="color:red">❌ Request failed: ${escapeHtml(error.message)}</span>`;
+    lintOutput.innerHTML = `<span style="color:red">Request failed: ${escapeHtml(error.message)}</span>`;
   }
 }
 
 // Render Lint Violations
 function renderViolations(violations) {
   if (!violations.length) {
-    return `<div class="no-violations">✅ No violations found.</div>`;
+    return `<div class="no-violations"> No violations found.</div>`;
   }
 
   let html = `
