@@ -1,0 +1,18 @@
+/* Monaco Editor Customizations */
+.monaco-editor {
+  height: 100% !important;
+}
+.monaco-editor .margin {
+  width: 45px !important;  /* increase margin width */
+  background-color: #f8f8f8 !important;
+}
+
+.monaco-editor .view-overlays .current-line {
+  border: none !important;
+  background-color: #e6f3ff !important;
+}
+
+.monaco-editor .line-numbers {
+  color: #999 !important;
+  padding-left: 4px !important;
+}

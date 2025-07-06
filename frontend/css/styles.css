@@ -1,0 +1,526 @@
+* {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f4f7fb;
+    color: #333;
+    min-height: 100vh;
+    overflow-y: auto;
+    padding-top: 60px;
+  }
+#topbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #009485;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 1rem;    /* reduced padding */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  z-index: 10;
+  height: 52px;           /* smaller height */
+}
+
+#topbar h1 {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;      /* slightly smaller font */
+  gap: 0.4rem;
+  color: white;
+}
+
+#topbar #logo {
+  height: 26px;           /* smaller logo */
+}
+
+#top-links a {
+  text-decoration: none; 
+  background-color: #009485;
+  color: white;
+  padding: 4px 10px;      /* smaller padding */
+  border-radius: 4px;
+  margin-left: 0.3rem;
+  font-size: 0.85rem;     /* slightly smaller text */
+}
+
+#top-links a:hover {
+  background-color: #005942;
+  color: #fff;
+  text-decoration: none;
+}
+
+
+
+/* Responsive for mobile */
+@media (max-width: 600px) {
+  #topbar {
+    justify-content: space-between;
+  }
+  
+  #top-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: #00795d;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+  }
+  
+  #top-links.show {
+    display: flex;
+  }
+  
+  #hamburger {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 4px;
+  width: 24px;
+  height: 20px;
+  justify-content: center;
+}
+#hamburger span {
+  display: block;
+  height: 3px;
+  background: white;
+  border-radius: 2px;
+}
+  /* Smaller font for nav links */
+  #top-links a, #top-links span {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    display: block;
+    width: 100%;
+  }
+}
+
+  #container {
+    display: flex;
+    width: 100%;
+    min-height: calc(100vh - 60px);
+    overflow: hidden;
+  }
+
+  /* Sidebar uses flex-basis for width */
+  #sidebar {
+    flex-basis: 100px; /* collapsed width */
+    background: #fff;
+    border-right: 1px solid #ddd;
+    overflow: hidden;
+    transition: flex-basis 0.3s ease, padding 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0.5rem;
+    flex-shrink: 0;
+  }
+  #sidebar.active {
+    flex-basis: 500px; /* expanded width */
+    padding: 1rem;
+  }
+
+  #config-panel {
+    width: 100%;
+    margin-top: 1rem;
+    flex: 1;
+    display: none;
+  }
+  #sidebar.active #config-panel {
+    display: block;
+  }
+ #config-editor {
+  width: 100%;   /* make it fill exactly the parent */
+  height: 700px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+
+  #main {
+    flex: 1 1 auto;
+    min-width: 0;
+    transition: all 0.3s ease;
+  
+  }
+
+  
+.editor-section {
+  display: flex;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+.editor-box label,
+.formatted-box label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #009485;
+  font-size: 1.1rem;
+  user-select: none;
+  display: block;      /* full width */
+}
+#editor-row {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch; /* change from flex-start to stretch */
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+
+.editor-box,
+.formatted-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 400px;
+  max-height: 600px;
+  position: relative;
+}
+
+
+#editor-container {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f9f9f9;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  padding-left: 1px;  /* smaller left padding */
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  overflow-y: auto;       /* Makes inner content scroll */
+  overflow-x: auto;
+  max-height: 100%;       /* Take all available height */
+}
+#formatted-output {
+  margin-top: 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f9f9f9;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  overflow: auto;
+  min-height: 365px;   /* Match the editor */
+  
+}
+
+
+/* Optional: Fix to make Monaco resize too */
+.monaco-editor {
+  max-height: 100%;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  background: #d5caca;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  margin: 0;  /* remove margin-top to avoid pushing */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background-color 0.3s ease;
+}
+
+.copy-btn:hover {
+  background: #e6e4e4;
+}
+
+.copy-message {
+  position: absolute;
+  top: -22px;
+  right: 0;
+  background: #4e697a;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+
+#welcome {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;    /* Slightly reduced padding */
+  margin-top: 0.5rem;       /* This pulls it closer to top */
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 8px rgba(50, 50, 70, 0.3);
+}
+
+#welcome h1 {
+  font-size: 1.5rem;       
+  font-weight: bold;
+  color: #009485;
+  margin-top: 0;           
+  margin-bottom: 0.5rem;
+}
+    label[for="editor"] {
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+      color: #009485;
+      font-size: 1.1rem;
+    }
+
+    #editor-container, #config-editor {
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      height: 240px;
+      margin-bottom: 1rem;
+    }
+
+    #config-editor {
+      height: 700px;
+    }
+#buttons {
+  display: flex;
+  gap: 1rem;               /* Space between buttons */
+  margin-bottom: 1.5rem;
+}
+
+#buttons button {
+  flex: 1;                 /* Each button takes equal width */
+  padding: 12px 0;         /* Taller buttons */
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#format-btn { background: #28a745; color: #fff; }
+#lint-btn { background: #ffc107; color: #212529; }
+#lintfix-btn { background: #17a2b8; color: #fff; }
+
+#buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+
+.button-group button:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+    .output-box {
+      flex: 1;
+      background: #ffffff;
+      border-radius: 6px;
+      padding: 1rem;
+      box-shadow: 0 4px 8px rgba(50, 50, 70, 0.1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .output-content {
+      flex: 1;
+      background: #f5f5f5;
+      border-radius: 4px;
+      padding: 0 rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    #result-output {
+  padding: 0;
+  margin: 0;
+}
+   
+    #config-panel textarea {
+      width: 200%;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1 rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      min-height: 750px;
+      padding: 0;   /* remove padding if present */
+  margin: 0;    /* remove margin if present */
+    }
+    #config-toggle span:first-child {
+  color: #009485;
+  font-size: 0.9rem;  /* smaller text size */
+  white-space: nowrap; /* prevent line breaks */
+}
+#config-arrow {
+  color: #009485;
+  font-size: 0.9rem;
+  line-height: 1;
+  user-select: none;
+  margin-left: 6px;  /* space between text and arrow */
+}
+
+
+     #default-config-viewer {
+      background: #f5f5f5;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      max-height: 300px;
+      margin-top: 0.5rem;
+      color: #333;
+    }
+    #reset-config-btn {
+  background: #009485; 
+  color: white;
+  transition: background 0.2s ease;
+  border-radius: 4px;
+  font-size: medium;
+  border-color: #00795d;
+}
+ 
+#reset-config-btn:hover {
+  background: #1f655e; 
+}
+
+#reset-config-btn:active {
+  background: #638d89; 
+}
+#lint-issues {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.fixable {
+    border-left-color: #4caf50;
+    background: #e8f5e9;
+}
+.violation-box {
+  margin-bottom: 2px;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  background-color: #cdc163;
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.15;
+  white-space: normal;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.violation-box strong {
+  display: block;
+  font-weight: 600;
+  color: #8c9355;
+  margin-bottom: 2px;
+}
+
+.violation-meta, .violation-tip {
+  margin: 0;
+  padding: 0;
+}
+
+
+.violation-table-container {
+  width: 100%;
+  overflow-x: auto;  /* Enables horizontal scroll if content overflows */
+}
+
+.violation-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;  /* Optional: set a min width for better readability */
+}
+
+.violation-table th,
+.violation-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  font-size: 15px;
+}
+
+
+
+.success-message {
+  color: green;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  padding: 10px;
+}
+#fixed-output-container {
+  width: 40%;
+  max-width: 40%;
+  box-sizing: border-box;
+}
+
+.fixed-code {
+  background-color: #f5f5f5;
+  padding: 12px;
+  border-radius: 6px;
+  font-family: monospace;
+  white-space: pre-wrap;    /* wraps long lines */
+  margin-top: 8px;
+  max-height: 300px;
+  overflow-x: auto;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 100%;
+  font-size: 0.9rem;
+}
+
+#toggleFixedCodeBtn {
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+#toggleFixedCodeBtn:hover {
+  background-color: #0056b3;
+}
+#editor-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;   /* key to prevent stretching */
+  margin-bottom: 1rem;
+  flex-wrap: wrap;           /* allows wrapping on small screens */
+}
+#version-tag {
+  background-color: #ffffff;
+  color: #009485;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #009485;
+}
