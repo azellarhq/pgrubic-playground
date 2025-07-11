@@ -1,86 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>pgrubic Online</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet" />
-<link rel="icon" href="https://bolajiwahab.github.io/pgrubic/assets/logo.png" type="image/png" />
-<link rel="stylesheet" href="css/styles.css" />
-<link rel="stylesheet" href="css/monaco-overrides.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-toml.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pgrubic online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/monaco-overrides.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
+
 <body>
-<header id="topbar">
-  <h1><img id="logo" src="https://bolajiwahab.github.io/pgrubic/assets/logo.png" alt="logo" />pgrubic</h1>
-  <div id="hamburger" aria-label="Menu" tabindex="0">
-    <span></span>
-    <span></span>
-    <span></span>
+  <div class="top-bar">
+    <h1>
+      <img class="logo" src="https://bolajiwahab.github.io/pgrubic/assets/logo.png" alt="logo">
+      <div class="logo-section">
+        <span class="main-title">pgrubic online</span>
+        <span class="sub-title">An in-browser version of <a href="https://github.com/bolajiwahab/pgrubic"
+            target="_blank"><b>pgrubic</b></a></span>
+      </div>
+    </h1>
+    <div id="hamburger" class="hamburger" aria-label="Menu" tabindex="0">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <nav class="top-links">
+      <!-- version to be populated from the backend (js) eventually -->
+      <span id="pgrubic-version" class="pgrubic-version">v0.6.1</span>
+      <a href="https://github.com/bolajiwahab/pgrubic" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+      <a href="https://bolajiwahab.github.io/pgrubic/rules/" target="_blank"><i class="fas fa-book"></i> Rules</a>
+      <a href="#format-btn"><i class="fas fa-magic"></i> Format</a>
+      <a href="#lint-btn"><i class="fas fa-search"></i> Lint</a>
+      <a href="#config-panel"><i class="fas fa-cog"></i> Config</a>
+    </nav>
+
   </div>
-  <nav id="top-links">
-    <span id="version-tag">v0.6.1</span>
-    <a href="https://github.com/bolajiwahab/pgrubic" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-    <a href="https://bolajiwahab.github.io/pgrubic/rules/" target="_blank"><i class="fas fa-book"></i> Rules</a>
-    <a href="#format-btn"><i class="fas fa-magic"></i> Format</a>
-    <a href="#lint-btn"><i class="fas fa-search"></i> Lint</a>
-    <a href="#config-panel"><i class="fas fa-cog"></i> Config</a>
-  </nav>
-</header>
-
-<div id="container">
-  <aside id="sidebar">
-    <h2 id="config-toggle" style="cursor:pointer; display: flex; justify-content: space-between; align-items: center;">
-      <span><i class="fas fa-cog"></i> Config</span>
-      <span id="config-arrow">+</span>
-    </h2>
-    <div id="config-panel">
-      <div id="config-editor"></div>
-      <button id="reset-config-btn">Reset Config</button>
-    </div>
-  </aside>
-
-  <main id="main">
-    <section id="welcome">
-      <h1 id="welcome">pgrubic Online</h1>
-      <p>pgrubic is a powerful open-source formatter and linter designed specifically for PostgreSQL. <br>It helps you keep your SQL readable, and error-free by applying community-driven rules and best practices automatically.<br></p>
-      <p>Use pgrubic tool to quickly format messy queries, detect common anti-patterns, and learn from the linting feedback.</p>
-      <p>Use  this tool to format, lint, and fix your PostgreSQL SQL code easily.</p>
-      <p>Visit the <a href="https://github.com/bolajiwahab/pgrubic" target="_blank">GitHub repo</a> for more info.</p>
-    </section>
-
-    <div id="editor-row" class="editor-section">
-      <div id="sql-editor-box" class="editor-box">
-        <label for="editor-container">Paste your SQL code here:</label>
-        <div id="editor-container"></div>
+  <div class="main-container">
+    <div class="config-panel">
+      <div class="config-header">
+        <span>⚙️</span>
+        <span>Config</span>
       </div>
-
-      <div id="formatted-box" class="formatted-box" style="display: none;">
-        <label for="formatted-output">Formatted / Fixed Code:</label>
-        <pre id="formatted-output"></pre>
-        <button class="copy-btn" onclick="copyToClipboard('formatted-output', this)">
-          <i class="fas fa-copy"></i>
-        </button>
-        <span class="copy-message">Copied!</span>
+      <div class="config-editor" id="configEditor"></div>
+      <div class="reset-config-container">
+        <button class="reset-config-btn" id="resetConfigBtn">Reset Config</button>
       </div>
     </div>
 
-    <div id="buttons">
-      <button id="format-btn">Format</button>
-      <button id="lint-btn">Lint</button>
-      <button id="lintfix-btn">Lint + Fix</button>
+    <div class="editor-section">
+      <div class="sql-editor-box">
+        <div class="editor-container">
+          <div class="editor-header">Paste your SQL code here:</div>
+          <div class="sql-editor" id="sqlEditor"></div>
+        </div>
+        <div class="formatted-box-container">
+          <div id="formatted-box" class="formatted-box" style="display: none;">
+            <div class="flex justify-between">
+              <label for="formatted-output" class="editor-header" id="formattedLabel">Fixed SQL</label>
+              <button class="copy-btn" id="copyBtn" onclick="copyToClipboard('formatted-output', this)">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+            <pre id="formatted-output" class="sql-editor p-1"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn format-btn" id="formatBtn">Format</button>
+        <button class="action-btn lint-btn" id="lintBtn">Lint</button>
+        <button class="action-btn lint-fix-btn" id="lintFixBtn">Lint + Fix</button>
+      </div>
+      <span class="flex">
+      <span class="lint-violations-summary p-1" id="lintViolationsSummary"></span>
+      </span>
+      <pre class="lint-output" id="lintOutput"></pre>
     </div>
+  </div>
 
-    <div id="lint-output" class="output-box" style="margin-top: 1rem;"></div>
-  </main>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs/loader.js"></script>
-<script src="js/config-editor.js" defer></script>
-<script src="js/toml-parser.js" defer></script>
-<script src="js/main.js" defer></script>
+  <script type="module" src="src/config-editor.js" defer></script>
+  <script type="module" src="src/utils.js" defer></script>
+  <script type="module" src="src/main.js" defer></script>
 </body>
+
 </html>

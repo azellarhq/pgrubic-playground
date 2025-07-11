@@ -1,0 +1,20 @@
+{
+  "name": "your-app-name",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "monaco-editor": "^0.52.2",
+    "toml": "^3.0.0",
+    "vite-plugin-monaco-editor-esm": "^2.0.2"
+  },
+  "devDependencies": {
+    "vite": "^7.0.3",
+    "vite-plugin-monaco-editor": "^1.1.0"
+  }
+}

@@ -1,16 +1,29 @@
+import toml from '@iarna/toml';
+import * as monaco from 'monaco-editor';
+
 let editor;
 
 // Load Monaco Editor for SQL
-require(['vs/editor/editor.main'], function () {
-  editor = monaco.editor.create(document.getElementById('editor-container'), {
-    value: 'CREATE TABLE users (id INT, name TEXT);',
-    language: 'sql',
-    theme: 'vs-light',
-    automaticLayout: true,
-    minimap: {
-      enabled: false
-    }
-  });
+// require(['vs/editor/editor.main'], function () {
+//   editor = monaco.editor.create(document.getElementById('editor-container'), {
+//     value: 'CREATE TABLE users (id INT, name TEXT);',
+//     language: 'sql',
+//     theme: 'vs-light',
+//     automaticLayout: true,
+//     minimap: {
+//       enabled: false
+//     }
+//   });
+// });
+
+editor = monaco.editor.create(document.getElementById('editor-container'), {
+  value: 'CREATE TABLE users (id INT, name TEXT);',
+  language: 'sql',
+  theme: 'vs-light',
+  automaticLayout: true,
+  minimap: {
+    enabled: false
+  }
 });
 
 // Hamburger Menu
@@ -58,7 +71,7 @@ async function formatCode() {
   formattedOutput.textContent = 'Formatting...';
 
   try {
-    const res = await fetch('http://localhost:8000/format', {
+    const res = await fetch('http://localhost:8000/api/v1/format', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -85,25 +98,46 @@ async function formatCode() {
 
 // Lint Code
 async function lintCode() {
+  console.log('Config being sent:', configEditor.getValue());  // Add this
+  const configObject = toml.parse(configEditor.getValue());
   const lintOutput = document.getElementById('lint-output');
   lintOutput.innerHTML = 'Linting...';
 
-  try {
-    const res = await fetch('http://localhost:8000/lint', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: editor.getValue(),
-        config: configEditor.getValue()
-      })
+  await fetch('http://localhost:8000/api/v1/lint', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      source_code: editor.getValue(),
+      config: configObject
+    })
+  })
+    .then(response => response.json())
+    .then(data => {
+      lintOutput.innerHTML = renderViolations(data.violations || []);
+    })
+    .catch(error => {
+      console.error('Error:', error);
     });
 
-    const data = await res.json();
-    lintOutput.innerHTML = renderViolations(data.violations || []);
+  // try {
+  //   const res = await fetch('http://localhost:8000/api/v1/lint', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     // body: JSON.stringify({'source_code': editor.getValue()})
+  //     body: JSON.stringify({
+  //       source_code: editor.getValue(),
+  //       config: configEditor.getValue()
+  //     })
+  //   });
 
-  } catch (error) {
-    lintOutput.innerHTML = `<span style="color:red">Error: ${error.message}</span>`;
-  }
+  //   const data = await res.json();
+  //   lintOutput.innerHTML = renderViolations(data.violations || []);
+
+  // } catch (error) {
+  //   lintOutput.innerHTML = `<span style="color:red">Error: ${error.message}</span>`;
+  // }
 }
 
 // Lint & Fix Code
@@ -112,39 +146,110 @@ async function lintAndFix() {
   const formattedOutput = document.getElementById('formatted-output');
   const formattedBox = document.querySelector('.formatted-box');
 
-  lintOutput.innerHTML = 'Linting and Fixing...';
+  lintOutput.innerHTML = 'Linting with fix...';
   formattedOutput.textContent = '';
   formattedBox.style.display = 'none';
 
-  try {
-    const res = await fetch('http://localhost:8000/lint', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: editor.getValue(),
-        config: configEditor.getValue(),
-        fix: true
-      })
+  await fetch('http://localhost:8000/api/v1/lint', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      source_code: editor.getValue(),
+      config: configEditor.getValue(),
+      with_fix: true
+    })
+  })
+    .then(response => response.json())
+    .then(data => {
+      lintOutput.innerHTML = renderViolations(data.violations || []);
+      if (data.fixed_source && data.fixed_source.trim()) {
+        formattedOutput.textContent = data.fixed_source;
+        formattedBox.style.display = 'flex';
+        syncFormattedBoxHeight();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
     });
-
-    const data = await res.json();
-    lintOutput.innerHTML = renderViolations(data.violations || []);
-
-    if (data.fixed_source && data.fixed_source.trim()) {
-      formattedOutput.textContent = data.fixed_source;
-      formattedBox.style.display = 'flex';
-      syncFormattedBoxHeight();
-    }
-
-  } catch (error) {
-    lintOutput.innerHTML = `<span style="color:red">Request failed: ${escapeHtml(error.message)}</span>`;
-  }
 }
+
+// async function lintAndFix() {
+//   const lintOutput = document.getElementById('lint-output');
+//   const formattedOutput = document.getElementById('formatted-output');
+//   const formattedBox = document.querySelector('.formatted-box');
+
+//   lintOutput.innerHTML = 'Linting and Fixing...';
+//   formattedOutput.textContent = '';
+//   formattedBox.style.display = 'none';
+
+//   try {
+//     const res = await fetch('http://localhost:8000/api/v1/lint', {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({
+//         text: editor.getValue(),
+//         config: configEditor.getValue(),
+//         fix: true
+//       })
+//     });
+
+//     const data = await res.json();
+//     lintOutput.innerHTML = renderViolations(data.violations || []);
+
+//     if (data.fixed_source && data.fixed_source.trim()) {
+//       formattedOutput.textContent = data.fixed_source;
+//       formattedBox.style.display = 'flex';
+//       syncFormattedBoxHeight();
+//     }
+
+//   } catch (error) {
+//     lintOutput.innerHTML = `<span style="color:red">Request failed: ${escapeHtml(error.message)}</span>`;
+//   }
+// }
 
 // Render Lint Violations
 function renderViolations(violations) {
   if (!violations.length) {
-    return `<div class="no-violations"> No violations found.</div>`;
+    return `<div class="no-violations">All checks passed! 🎉🎉🎉.</div>`;
+  }
+
+  let html = `
+    <div class="violation-table-container">
+      <table class="violation-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Line</th>
+            <th>Description</th>
+            <th>Help</th>
+            <th>Auto-fixable?</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  violations.forEach(v => {
+    html += `
+      <tr>
+        <td>${escapeHtml(v.rule_code || '')}</td>
+        <td>${v.line_number ?? ''}</td>
+        <td>${escapeHtml(v.description || '')}</td>
+        <td>${escapeHtml(v.help || '')}</td>
+        <td>${v.is_auto_fixable ? 'Yes' : 'No'}</td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table></div>`;
+  return html;
+}
+
+// Render Errors
+function renderErrors(errors) {
+  if (!errors.length) {
+    return;
   }
 
   let html = `
@@ -196,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('format-btn').onclick = formatCode;
   document.getElementById('lint-btn').onclick = lintCode;
   document.getElementById('lintfix-btn').onclick = lintAndFix;
-  syncFormattedBoxHeight(); 
+  syncFormattedBoxHeight();
 });
 window.addEventListener('resize', syncFormattedBoxHeight);
 

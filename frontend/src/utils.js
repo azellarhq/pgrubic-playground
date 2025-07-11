@@ -1,0 +1,19 @@
+function notify(message, type = 'success') {
+  const n = document.createElement('div');
+  n.className = `notification ${type}`;
+  n.textContent = message;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 3000);
+}
+
+function copyToClipboard(id) {
+  const element = document.getElementById(id);
+
+  if (element) {
+    navigator.clipboard.writeText(element.textContent).then(() => {
+      notify('Copied!', 'success');
+    }).catch(err => console.error('Failed to copy: ', err));
+  }
+}
+
+export { notify, copyToClipboard };
