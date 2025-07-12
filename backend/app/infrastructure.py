@@ -83,6 +83,7 @@ def format_source_code(
     )
 
     return models.FormatResult(
+        # Serialize formatted source code and errors to pydantic model
         formatted_source_code=format_result.formatted_source_code,
         errors=[
             models.Error(
