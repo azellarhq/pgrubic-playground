@@ -1,6 +1,3 @@
-import { editor } from "monaco-editor";
-import { notify } from "./utils";
-
 const defaultConfigTOML = `[lint]
 postgres-target-version = 14
 select = []
@@ -28,18 +25,20 @@ new-line-before-semicolon = false
 remove-pg-catalog-from-functions = true
 lines-between-statements = 1`;
 
-export const configEditor = editor.create(document.getElementById("configEditor"), {
-  value: defaultConfigTOML,
-  language: "toml",
-  theme: "vs-light",
-  minimap: { enabled: false },
-  scrollBeyondLastLine: false,
-  lineNumbersMinChars: 0,
-  lineDecorationsWidth: 0,
-  overviewRulerLanes: 0,
-});
+function toSnakeCase(str) {
+  return str.replace(/-/g, "_");
+}
 
-document.getElementById("resetConfigBtn").onclick = () => {
-  configEditor.setValue(defaultConfigTOML);
-  notify("Configuration reset to default!", "info");
-};
+function transformKeys(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(transformKeys);
+  } else if (obj !== null && typeof obj === "object") {
+    return Object.fromEntries(
+      Object.entries(obj).map(([k, v]) => [toSnakeCase(k), transformKeys(v)])
+    );
+  } else {
+    return obj;
+  }
+}
+
+export { transformKeys, defaultConfigTOML };

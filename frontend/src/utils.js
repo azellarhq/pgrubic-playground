@@ -1,5 +1,7 @@
-function notify(message, type = 'success') {
-  const n = document.createElement('div');
+// Utils
+
+function notify(message, type = "success") {
+  const n = document.createElement("div");
   n.className = `notification ${type}`;
   n.textContent = message;
   document.body.appendChild(n);
@@ -11,9 +13,23 @@ function copyToClipboard(id) {
 
   if (element) {
     navigator.clipboard.writeText(element.textContent).then(() => {
-      notify('Copied!', 'success');
-    }).catch(err => console.error('Failed to copy: ', err));
+      notify("Copied!", "success");
+    }).catch(err => console.error("Failed to copy: ", err));
   }
 }
 
-export { notify, copyToClipboard };
+// Print Lint Violations
+function printViolations(violations) {
+  if (!violations.length) {
+    return `<div class="no-violations">All checks passed! 🎉🎉🎉.</div>`;
+  }
+
+  let html = "";
+  violations.forEach(v => {
+    html += `<span><b>${v.rule_code}</b> ${v.line}: ${v.column_offset} ${v.description}<hr></span>`;
+  }
+  );
+  return html;
+}
+
+export { notify, copyToClipboard, printViolations };

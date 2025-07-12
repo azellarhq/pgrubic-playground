@@ -27,7 +27,7 @@
       <span></span>
       <span></span>
     </div>
-    <nav class="top-links">
+    <nav class="top-links" id="top-links">
       <!-- version to be populated from the backend (js) eventually -->
       <span id="pgrubic-version" class="pgrubic-version">v0.6.1</span>
       <a href="https://github.com/bolajiwahab/pgrubic" target="_blank"><i class="fab fa-github"></i> GitHub</a>
@@ -53,18 +53,18 @@
     <div class="editor-section">
       <div class="sql-editor-box">
         <div class="editor-container">
-          <div class="editor-header">Paste your SQL code here:</div>
+          <div class="editor-header">Paste your SQL here:</div>
           <div class="sql-editor" id="sqlEditor"></div>
         </div>
-        <div class="formatted-box-container">
-          <div id="formatted-box" class="formatted-box" style="display: none;">
+        <div class="sql-output-box-container">
+          <div id="sqlOutputBox" class="sql-output-box" style="display: none;">
             <div class="flex justify-between">
-              <label for="formatted-output" class="editor-header" id="formattedLabel">Fixed SQL</label>
-              <button class="copy-btn" id="copyBtn" onclick="copyToClipboard('formatted-output', this)">
+              <label for="sql-output" class="editor-header" id="sqlOutputLabel">Fixed SQL</label>
+              <button class="copy-btn" id="copyBtn">
                 <i class="fas fa-copy"></i>
               </button>
             </div>
-            <pre id="formatted-output" class="sql-editor p-1"></pre>
+            <pre id="sqlOutput" class="sql-editor p-4"></pre>
           </div>
         </div>
       </div>
@@ -74,13 +74,13 @@
         <button class="action-btn lint-fix-btn" id="lintFixBtn">Lint + Fix</button>
       </div>
       <span class="flex">
-      <span class="lint-violations-summary p-1" id="lintViolationsSummary"></span>
+        <span class="lint-violations-summary p-4" id="lintViolationsSummary"></span>
       </span>
       <pre class="lint-output" id="lintOutput"></pre>
     </div>
   </div>
 
-  <script type="module" src="src/config-editor.js" defer></script>
+  <script type="module" src="src/config.js" defer></script>
   <script type="module" src="src/utils.js" defer></script>
   <script type="module" src="src/main.js" defer></script>
 </body>
