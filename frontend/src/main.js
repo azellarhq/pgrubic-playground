@@ -66,7 +66,6 @@ async function formatSql() {
   })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       sqlOutput.textContent = data.formatted_source_code;
       sqlOutputBox.style.display = data.formatted_source_code ? "flex" : "none";
     })
@@ -89,6 +88,7 @@ async function lintSql() {
 
   const lintOutput = document.getElementById("lintOutput");
   const lintViolationsSummary = document.getElementById("lintViolationsSummary");
+  lintOutput.innerHTML = "Linting...";
 
   await fetch("http://localhost:8000/api/v1/lint", {
     method: "POST",
@@ -111,7 +111,10 @@ async function lintSql() {
         lintViolationsSummary.innerHTML = `Hi! I found ${data.violations.length} violation(s) and ${data.errors.length} error(s) for you to look at!`;
         lintViolationsSummary.classList.remove("no-violations");
         lintViolationsSummary.classList.add("has-violations");
-        notify("Violations found!", "warning");
+        if (data.errors.length > 0) {
+          notify("Errors found in SQL!", "error");
+        } else
+          notify("Violations found!", "warning");
       }
       lintOutput.innerHTML = printViolations(data.violations || []);
     })
@@ -154,8 +157,21 @@ async function lintAndFixSql() {
   })
     .then(response => response.json())
     .then(data => {
-      lintViolationsSummary.innerHTML = `Hi! I found  ${data.violations.length} violations for you to look at!`;
-      lintOutput.innerHTML = printViolations(data.violations || []);
+      if (data.violations.length === 0 && data.errors.length === 0) {
+        lintViolationsSummary.innerHTML = "All checks passed! 🎉🎉🎉.";
+        lintViolationsSummary.classList.remove("has-violations");
+        lintViolationsSummary.classList.add("no-violations");
+        notify("No violations found!", "success");
+      } else {
+        lintViolationsSummary.innerHTML = `Hi! I found ${data.violations.length} violation(s) and ${data.errors.length} error(s) for you to look at!`;
+        lintViolationsSummary.classList.remove("no-violations");
+        lintViolationsSummary.classList.add("has-violations");
+        if (data.errors.length > 0) {
+          notify("Errors found in SQL!", "error");
+        } else
+          notify("Violations found!", "warning");
+      }
+      lintOutput.innerHTML = printViolations(data.violations);
 
       sqlOutput.textContent = data.fixed_source_code;
       sqlOutputBox.style.display = "flex";

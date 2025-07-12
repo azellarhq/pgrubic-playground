@@ -5,7 +5,7 @@ function notify(message, type = "success") {
   n.className = `notification ${type}`;
   n.textContent = message;
   document.body.appendChild(n);
-  setTimeout(() => n.remove(), 3000);
+  setTimeout(() => n.remove(), 1000);
 }
 
 function copyToClipboard(id) {
