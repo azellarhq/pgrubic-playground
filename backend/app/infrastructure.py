@@ -6,29 +6,33 @@ from pgrubic.core.formatter import FormatResult
 
 from app import models
 
-# Initialize infrastructure
+# Initialize common infrastructure
 config = core.parse_config()
-linter = core.Linter(config=config, formatters=core.load_formatters)
-formatter = core.Formatter(config=config, formatters=core.load_formatters)
 
-def lint_source_code(*, source_code: models.LintSourceCode) -> models.LintResult:
+
+def lint_source_code(*, lint_source_code: models.LintSourceCode) -> models.LintResult:
     """Lint SQL."""
+    linter = core.Linter(config=config, formatters=core.load_formatters)
+
+    # Config overrides
     config.lint.postgres_target_version = (
-        source_code.config.lint.postgres_target_version
+        lint_source_code.config.lint.postgres_target_version
     )
-    config.lint.select = source_code.config.lint.select
-    config.lint.ignore = source_code.config.lint.ignore
-    config.lint.ignore_noqa = source_code.config.lint.ignore_noqa
-    config.lint.fix = source_code.with_fix
+    config.lint.select = lint_source_code.config.lint.select
+    config.lint.ignore = lint_source_code.config.lint.ignore
+    config.lint.ignore_noqa = lint_source_code.config.lint.ignore_noqa
+    config.lint.fix = lint_source_code.with_fix
 
     rules = core.load_rules(config=config)
     for rule in rules:
         linter.checkers.add(rule())
 
-    result: LintResult = linter.run(source_file="", source_code=source_code.source_code)
+    lint_result: LintResult = linter.run(
+        source_file="", source_code=lint_source_code.source_code
+    )
 
     return models.LintResult(
-        # Serialize violations to pydantic model
+        # Serialize violations and errors to pydantic model
         violations=[
             models.Violation(
                 rule_code=violation.rule_code,
@@ -43,29 +47,47 @@ def lint_source_code(*, source_code: models.LintSourceCode) -> models.LintResult
                 is_fix_enabled=violation.is_fix_enabled,
                 help=violation.help,
             )
-            for violation in result.violations
+            for violation in lint_result.violations
         ],
-        errors=result.errors,
-        fixed_source_code=result.fixed_source_code,
+        errors=[
+            models.Error(
+                statement=error.statement, message=error.message, hint=error.hint
+            )
+            for error in lint_result.errors
+        ],
+        fixed_source_code=lint_result.fixed_source_code,
     )
 
 
 def format_source_code(
-    *, source_code: models.SourceCode, config: models.Config
+    *, format_source_code: models.FormatSourceCode
 ) -> models.FormatResult:
     """Format SQL."""
-    config.format.comma_at_beginning = config.format.comma_at_beginning
-    config.format.new_line_before_semicolon = config.format.new_line_before_semicolon
-    config.format.remove_pg_catalog_from_functions = (
-        config.format.remove_pg_catalog_from_functions
+    config.format.comma_at_beginning = (
+        format_source_code.config.format.comma_at_beginning
     )
-    config.format.lines_between_statements = config.format.lines_between_statements
+    config.format.new_line_before_semicolon = (
+        format_source_code.config.format.new_line_before_semicolon
+    )
+    config.format.remove_pg_catalog_from_functions = (
+        format_source_code.config.format.remove_pg_catalog_from_functions
+    )
+    config.format.lines_between_statements = (
+        format_source_code.config.format.lines_between_statements
+    )
+
+    formatter = core.Formatter(config=config, formatters=core.load_formatters)
 
     format_result: FormatResult = formatter.format(
-        source_file="", source_code=source_code
+        source_file="", source_code=format_source_code.source_code
     )
 
     return models.FormatResult(
         formatted_source_code=format_result.formatted_source_code,
-        errors=format_result.errors,
+        errors=[
+            models.Error(
+                statement=error.statement, message=error.message, hint=error.hint
+            )
+            for error in format_result.errors
+        ],
     )

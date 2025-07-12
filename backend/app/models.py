@@ -2,10 +2,6 @@
 
 from pydantic import BaseModel as PydanticBaseModel
 
-# from pgrubic.core.linter import Violation
-from pgrubic.core import errors
-import typing
-
 
 # Forbid extra values.
 class BaseModel(PydanticBaseModel):
@@ -13,9 +9,17 @@ class BaseModel(PydanticBaseModel):
         extra = "forbid"
 
 
-# source code
-class SourceCode(BaseModel):
-    source_code: str
+# Errors
+class Error(BaseModel):
+    """Representation of an error."""
+
+    # source_file: str
+    # source_code: str
+    # statement_start_location: int
+    # statement_end_location: int
+    statement: str
+    message: str
+    hint: str
 
 
 # Configurations
@@ -54,7 +58,8 @@ class Config(BaseModel):
 
 
 # Request
-class Request(SourceCode):
+class Request(BaseModel):
+    source_code: str
     config: Config
 
 
@@ -79,7 +84,7 @@ class Violation(BaseModel):
 
 class LintResult(BaseModel):
     violations: list[Violation]
-    errors: set[errors.Error]
+    errors: list[Error]
     fixed_source_code: str | None = None
 
 
@@ -89,4 +94,4 @@ class FormatSourceCode(Request): ...
 
 class FormatResult(BaseModel):
     formatted_source_code: str
-    errors: set[errors.Error]
+    errors: list[Error]

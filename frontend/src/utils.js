@@ -20,15 +20,13 @@ function copyToClipboard(id) {
 
 // Print Lint Violations
 function printViolations(violations) {
-  if (!violations.length) {
-    return `<div class="no-violations">All checks passed! 🎉🎉🎉.</div>`;
-  }
+  var html = "";
 
-  let html = "";
   violations.forEach(v => {
     html += `<span><b>${v.rule_code}</b> ${v.line}: ${v.column_offset} ${v.description}<hr></span>`;
   }
   );
+
   return html;
 }
 

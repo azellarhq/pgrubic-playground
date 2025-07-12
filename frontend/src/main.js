@@ -33,6 +33,16 @@ const sqlEditor = editor.create(document.getElementById("sqlEditor"), {
 
 // Format SQL
 async function formatSql() {
+  var configObject;
+  try {
+    configObject = toml.parse(configEditor.getValue());
+  } catch (error) {
+    console.error("Error in config. Parsing error on line " + error.line + ", column " + error.column +
+      ": " + error.message);
+    notify("Config error", "error");
+    return;
+  }
+
   const sqlOutputBox = document.getElementById("sqlOutputBox");
   const sqlOutput = document.getElementById("sqlOutput");
   const sqlOutputLabel = document.getElementById("sqlOutputLabel");
@@ -43,16 +53,6 @@ async function formatSql() {
   lintViolationsSummary.innerHTML = "";
 
   sqlOutputLabel.textContent = "Formatted SQL";
-
-  let configObject;
-  try {
-    configObject = toml.parse(configEditor.getValue());
-  } catch (error) {
-    console.error("Error in config. Parsing error on line " + error.line + ", column " + error.column +
-      ": " + error.message);
-    notify("Config error", "error");
-    return;
-  }
 
   await fetch("http://localhost:8000/api/v1/format", {
     method: "POST",
@@ -77,10 +77,7 @@ async function formatSql() {
 
 // Lint SQL
 async function lintSql() {
-  const lintOutput = document.getElementById("lintOutput");
-  const lintViolationsSummary = document.getElementById("lintViolationsSummary");
-
-  let configObject;
+  var configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
   } catch (error) {
@@ -89,6 +86,9 @@ async function lintSql() {
     notify("Error in config", "error");
     return;
   }
+
+  const lintOutput = document.getElementById("lintOutput");
+  const lintViolationsSummary = document.getElementById("lintViolationsSummary");
 
   await fetch("http://localhost:8000/api/v1/lint", {
     method: "POST",
@@ -102,7 +102,17 @@ async function lintSql() {
   })
     .then(response => response.json())
     .then(data => {
-      lintViolationsSummary.innerHTML = `Hi! I found  ${data.violations.length} violations for you to look at!`;
+      if (data.violations.length === 0 && data.errors.length === 0) {
+        lintViolationsSummary.innerHTML = "All checks passed! 🎉🎉🎉.";
+        lintViolationsSummary.classList.remove("has-violations");
+        lintViolationsSummary.classList.add("no-violations");
+        notify("No violations found!", "success");
+      } else {
+        lintViolationsSummary.innerHTML = `Hi! I found ${data.violations.length} violation(s) and ${data.errors.length} error(s) for you to look at!`;
+        lintViolationsSummary.classList.remove("no-violations");
+        lintViolationsSummary.classList.add("has-violations");
+        notify("Violations found!", "warning");
+      }
       lintOutput.innerHTML = printViolations(data.violations || []);
     })
     .catch(error => {
@@ -112,16 +122,7 @@ async function lintSql() {
 
 // Lint & Fix SQL
 async function lintAndFixSql() {
-  const lintOutput = document.getElementById("lintOutput");
-  const lintViolationsSummary = document.getElementById("lintViolationsSummary");
-  const sqlOutputBox = document.getElementById("sqlOutputBox");
-  const sqlOutput = document.getElementById("sqlOutput");
-  const sqlOutputLabel = document.getElementById("sqlOutputLabel");
-
-  lintOutput.innerHTML = "Linting with fix...";
-  sqlOutputLabel.textContent = "Fixed SQL";
-
-  let configObject;
+  var configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
   } catch (error) {
@@ -130,6 +131,15 @@ async function lintAndFixSql() {
     notify("Error in config", "error");
     return;
   }
+
+  const lintOutput = document.getElementById("lintOutput");
+  const lintViolationsSummary = document.getElementById("lintViolationsSummary");
+  const sqlOutputBox = document.getElementById("sqlOutputBox");
+  const sqlOutput = document.getElementById("sqlOutput");
+  const sqlOutputLabel = document.getElementById("sqlOutputLabel");
+
+  lintOutput.innerHTML = "Linting with fix...";
+  sqlOutputLabel.textContent = "Fixed SQL";
 
   await fetch("http://localhost:8000/api/v1/lint", {
     method: "POST",
