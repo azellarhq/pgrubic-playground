@@ -88,6 +88,8 @@ async function lintSql() {
 
   const lintOutput = document.getElementById("lintOutput");
   const lintViolationsSummary = document.getElementById("lintViolationsSummary");
+  const sqlOutputBox = document.getElementById("sqlOutputBox");
+  sqlOutputBox.style.display = "none";
   lintOutput.innerHTML = "Linting...";
 
   await fetch("http://localhost:8000/api/v1/lint", {

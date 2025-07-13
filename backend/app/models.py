@@ -1,22 +1,20 @@
 """Models."""
 
 from pydantic import BaseModel as PydanticBaseModel
+from pydantic import ConfigDict
 
 
 # Forbid extra values.
 class BaseModel(PydanticBaseModel):
-    class Config:
-        extra = "forbid"
+    """Base model."""
+
+    model_config = ConfigDict(extra="forbid")
 
 
 # Errors
 class Error(BaseModel):
     """Representation of an error."""
 
-    # source_file: str
-    # source_code: str
-    # statement_start_location: int
-    # statement_end_location: int
     statement: str
     message: str
     hint: str
@@ -24,9 +22,13 @@ class Error(BaseModel):
 
 # Configurations
 class LinterConfig(BaseModel):
+    """Linter configuration."""
+
     postgres_target_version: int = 14
     select: list[str] = []
     ignore: list[str] = []
+    fixable: list[str] = []
+    unfixable: list[str] = []
     ignore_noqa: bool = False
     allowed_extensions: list[str] = []
     allowed_languages: list[str] = []
@@ -46,6 +48,8 @@ class LinterConfig(BaseModel):
 
 
 class FormatterConfig(BaseModel):
+    """Formatter configuration."""
+
     comma_at_beginning: bool = True
     new_line_before_semicolon: bool = True
     remove_pg_catalog_from_functions: bool = True
@@ -53,22 +57,30 @@ class FormatterConfig(BaseModel):
 
 
 class Config(BaseModel):
+    """Configuration."""
+
     lint: LinterConfig
     format: FormatterConfig
 
 
 # Request
 class Request(BaseModel):
+    """Request."""
+
     source_code: str
     config: Config
 
 
 # Lint
 class LintSourceCode(Request):
+    """Lint source code."""
+
     with_fix: bool = False
 
 
 class Violation(BaseModel):
+    """Representation of rule violation."""
+
     rule_code: str
     rule_name: str
     rule_category: str
@@ -83,15 +95,20 @@ class Violation(BaseModel):
 
 
 class LintResult(BaseModel):
+    """Lint result."""
+
     violations: list[Violation]
     errors: list[Error]
     fixed_source_code: str | None = None
 
 
 # Format
-class FormatSourceCode(Request): ...
+class FormatSourceCode(Request):
+    """Format source code."""
 
 
 class FormatResult(BaseModel):
+    """Format result."""
+
     formatted_source_code: str
     errors: list[Error]

@@ -1,11 +1,11 @@
 """Entrypoint."""
 
 import uvicorn
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import APIRouter
-from app.api import routes
+from fastapi import FastAPI, APIRouter
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.api import routes
 from app.config import settings
 
 # Register API routes
@@ -34,4 +34,4 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 app.mount("/", StaticFiles(directory="../frontend/dist/", html=True), name="frontend")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=settings.HOST_BIND, port=settings.HOST_PORT)

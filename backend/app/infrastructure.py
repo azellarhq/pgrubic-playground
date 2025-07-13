@@ -1,8 +1,8 @@
 """pgrubic operations."""
 
 from pgrubic import core
-from pgrubic.core.linter import LintResult
-from pgrubic.core.formatter import FormatResult
+from pgrubic.core.linter import LintResult  # noqa: TC002
+from pgrubic.core.formatter import FormatResult  # noqa: TC002
 
 from app import models
 
@@ -11,7 +11,7 @@ config = core.parse_config()
 
 
 def lint_source_code(*, lint_source_code: models.LintSourceCode) -> models.LintResult:
-    """Lint SQL."""
+    """Lint source code."""
     linter = core.Linter(config=config, formatters=core.load_formatters)
 
     # Config overrides
@@ -23,12 +23,24 @@ def lint_source_code(*, lint_source_code: models.LintSourceCode) -> models.LintR
     config.lint.ignore_noqa = lint_source_code.config.lint.ignore_noqa
     config.lint.fix = lint_source_code.with_fix
 
+    config.format.comma_at_beginning = lint_source_code.config.format.comma_at_beginning
+    config.format.new_line_before_semicolon = (
+        lint_source_code.config.format.new_line_before_semicolon
+    )
+    config.format.remove_pg_catalog_from_functions = (
+        lint_source_code.config.format.remove_pg_catalog_from_functions
+    )
+    config.format.lines_between_statements = (
+        lint_source_code.config.format.lines_between_statements
+    )
+
     rules = core.load_rules(config=config)
     for rule in rules:
         linter.checkers.add(rule())
 
     lint_result: LintResult = linter.run(
-        source_file="", source_code=lint_source_code.source_code
+        source_file="",
+        source_code=lint_source_code.source_code,
     )
 
     return models.LintResult(
@@ -51,7 +63,9 @@ def lint_source_code(*, lint_source_code: models.LintSourceCode) -> models.LintR
         ],
         errors=[
             models.Error(
-                statement=error.statement, message=error.message, hint=error.hint
+                statement=error.statement,
+                message=error.message,
+                hint=error.hint,
             )
             for error in lint_result.errors
         ],
@@ -60,12 +74,12 @@ def lint_source_code(*, lint_source_code: models.LintSourceCode) -> models.LintR
 
 
 def format_source_code(
-    *, format_source_code: models.FormatSourceCode
+    *,
+    format_source_code: models.FormatSourceCode,
 ) -> models.FormatResult:
-    """Format SQL."""
-    config.format.comma_at_beginning = (
-        format_source_code.config.format.comma_at_beginning
-    )
+    """Format source code."""
+    # Config overrides
+    config.format.comma_at_beginning = format_source_code.config.format.comma_at_beginning
     config.format.new_line_before_semicolon = (
         format_source_code.config.format.new_line_before_semicolon
     )
@@ -79,7 +93,8 @@ def format_source_code(
     formatter = core.Formatter(config=config, formatters=core.load_formatters)
 
     format_result: FormatResult = formatter.format(
-        source_file="", source_code=format_source_code.source_code
+        source_file="",
+        source_code=format_source_code.source_code,
     )
 
     return models.FormatResult(
@@ -87,7 +102,9 @@ def format_source_code(
         formatted_source_code=format_result.formatted_source_code,
         errors=[
             models.Error(
-                statement=error.statement, message=error.message, hint=error.hint
+                statement=error.statement,
+                message=error.message,
+                hint=error.hint,
             )
             for error in format_result.errors
         ],
