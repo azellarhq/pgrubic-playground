@@ -110,7 +110,6 @@ legacy_tox_ini = """
     extras = dev
     deps =
     commands =
-    skip_install = true
 
     [testenv:dev]
     extras = dev
