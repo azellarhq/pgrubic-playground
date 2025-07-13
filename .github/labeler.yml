@@ -1,0 +1,27 @@
+---
+chore:
+  - "/(chore)/i"
+
+bug:
+  - "/(bug|fix)/i"
+
+config:
+  - "/(config)/i"
+
+enhancement:
+  - "/(feat|feature)/i"
+
+ci:
+  - "/(ci)/i"
+
+dependencies:
+  - "/(dependencies)/i"
+
+question:
+  - "/(question)/i"
+
+help-wanted:
+  - "/(help)/i"
+
+security:
+  - "/(security)/i"
