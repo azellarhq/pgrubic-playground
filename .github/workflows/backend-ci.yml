@@ -44,8 +44,6 @@ jobs:
     defaults:
       run:
         working-directory: backend
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       # Gives the action the necessary permissions for publishing new
       # comments in pull requests.
