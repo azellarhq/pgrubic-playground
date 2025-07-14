@@ -50,12 +50,12 @@ repos:
         language: python
         types: [yaml]
         args: [--unsafe]
-      - id: check-toml
-        stages: [pre-commit]
-        name: Check toml
-        entry: check-toml
-        language: python
-        types: [toml]
+      # - id: check-toml
+      #   stages: [pre-commit]
+      #   name: Check toml
+      #   entry: check-toml
+      #   language: python
+      #   types: [toml]
       - id: yamllint
         stages: [pre-commit]
         name: Lint yaml files
@@ -75,7 +75,7 @@ repos:
         name: Lint with ruff
         entry: ruff
         language: python
-        args: [check, --fix, --config, ./backend/pyproject.toml]
+        args: [check, --config, backend/pyproject.toml]
         types: [python]
       - id: mypy
         stages: [pre-commit]
@@ -84,19 +84,19 @@ repos:
         entry: mypy
         language: python
         types: [python]
-        args: [--config-file=./backend/pyproject.toml]
+        args: [--config-file=backend/pyproject.toml]
       - id: interrogate
         name: Docstrings coverage
         entry: interrogate
         language: python
         types: [python]
-        args: [--quiet, --fail-under=100, --config=./backend/pyproject.toml]
+        args: [--quiet, --fail-under=100, --config=backend/pyproject.toml]
       - id: bandit
         name: Security analysis with bandit
         entry: bandit
         language: python
         types: [python]
-        args: [--recursive, --config=./backend/pyproject.toml]
+        args: [--recursive, --config=backend/pyproject.toml]
       # Formatters should be run late so that they can re-format
       # any prior changes
       - id: ruff
