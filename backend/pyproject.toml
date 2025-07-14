@@ -138,14 +138,14 @@ legacy_tox_ini = """
 
     [testenv:lint]
     commands =
-        ruff check --config pyproject.toml {posargs}
+        ruff check {posargs}
         yamllint --strict {posargs:.}
 
     [testenv:format]
-    commands = ruff format --config ./pyproject.toml {posargs}
+    commands = ruff format {posargs}
 
     [testenv:typing]
-    commands = mypy --config-file=./pyproject.toml {posargs:.}
+    commands = mypy {posargs:.}
 
     [testenv:security]
     commands = bandit --severity-level all -r src
