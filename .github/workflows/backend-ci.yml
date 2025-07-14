@@ -8,7 +8,6 @@ on:  # yamllint disable-line rule:truthy
   pull_request:
     branches:
       - main
-
 jobs:
   lint:
     permissions:
@@ -41,9 +40,6 @@ jobs:
         run: tox -e ${{ matrix.job }}
   coverage:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
     permissions:
       # Gives the action the necessary permissions for publishing new
       # comments in pull requests.
@@ -52,6 +48,9 @@ jobs:
       # python-coverage-comment-action branch, and for editing existing
       # comments (to avoid publishing multiple comments in the same PR)
       contents: write
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
