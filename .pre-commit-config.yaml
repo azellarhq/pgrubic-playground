@@ -64,13 +64,13 @@ repos:
         language: python
         types: [python]
         args: [--check, --diff, --profile=black]
-      # - id: ruff
-      #   stages: [pre-commit]
-      #   name: Lint with ruff
-      #   entry: ruff
-      #   language: python
-      #   args: [check, --config, backend/pyproject.toml]
-      #   types: [python]
+      - id: ruff
+        stages: [pre-commit]
+        name: Lint with ruff
+        entry: ruff
+        language: python
+        args: [check]
+        types: [python]
       - id: mypy
         stages: [pre-commit]
         name: Type checking with mypy

@@ -137,7 +137,9 @@ legacy_tox_ini = """
     # commands = isort --check --diff --profile=black {posargs:.}
 
     [testenv:lint]
+    allowlist_externals = which
     commands =
+        ruff --version
         ruff check {posargs}
         yamllint --strict {posargs:.}
 
