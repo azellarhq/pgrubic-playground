@@ -138,7 +138,7 @@ legacy_tox_ini = """
 
     [testenv:lint]
     commands =
-        ruff check {posargs} --fix
+        ruff check {posargs}
         yamllint --strict {posargs:.}
 
     [testenv:format]
