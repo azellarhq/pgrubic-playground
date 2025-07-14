@@ -9,28 +9,6 @@ on:  # yamllint disable-line rule:truthy
     branches:
       - main
 
-# ENVIRONMENT=local
-
-# PROJECT_NAME="pgrubic-playground"
-# PROJECT_DESCRIPTION="An in-browser playground for pgrubic, a PostgreSQL linter and formatter for schema migrations and design best practices."
-# VERSION=1
-
-# # Host bind
-# HOST_BIND="0.0.0.0"
-# HOST_PORT=8000
-
-# # CORS origins
-# CORS_ORIGINS=["*"]
-
-env:
-  ENVIRONMENT: "development"
-  PROJECT_NAME: "pgrubic-playground"
-  PROJECT_DESCRIPTION: "An in-browser playground for pgrubic, a PostgreSQL linter and formatter for schema migrations and design best practices."
-  VERSION: "1"
-  HOST_BIND: "0.0.0.0"
-  HOST_PORT: "8000"
-  CORS_ORIGINS: '["*"]'
-
 jobs:
   lint:
     permissions:

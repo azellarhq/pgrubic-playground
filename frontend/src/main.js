@@ -1,6 +1,7 @@
 import toml from "toml";
 
-import { editor } from "monaco-editor";
+import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
+import 'monaco-editor/esm/vs/basic-languages/sql/sql.contribution';
 
 import { defaultConfigTOML, transformKeys } from "./config";
 import { notify, copyToClipboard, printViolations } from "./utils";
@@ -8,7 +9,7 @@ import { notify, copyToClipboard, printViolations } from "./utils";
 const configEditor = editor.create(document.getElementById("configEditor"), {
   value: defaultConfigTOML,
   language: "toml",
-  theme: "vs-light",
+  theme: "vs",
   minimap: { enabled: false },
   scrollBeyondLastLine: false,
   lineNumbersMinChars: 0,
@@ -21,7 +22,7 @@ const configEditor = editor.create(document.getElementById("configEditor"), {
 const sqlEditor = editor.create(document.getElementById("sqlEditor"), {
   value: "CREATE TABLE users (id INT, name TEXT);",
   language: "sql",
-  theme: "vs-light",
+  theme: "vs",
   minimap: { enabled: false },
   scrollBeyondLastLine: false,
   lineNumbersMinChars: 0,

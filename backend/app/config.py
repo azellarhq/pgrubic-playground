@@ -11,7 +11,6 @@ class Environment(enum.StrEnum):
     PRODUCTION = enum.auto()
     STAGING = enum.auto()
     DEVELOPMENT = enum.auto()
-    LOCAL = enum.auto()
 
 
 class Settings(BaseSettings):
@@ -22,9 +21,9 @@ class Settings(BaseSettings):
         env_ignore_empty=True,
         extra="ignore",
     )
-    ENVIRONMENT: Environment = Environment.LOCAL
-    PROJECT_NAME: str
-    PROJECT_DESCRIPTION: str
+    ENVIRONMENT: Environment = Environment.DEVELOPMENT
+    PROJECT_NAME: str = "pgrubic-playground"
+    PROJECT_DESCRIPTION: str = "An in-browser playground for pgrubic, a PostgreSQL linter and formatter for schema migrations and design best practices."  # noqa: E501
     CORS_ORIGINS: list[str] = []
     VERSION: str
     API_V1_STR: str = "/api/v1"

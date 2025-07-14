@@ -12,6 +12,7 @@ dependencies = [
   "pydantic-settings==2.10.1",
   "uvicorn==0.35.0",
   "fastapi==0.116.1",
+  "Jinja2==3.1.6",
 ]
 
 [project.optional-dependencies]
@@ -51,7 +52,7 @@ disallow_untyped_decorators = false
 explicit_package_bases = true
 
 [[tool.mypy.overrides]]
-module = ["app.*"]
+module = ["models.*", "config.*", "infrastructure.*", "api.*"]
 ignore_missing_imports = true
 
 [tool.ruff]
@@ -97,6 +98,7 @@ verbose = 1
 [tool.tox]
 legacy_tox_ini = """
     [tox]
+    workdir = {toxinidir}/.tox
     min_version = 4.0
     env_list =
         isort
@@ -105,6 +107,7 @@ legacy_tox_ini = """
         typing
         tests
         coverage
+        docstrings-coverage
 
     [testenv]
     extras = dev

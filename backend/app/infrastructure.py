@@ -1,10 +1,9 @@
 """pgrubic operations."""
 
+import models
 from pgrubic import core
 from pgrubic.core.linter import LintResult  # noqa: TC002
 from pgrubic.core.formatter import FormatResult  # noqa: TC002
-
-from app import models
 
 # Initialize common infrastructure
 config = core.parse_config()

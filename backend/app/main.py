@@ -1,12 +1,10 @@
 """Entrypoint."""
 
 import uvicorn
+from api import routes
+from config import settings
 from fastapi import FastAPI, APIRouter
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-
-from app.api import routes
-from app.config import settings
 
 # Register API routes
 api_router = APIRouter()
@@ -18,6 +16,10 @@ app = FastAPI(
     version=settings.VERSION,
     description=settings.PROJECT_DESCRIPTION,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    docs_url="/docs" if settings.ENVIRONMENT != settings.ENVIRONMENT.PRODUCTION else None,
+    redoc_url="/redoc"
+    if settings.ENVIRONMENT != settings.ENVIRONMENT.PRODUCTION
+    else None,
 )
 
 # Set all CORS enabled origins
@@ -30,8 +32,10 @@ app.add_middleware(
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-# Mount built frontend
-app.mount("/", StaticFiles(directory="../frontend/dist/", html=True), name="frontend")
-
 if __name__ == "__main__":
-    uvicorn.run(app, host=settings.HOST_BIND, port=settings.HOST_PORT)
+    uvicorn.run(
+        "main:app",
+        host=settings.HOST_BIND,
+        port=settings.HOST_PORT,
+        reload=settings.ENVIRONMENT == settings.ENVIRONMENT.DEVELOPMENT,
+    )

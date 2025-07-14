@@ -1,9 +1,9 @@
 """API routes."""
 
+import models
+import infrastructure
 from fastapi import APIRouter
 from pgrubic import __version__
-
-from app import models, infrastructure
 
 router = APIRouter()
 
