@@ -1,7 +1,7 @@
 import toml from "toml";
 
-import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
-import 'monaco-editor/esm/vs/basic-languages/sql/sql.contribution';
+import { editor } from "monaco-editor/esm/vs/editor/editor.api";
+import "monaco-editor/esm/vs/basic-languages/sql/sql.contribution";
 
 import { defaultConfigTOML, transformKeys } from "./config";
 import { notify, copyToClipboard, printViolations } from "./utils";
@@ -38,8 +38,14 @@ async function formatSql() {
   try {
     configObject = toml.parse(configEditor.getValue());
   } catch (error) {
-    console.error("Error in config. Parsing error on line " + error.line + ", column " + error.column +
-      ": " + error.message);
+    console.error(
+      "Error in config. Parsing error on line " +
+        error.line +
+        ", column " +
+        error.column +
+        ": " +
+        error.message
+    );
     notify("Config error", "error");
     return;
   }
@@ -48,29 +54,31 @@ async function formatSql() {
   const sqlOutput = document.getElementById("sqlOutput");
   const sqlOutputLabel = document.getElementById("sqlOutputLabel");
   const lintOutput = document.getElementById("lintOutput");
-  const lintViolationsSummary = document.getElementById("lintViolationsSummary");
+  const lintViolationsSummary = document.getElementById(
+    "lintViolationsSummary"
+  );
 
   lintOutput.innerHTML = "";
   lintViolationsSummary.innerHTML = "";
 
   sqlOutputLabel.textContent = "Formatted SQL";
 
-  await fetch("http://localhost:8000/api/v1/format", {
+  await fetch("/api/v1/format", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
-      config: transformKeys(configObject)
-    })
+      config: transformKeys(configObject),
+    }),
   })
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       sqlOutput.textContent = data.formatted_source_code;
       sqlOutputBox.style.display = data.formatted_source_code ? "flex" : "none";
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Error:", error);
     });
 }
@@ -81,14 +89,22 @@ async function lintSql() {
   try {
     configObject = toml.parse(configEditor.getValue());
   } catch (error) {
-    console.error("Error in config. Parsing error on line " + error.line + ", column " + error.column +
-      ": " + error.message);
+    console.error(
+      "Error in config. Parsing error on line " +
+        error.line +
+        ", column " +
+        error.column +
+        ": " +
+        error.message
+    );
     notify("Error in config", "error");
     return;
   }
 
   const lintOutput = document.getElementById("lintOutput");
-  const lintViolationsSummary = document.getElementById("lintViolationsSummary");
+  const lintViolationsSummary = document.getElementById(
+    "lintViolationsSummary"
+  );
   const sqlOutputBox = document.getElementById("sqlOutputBox");
   sqlOutputBox.style.display = "none";
   lintOutput.innerHTML = "Linting...";
@@ -100,11 +116,11 @@ async function lintSql() {
     },
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
-      config: transformKeys(configObject)
-    })
+      config: transformKeys(configObject),
+    }),
   })
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.violations.length === 0 && data.errors.length === 0) {
         lintViolationsSummary.innerHTML = "All checks passed! 🎉🎉🎉.";
         lintViolationsSummary.classList.remove("has-violations");
@@ -116,12 +132,11 @@ async function lintSql() {
         lintViolationsSummary.classList.add("has-violations");
         if (data.errors.length > 0) {
           notify("Errors found in SQL!", "error");
-        } else
-          notify("Violations found!", "warning");
+        } else notify("Violations found!", "warning");
       }
       lintOutput.innerHTML = printViolations(data.violations || []);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Error:", error);
     });
 }
@@ -132,14 +147,22 @@ async function lintAndFixSql() {
   try {
     configObject = toml.parse(configEditor.getValue());
   } catch (error) {
-    console.error("Parsing error on line " + error.line + ", column " + error.column +
-      ": " + error.message);
+    console.error(
+      "Parsing error on line " +
+        error.line +
+        ", column " +
+        error.column +
+        ": " +
+        error.message
+    );
     notify("Error in config", "error");
     return;
   }
 
   const lintOutput = document.getElementById("lintOutput");
-  const lintViolationsSummary = document.getElementById("lintViolationsSummary");
+  const lintViolationsSummary = document.getElementById(
+    "lintViolationsSummary"
+  );
   const sqlOutputBox = document.getElementById("sqlOutputBox");
   const sqlOutput = document.getElementById("sqlOutput");
   const sqlOutputLabel = document.getElementById("sqlOutputLabel");
@@ -155,11 +178,11 @@ async function lintAndFixSql() {
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
       config: transformKeys(configObject),
-      with_fix: true
-    })
+      with_fix: true,
+    }),
   })
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.violations.length === 0 && data.errors.length === 0) {
         lintViolationsSummary.innerHTML = "All checks passed! 🎉🎉🎉.";
         lintViolationsSummary.classList.remove("has-violations");
@@ -171,15 +194,14 @@ async function lintAndFixSql() {
         lintViolationsSummary.classList.add("has-violations");
         if (data.errors.length > 0) {
           notify("Errors found in SQL!", "error");
-        } else
-          notify("Violations found!", "warning");
+        } else notify("Violations found!", "warning");
       }
       lintOutput.innerHTML = printViolations(data.violations);
 
       sqlOutput.textContent = data.fixed_source_code;
       sqlOutputBox.style.display = "flex";
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Error:", error);
     });
 }
