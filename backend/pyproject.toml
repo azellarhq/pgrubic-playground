@@ -70,9 +70,9 @@ length-sort = true
   "PLR2004", # magic value used in comparison
 ]
 
-[tool.isort]
-profile = "black"
-length_sort = true
+# [tool.isort]
+# profile = "black"
+# length_sort = true
 
 [tool.pytest.ini_options]
 pythonpath = ["app"]
@@ -133,19 +133,19 @@ legacy_tox_ini = """
     [testenv:docstrings-coverage]
     commands = interrogate {posargs}
 
-    [testenv:isort]
-    commands = isort --check --diff --profile=black {posargs:.}
+    # [testenv:isort]
+    # commands = isort --check --diff --profile=black {posargs:.}
 
     [testenv:lint]
     commands =
-        ruff check {posargs}
+        ruff check --config ./pyproject.toml {posargs}
         yamllint --strict {posargs:.}
 
     [testenv:format]
-    commands = ruff format {posargs}
+    commands = ruff format --config ./pyproject.toml {posargs}
 
     [testenv:typing]
-    commands = mypy {posargs:.}
+    commands = mypy --config-file=./pyproject.toml {posargs:.}
 
     [testenv:security]
     commands = bandit --severity-level all -r src

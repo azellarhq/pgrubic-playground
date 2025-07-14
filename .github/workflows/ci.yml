@@ -22,7 +22,7 @@ jobs:
         job:
           - lint
           - docstrings-coverage
-          - isort
+          # - isort
           - format
           - typing
           - security
