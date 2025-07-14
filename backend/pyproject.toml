@@ -104,6 +104,7 @@ legacy_tox_ini = """
         isort
         lint
         format
+        format
         typing
         tests
         coverage
@@ -137,13 +138,12 @@ legacy_tox_ini = """
     [testenv:docstrings-coverage]
     commands = interrogate {posargs}
 
-    # [testenv:isort]
-    # commands = isort --check --diff --profile=black {posargs:.}
+    [testenv:isort]
+    commands = isort --check --diff --profile=black {posargs:.}
 
     [testenv:lint]
     allowlist_externals = which
     commands =
-        ruff --version
         ruff check {posargs}
         yamllint --strict {posargs:.}
 
