@@ -61,6 +61,11 @@ jobs:
         run: pip install --no-cache-dir --upgrade pip tox
       - name: Run coverage
         run: tox -e coverage
+      - name: Debug Token Permissions
+        run: |
+          echo "Token: ${{ github.token }}"
+          curl -s -H "Authorization: token ${{ github.token }}" \
+          https://api.github.com/repos/${{ github.repository }} | jq .permissions
       - name: Coverage comment
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
