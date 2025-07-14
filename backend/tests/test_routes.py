@@ -1,7 +1,8 @@
 """Test API routes."""
 
-from app.config import settings
 from fastapi.testclient import TestClient
+
+from app.config import settings
 
 config = {
     "lint": {
