@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: backend
     strategy:
       fail-fast: false
       matrix:
@@ -41,6 +41,9 @@ jobs:
         run: tox -e ${{ matrix.job }}
   coverage:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
