@@ -75,6 +75,10 @@ jobs:
           curl -s -H "Authorization: token ${{ github.token }}" \
           https://api.github.com/repos/${{ github.repository }} | jq .permissions
       - run: echo "${{ github.event_name }} from ${{ github.actor }} on ${{ github.repository }}"
+      - name: Debug PR Source
+        run: |
+          echo "Head repo: ${{ github.event.pull_request.head.repo.full_name }}"
+          echo "Base repo: ${{ github.event.pull_request.base.repo.full_name }}"
       - name: Coverage comment
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
