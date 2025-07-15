@@ -10,10 +10,11 @@ on:  # yamllint disable-line rule:truthy
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: backend
+
 jobs:
-  defaults:
-    run:
-      working-directory: backend
   lint:
     permissions:
       contents: read
