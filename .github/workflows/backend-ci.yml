@@ -8,22 +8,16 @@ on:  # yamllint disable-line rule:truthy
   pull_request:
     branches:
       - main
-permissions:
-  # Gives the action the necessary permissions for publishing new
-  # comments in pull requests.
-  pull-requests: write
-  # Gives the action the necessary permissions for pushing data to the
-  # python-coverage-comment-action branch, and for editing existing
-  # comments (to avoid publishing multiple comments in the same PR)
-  contents: write
+
+defaults:
+  run:
+    working-directory: backend
+
 jobs:
   lint:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
     strategy:
       fail-fast: false
       matrix:
@@ -37,15 +31,20 @@ jobs:
           - tests
     name: ${{ matrix.job }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - name: Install dependencies
         run: pip install --no-cache-dir --upgrade pip tox
+
       - name: Run ${{ matrix.job }}
         run: tox -e ${{ matrix.job }}
+
   coverage:
     runs-on: ubuntu-latest
     permissions:
@@ -56,35 +55,29 @@ jobs:
       # python-coverage-comment-action branch, and for editing existing
       # comments (to avoid publishing multiple comments in the same PR)
       contents: write
-    defaults:
-      run:
-        working-directory: backend
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - name: Install dependencies
         run: pip install --no-cache-dir --upgrade pip tox
+
       - name: Run coverage
         run: tox -e coverage
-      - name: Debug Token Permissions
-        run: |
-          echo "Token: ${{ github.token }}"
-          curl -s -H "Authorization: token ${{ github.token }}" \
-          https://api.github.com/repos/${{ github.repository }} | jq .permissions
-      - run: echo "${{ github.event_name }} from ${{ github.actor }} on ${{ github.repository }}"
-      - name: Debug PR Source
-        run: |
-          echo "Head repo: ${{ github.event.pull_request.head.repo.full_name }}"
-          echo "Base repo: ${{ github.event.pull_request.base.repo.full_name }}"
+
       - name: Coverage comment
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
           MAX_FILES_IN_COMMENT: 120
+          COVERAGE_PATH: backend
+
       - name: Store Pull Request comment to be posted
         uses: actions/upload-artifact@v4
         if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
