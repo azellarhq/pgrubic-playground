@@ -83,6 +83,9 @@ jobs:
         run: |
           curl -s -H "Authorization: token ${{ github.token }}" \
             https://api.github.com/repos/${{ github.repository }}/actions/permissions/workflow | jq
+      - name: Debug token permissions
+        run: |
+          curl -s -H "Authorization: token ${{ github.token }}" https://api.github.com/repos/${{ github.repository }} | jq .permissions
       - name: Coverage comment
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
