@@ -19,7 +19,9 @@ permissions:
 jobs:
   lint:
     permissions:
-      contents: read
+      contents:
+        - read
+        - write
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -55,7 +57,9 @@ jobs:
       # Gives the action the necessary permissions for pushing data to the
       # python-coverage-comment-action branch, and for editing existing
       # comments (to avoid publishing multiple comments in the same PR)
-      contents: write
+      contents:
+        - write
+        - read
     defaults:
       run:
         working-directory: backend
