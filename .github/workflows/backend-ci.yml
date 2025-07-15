@@ -16,6 +16,7 @@ on:  # yamllint disable-line rule:truthy
 #   # python-coverage-comment-action branch, and for editing existing
 #   # comments (to avoid publishing multiple comments in the same PR)
 #   contents: write
+permissions: read-all
 jobs:
   # lint:
   #   # permissions:
@@ -46,6 +47,7 @@ jobs:
   #       run: pip install --no-cache-dir --upgrade pip tox
   #     - name: Run ${{ matrix.job }}
   #       run: tox -e ${{ matrix.job }}
+
   coverage:
     runs-on: ubuntu-latest
     permissions:
@@ -93,13 +95,18 @@ jobs:
       #     curl -s -H "Authorization: token ${{ github.token }}" https://api.github.com/repos/${{ github.repository }} | jq .permissions
       - name: Coverage comment
         id: coverage_comment
-        uses: py-cov-action/python-coverage-comment-action@fb02115d6115e7b3325dc3295fe1dcfb1919248a
+        uses: py-cov-action/python-coverage-comment-action@970a227e0c16ef4589a99a9970ab0ceb8c53059a  # v3.34
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MAX_FILES_IN_COMMENT: 120
+          GITHUB_TOKEN: ${{ github.token }}
+          COVERAGE_DATA_BRANCH: coverage
+          MINIMUM_GREEN: 85
+          MINIMUM_ORANGE: 70
+
       - name: Store Pull Request comment to be posted
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
         with:
+          # If you use a different name, update COMMENT_ARTIFACT_NAME accordingly
           name: python-coverage-comment-action
+          # If you use a different name, update COMMENT_FILENAME accordingly
           path: python-coverage-comment-action.txt
