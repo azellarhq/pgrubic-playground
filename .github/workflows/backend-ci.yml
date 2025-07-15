@@ -69,6 +69,11 @@ jobs:
       #   run: pip install --no-cache-dir --upgrade pip tox
       # - name: Run coverage
       #   run: tox -e coverage
+      - name: Show effective workflow permissions
+        run: |
+          curl -s -H "Authorization: token ${{ github.token }}" \
+          https://api.github.com/repos/${{ github.repository }}/actions/permissions/workflow | jq
+
       - name: Debug Token Permissions
         run: |
           echo "Token: ${{ github.token }}"
