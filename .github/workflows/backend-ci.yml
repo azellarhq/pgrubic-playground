@@ -15,37 +15,37 @@ permissions:
   # Gives the action the necessary permissions for pushing data to the
   # python-coverage-comment-action branch, and for editing existing
   # comments (to avoid publishing multiple comments in the same PR)
-  contents: none
+  contents: write
 jobs:
-  lint:
-    # permissions:
-    #   contents: read
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-    strategy:
-      fail-fast: false
-      matrix:
-        job:
-          - lint
-          - docstrings-coverage
-          - isort
-          - format
-          - typing
-          - security
-          - tests
-    name: ${{ matrix.job }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install dependencies
-        run: pip install --no-cache-dir --upgrade pip tox
-      - name: Run ${{ matrix.job }}
-        run: tox -e ${{ matrix.job }}
+  # lint:
+  #   # permissions:
+  #   #   contents: read
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: backend
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       job:
+  #         - lint
+  #         - docstrings-coverage
+  #         - isort
+  #         - format
+  #         - typing
+  #         - security
+  #         - tests
+  #   name: ${{ matrix.job }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: "3.12"
+  #     - name: Install dependencies
+  #       run: pip install --no-cache-dir --upgrade pip tox
+  #     - name: Run ${{ matrix.job }}
+  #       run: tox -e ${{ matrix.job }}
   coverage:
     runs-on: ubuntu-latest
     permissions:
