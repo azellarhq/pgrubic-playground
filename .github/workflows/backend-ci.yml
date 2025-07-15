@@ -11,6 +11,9 @@ on:  # yamllint disable-line rule:truthy
       - main
 
 jobs:
+  defaults:
+    run:
+      working-directory: backend
   lint:
     permissions:
       contents: read
