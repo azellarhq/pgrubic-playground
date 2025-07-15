@@ -1,6 +1,7 @@
 ---
 # yamllint disable rule:line-length
-name: Backend CI
+name: CI
+
 on:  # yamllint disable-line rule:truthy
   push:
     branches:
@@ -8,45 +9,34 @@ on:  # yamllint disable-line rule:truthy
   pull_request:
     branches:
       - main
-# permissions:
-#   # Gives the action the necessary permissions for publishing new
-#   # comments in pull requests.
-#   pull-requests: write
-#   # Gives the action the necessary permissions for pushing data to the
-#   # python-coverage-comment-action branch, and for editing existing
-#   # comments (to avoid publishing multiple comments in the same PR)
-#   contents: write
-permissions: read-all
+
 jobs:
-  # lint:
-  #   # permissions:
-  #   #   contents: read
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: backend
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       job:
-  #         - lint
-  #         - docstrings-coverage
-  #         - isort
-  #         - format
-  #         - typing
-  #         - security
-  #         - tests
-  #   name: ${{ matrix.job }}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: "3.12"
-  #     - name: Install dependencies
-  #       run: pip install --no-cache-dir --upgrade pip tox
-  #     - name: Run ${{ matrix.job }}
-  #       run: tox -e ${{ matrix.job }}
+  lint:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - lint
+          - docstrings-coverage
+          - isort
+          - format
+          - typing
+          - security
+          - tests
+    name: ${{ matrix.job }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install --no-cache-dir --upgrade pip tox
+      - name: Run ${{ matrix.job }}
+        run: tox -e ${{ matrix.job }}
 
   coverage:
     runs-on: ubuntu-latest
@@ -58,55 +48,30 @@ jobs:
       # python-coverage-comment-action branch, and for editing existing
       # comments (to avoid publishing multiple comments in the same PR)
       contents: write
-    defaults:
-      run:
-        working-directory: backend
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - name: Install dependencies
         run: pip install --no-cache-dir --upgrade pip tox
+
       - name: Run coverage
         run: tox -e coverage
-      # - name: Show effective workflow permissions
-      #   run: |
-      #     curl -s -H "Authorization: token ${{ github.token }}" \
-      #     https://api.github.com/repos/${{ github.repository }}/actions/permissions/workflow | jq
 
-      # - name: Debug Token Permissions
-      #   run: |
-      #     echo "Token: ${{ github.token }}"
-      #     curl -s -H "Authorization: token ${{ github.token }}" \
-      #     https://api.github.com/repos/${{ github.repository }} | jq .permissions
-      # - run: echo "${{ github.event_name }} from ${{ github.actor }} on ${{ github.repository }}"
-      # - name: Debug PR Source
-      #   run: |
-      #     echo "Head repo: ${{ github.event.pull_request.head.repo.full_name }}"
-      #     echo "Base repo: ${{ github.event.pull_request.base.repo.full_name }}"
-      # - name: Check Effective Token Permissions
-      #   run: |
-      #     curl -s -H "Authorization: token ${{ github.token }}" \
-      #       https://api.github.com/repos/${{ github.repository }}/actions/permissions/workflow | jq
-      # - name: Debug token permissions
-      #   run: |
-      #     curl -s -H "Authorization: token ${{ github.token }}" https://api.github.com/repos/${{ github.repository }} | jq .permissions
       - name: Coverage comment
         id: coverage_comment
-        uses: py-cov-action/python-coverage-comment-action@970a227e0c16ef4589a99a9970ab0ceb8c53059a  # v3.34
+        uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
-          COVERAGE_DATA_BRANCH: coverage
-          MINIMUM_GREEN: 85
-          MINIMUM_ORANGE: 70
+          MAX_FILES_IN_COMMENT: 120
 
       - name: Store Pull Request comment to be posted
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        uses: actions/upload-artifact@v4
         if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
         with:
-          # If you use a different name, update COMMENT_ARTIFACT_NAME accordingly
           name: python-coverage-comment-action
-          # If you use a different name, update COMMENT_FILENAME accordingly
           path: python-coverage-comment-action.txt
