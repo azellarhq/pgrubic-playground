@@ -1,6 +1,6 @@
 [project]
 name = "pgrubic-playground-backend"
-version = "0.2.0"
+version = "0.1.0"
 description = "Backend for pgrubic playground."
 readme = { file = "README.md", content-type = "text/markdown" }
 license = "MIT"
