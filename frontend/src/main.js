@@ -109,7 +109,7 @@ async function lintSql() {
   sqlOutputBox.style.display = "none";
   lintOutput.innerHTML = "Linting...";
 
-  await fetch("http://localhost:8000/api/v1/lint", {
+  await fetch("/api/v1/lint", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -170,7 +170,7 @@ async function lintAndFixSql() {
   lintOutput.innerHTML = "Linting with fix...";
   sqlOutputLabel.textContent = "Fixed SQL";
 
-  await fetch("http://localhost:8000/api/v1/lint", {
+  await fetch("/api/v1/lint", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
