@@ -1,18 +1,15 @@
 [project]
 name = "pgrubic-playground-backend"
-version = "0.1.0"
+version = "0.2.0"
 description = "Backend for pgrubic playground."
 readme = { file = "README.md", content-type = "text/markdown" }
 license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
-dependencies = [
-  "pgrubic==0.6.3",
-  "pydantic==2.11.7",
-  "pydantic-settings==2.10.1",
-  "uvicorn==0.35.0",
-  "fastapi==0.116.1",
-]
+
+dynamic = ["dependencies"]
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
 
 [project.optional-dependencies]
 dev = [

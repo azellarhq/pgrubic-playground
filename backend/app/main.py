@@ -13,7 +13,6 @@ api_router.include_router(routes.router)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    version=settings.VERSION,
     description=settings.PROJECT_DESCRIPTION,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     docs_url="/docs" if settings.ENVIRONMENT != settings.ENVIRONMENT.PRODUCTION else None,
