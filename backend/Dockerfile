@@ -8,4 +8,7 @@ COPY requirements.txt requirements.txt
 
 RUN pip install --no-cache-dir --upgrade pip -r requirements.txt
 
+# Switch to non-root user.
+USER 5000
+
 CMD ["python3", "app/main.py"]
