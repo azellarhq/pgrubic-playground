@@ -25,10 +25,9 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "pgrubic-playground"
     PROJECT_DESCRIPTION: str = "An in-browser playground for pgrubic, a PostgreSQL linter and formatter for schema migrations and design best practices."  # noqa: E501
     CORS_ORIGINS: list[str] = []
-    VERSION: str
     API_V1_STR: str = "/api/v1"
-    HOST_BIND: str
-    HOST_PORT: int
+    HOST_BIND: str = "localhost"
+    HOST_PORT: int = 8000
 
 
-settings = Settings()  # type: ignore[call-arg] # fastapi will take care of it
+settings = Settings()
