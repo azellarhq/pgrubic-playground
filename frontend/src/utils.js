@@ -31,3 +31,5 @@ function printViolations(violations) {
 }
 
 export { notify, copyToClipboard, printViolations };
+
+export const API_BASE_URL = "/api/v1"

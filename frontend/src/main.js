@@ -4,7 +4,7 @@ import { editor } from "monaco-editor/esm/vs/editor/editor.api";
 import "monaco-editor/esm/vs/basic-languages/sql/sql.contribution";
 
 import { defaultConfigTOML, transformKeys } from "./config";
-import { notify, copyToClipboard, printViolations } from "./utils";
+import { notify, copyToClipboard, printViolations, API_BASE_URL } from "./utils";
 
 const configEditor = editor.create(document.getElementById("configEditor"), {
   value: defaultConfigTOML,
@@ -63,7 +63,7 @@ async function formatSql() {
 
   sqlOutputLabel.textContent = "Formatted SQL";
 
-  await fetch("/api/v1/format", {
+  await fetch(`${API_BASE_URL}/format`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -109,7 +109,7 @@ async function lintSql() {
   sqlOutputBox.style.display = "none";
   lintOutput.innerHTML = "Linting...";
 
-  await fetch("/api/v1/lint", {
+  await fetch(`${API_BASE_URL}/lint`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -170,7 +170,7 @@ async function lintAndFixSql() {
   lintOutput.innerHTML = "Linting with fix...";
   sqlOutputLabel.textContent = "Fixed SQL";
 
-  await fetch("/api/v1/lint", {
+  await fetch(`${API_BASE_URL}/lint`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
