@@ -1,7 +1,7 @@
 // Entry point
 
 import { defaultConfig, configEditor, sqlEditor } from "./editors";
-import { notify, copyToClipboard, printViolations } from "./utils";
+import { notify, copyToClipboard, printViolations, printErrors } from "./utils";
 
 import { formatSql, lintSql, lintAndFixSql } from "./core";
 
@@ -10,15 +10,15 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 // Hook Up Buttons Once DOM is Ready
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("formatBtn").addEventListener("click", () => {
-    formatSql({ API_BASE_URL, configEditor, sqlEditor, notify });
+    formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors });
   });
 
   document.getElementById("lintBtn").addEventListener("click", () => {
-    lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations });
+    lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors });
   });
 
   document.getElementById("lintFixBtn").addEventListener("click", () => {
-    lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations });
+    lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors });
   });
 
   document.getElementById("copyBtn").onclick = function () {

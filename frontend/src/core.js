@@ -4,7 +4,7 @@ import toml from "toml";
 
 import { transformKeys } from "./editors";
 
-async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify }) {
+async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors }) {
   var configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
@@ -29,7 +29,7 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify }) {
     "lintViolationsSummary"
   );
 
-  lintOutput.innerHTML = "";
+  lintOutput.innerHTML = "Formatting...";
   lintViolationsSummary.innerHTML = "";
 
   sqlOutputLabel.textContent = "Formatted SQL";
@@ -48,13 +48,17 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify }) {
     .then((data) => {
       sqlOutput.textContent = data.formatted_source_code;
       sqlOutputBox.style.display = data.formatted_source_code ? "flex" : "none";
+      if (data.errors.length > 0) {
+        notify("Errors found in SQL!", "error");
+      };
+      lintOutput.innerHTML = printErrors(data.errors || []);
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 }
 
-async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations }) {
+async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors }) {
   var configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
@@ -105,13 +109,14 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
         } else notify("Violations found!", "warning");
       }
       lintOutput.innerHTML = printViolations(data.violations || []);
+      lintOutput.innerHTML += printErrors(data.errors || []);
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 }
 
-async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations }) {
+async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors }) {
   var configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
@@ -166,6 +171,7 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
         } else notify("Violations found!", "warning");
       }
       lintOutput.innerHTML = printViolations(data.violations);
+      lintOutput.innerHTML += printErrors(data.errors);
 
       sqlOutput.textContent = data.fixed_source_code;
       sqlOutputBox.style.display = "flex";

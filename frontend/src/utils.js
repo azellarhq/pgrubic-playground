@@ -23,11 +23,20 @@ function printViolations(violations) {
   var html = "";
 
   violations.forEach(v => {
-    html += `<span><b>${v.rule_code}</b> ${v.line}: ${v.column_offset} ${v.description}<hr></span>`;
+    html += `<span><b>${v.description} </b>(${v.rule_code}) [Ln ${v.line_number}, Col ${v.column_offset}] <hr></span>`;
   }
   );
 
   return html;
 }
 
-export { notify, copyToClipboard, printViolations };
+function printErrors(errors) {
+  var html = "";
+  errors.forEach(e => {
+    html += `<span><b>${e.message} </b>(${e.hint}) <hr></span>`;
+  }
+  );
+  return html;
+}
+
+export { notify, copyToClipboard, printViolations, printErrors };
