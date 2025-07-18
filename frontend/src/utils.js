@@ -31,5 +31,3 @@ function printViolations(violations) {
 }
 
 export { notify, copyToClipboard, printViolations };
-
-export const API_BASE_URL = "/choreo-apis/pgrubic-playground/backend/v1/api/v1";

@@ -1,4 +1,9 @@
-const defaultConfigTOML = `[lint]
+// Editors
+
+import { editor } from "monaco-editor/esm/vs/editor/editor.api";
+import "monaco-editor/esm/vs/basic-languages/sql/sql.contribution";
+
+const defaultConfig = `[lint]
 postgres-target-version = 14
 select = []
 ignore = []
@@ -43,4 +48,30 @@ function transformKeys(obj) {
   }
 }
 
-export { transformKeys, defaultConfigTOML };
+const configEditor = editor.create(document.getElementById("configEditor"), {
+  value: defaultConfig,
+  language: "toml",
+  theme: "vs",
+  minimap: { enabled: false },
+  scrollBeyondLastLine: false,
+  lineNumbersMinChars: 0,
+  lineDecorationsWidth: 0,
+  overviewRulerLanes: 0,
+  fontSize: 14,
+  fontFamily: "monospace",
+});
+
+const sqlEditor = editor.create(document.getElementById("sqlEditor"), {
+  value: "CREATE TABLE users (id INT, name TEXT);",
+  language: "sql",
+  theme: "vs",
+  minimap: { enabled: false },
+  scrollBeyondLastLine: false,
+  lineNumbersMinChars: 0,
+  lineDecorationsWidth: 0,
+  overviewRulerLanes: 0,
+  fontSize: 14,
+  fontFamily: "monospace",
+});
+
+export { transformKeys, defaultConfig, configEditor, sqlEditor };
