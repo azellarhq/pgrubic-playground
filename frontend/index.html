@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/png" href="https://bolajiwahab.github.io/pgrubic/assets/logo.png">
-  <title>pgrubic online</title>
+  <title>pgrubic playground</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
@@ -17,7 +17,7 @@
     <h1>
       <img class="logo" src="https://bolajiwahab.github.io/pgrubic/assets/logo.png" alt="logo">
       <div class="logo-section">
-        <span class="main-title">pgrubic online</span>
+        <span class="main-title">pgrubic playground</span>
         <span class="sub-title">An in-browser version of <a href="https://github.com/bolajiwahab/pgrubic"
             target="_blank"><b>pgrubic</b></a></span>
       </div>
@@ -32,16 +32,15 @@
       <span id="pgrubic-version" class="pgrubic-version">v0.6.1</span>
       <a href="https://github.com/bolajiwahab/pgrubic" target="_blank"><i class="fab fa-github"></i> GitHub</a>
       <a href="https://bolajiwahab.github.io/pgrubic/rules/" target="_blank"><i class="fas fa-book"></i> Rules</a>
-      <a href="#format-btn"><i class="fas fa-magic"></i> Format</a>
-      <a href="#lint-btn"><i class="fas fa-search"></i> Lint</a>
-      <a href="#config-panel"><i class="fas fa-cog"></i> Config</a>
+      <a href="https://bolajiwahab.github.io/pgrubic/formatter" target="_blank"><i class="fas fa-broom"></i> Format</a>
+      <a href="https://bolajiwahab.github.io/pgrubic/linter" target="_blank"><i class="fas fa-shield-alt"></i> Lint</a>
+      <a href="https://bolajiwahab.github.io/pgrubic/settings" target="_blank"><i class="fas fa-cog"></i> Config</a>
     </nav>
 
   </div>
   <div class="main-container">
     <div class="config-panel">
       <div class="config-header">
-        <span>⚙️</span>
         <span>Config</span>
       </div>
       <div class="config-editor" id="configEditor"></div>
@@ -80,8 +79,6 @@
     </div>
   </div>
 
-  <script type="module" src="src/config.js" defer></script>
-  <script type="module" src="src/utils.js" defer></script>
   <script type="module" src="src/main.js" defer></script>
 </body>
 
