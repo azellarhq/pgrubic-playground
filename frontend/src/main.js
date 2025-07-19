@@ -5,7 +5,7 @@ import { notify, copyToClipboard, printViolations, printErrors } from "./utils";
 
 import { formatSql, lintSql, lintAndFixSql } from "./core";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+const API_BASE_URL = window.config.API_BASE_URL
 
 // Hook Up Buttons Once DOM is Ready
 document.addEventListener("DOMContentLoaded", () => {
