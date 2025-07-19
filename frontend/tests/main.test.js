@@ -1,0 +1,81 @@
+// Test entry point
+
+import { describe, it, beforeEach, vi, expect } from "vitest";
+
+import * as core from "../src/core";
+import * as utils from "../src/utils";
+import { setupEventListeners } from "../src/main";
+import { configEditor, defaultConfig } from "../src/editors";
+
+vi.mock("../src/editors", () => ({
+  configEditor: {
+    getValue: vi.fn(),
+    setValue: vi.fn(),
+  },
+  sqlEditor: { getValue: vi.fn() },
+  defaultConfig: "",
+}));
+
+
+describe("Main button event listeners", () => {
+  beforeEach(() => {
+    window.config = { API_BASE_URL: "/api" };
+
+    document.body.innerHTML = `
+      <button id="formatBtn"></button>
+      <button id="lintBtn"></button>
+      <button id="lintFixBtn"></button>
+      <button id="copyBtn"></button>
+      <button id="resetConfigBtn"></button>
+      <div id="hamburger"></div>
+      <div id="top-links"></div>
+    `;
+
+    // Spy/mock functions
+    vi.spyOn(core, "formatSql").mockResolvedValue();
+    vi.spyOn(core, "lintSql").mockResolvedValue();
+    vi.spyOn(core, "lintAndFixSql").mockResolvedValue();
+    vi.spyOn(utils, "copyToClipboard").mockImplementation(() => {});
+    vi.spyOn(utils, "notify").mockImplementation(() => {});
+
+    setupEventListeners();
+  });
+
+  it("calls formatSql on formatBtn click", async () => {
+    document.getElementById("formatBtn").click();
+    expect(core.formatSql).toHaveBeenCalled();
+  });
+
+  it("calls lintSql on lintBtn click", async () => {
+    document.getElementById("lintBtn").click();
+    expect(core.lintSql).toHaveBeenCalled();
+  });
+
+  it("calls lintAndFixSql on lintFixBtn click", async () => {
+    document.getElementById("lintFixBtn").click();
+    expect(core.lintAndFixSql).toHaveBeenCalled();
+  });
+
+  it("calls copyToClipboard on copyBtn click and notifies", () => {
+    document.getElementById("copyBtn").click();
+    expect(utils.copyToClipboard).toHaveBeenCalledWith("sqlOutput");
+    expect(utils.notify).toHaveBeenCalledWith("Copied to clipboard!", "success");
+  });
+
+  it("resets config and notifies on resetConfigBtn click", () => {
+    document.getElementById("resetConfigBtn").click();
+    expect(configEditor.setValue).toHaveBeenCalledWith(defaultConfig);
+    expect(utils.notify).toHaveBeenCalledWith("Configuration reset to default!", "info");
+  });
+
+  it("toggles top-links visibility on hamburger click", () => {
+    const topLinks = document.getElementById("top-links");
+    expect(topLinks.classList.contains("show")).toBe(false);
+
+    document.getElementById("hamburger").click();
+    expect(topLinks.classList.contains("show")).toBe(true);
+
+    document.getElementById("hamburger").click();
+    expect(topLinks.classList.contains("show")).toBe(false);
+  });
+});

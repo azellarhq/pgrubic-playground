@@ -13,7 +13,6 @@ function copyToClipboard(id) {
 
   if (element) {
     navigator.clipboard.writeText(element.textContent).then(() => {
-      notify("Copied!", "success");
     }).catch(err => console.error("Failed to copy: ", err));
   }
 }
