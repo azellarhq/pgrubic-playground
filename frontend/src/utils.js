@@ -1,12 +1,16 @@
 // Utils
 
-function notify(message, type = "success") {
+function notify(message, type, timeout = 1000) {
   const n = document.createElement("div");
   n.className = `notification ${type}`;
   n.textContent = message;
   document.body.appendChild(n);
-  setTimeout(() => n.remove(), 1000);
+
+  setTimeout(() => {
+    n.remove();
+  }, timeout);
 }
+
 
 function copyToClipboard(id) {
   const element = document.getElementById(id);
