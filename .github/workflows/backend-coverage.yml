@@ -9,7 +9,7 @@ on:  # yamllint disable-line rule:truthy
       - completed
 
 jobs:
-  Report:
+  report:
     name: Report coverage
     runs-on: ubuntu-latest
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
