@@ -5,6 +5,14 @@ import { notify, copyToClipboard, printViolations, printErrors } from "./utils";
 
 import { formatSql, lintSql, lintAndFixSql } from "./core";
 
+/**
+ * Sets up event listeners for various UI elements.
+ *
+ * - Binds click events to buttons for formatting, linting, lint-fixing SQL,
+ *   copying output, resetting configuration, and toggling visibility of top links.
+ * - Utilizes functions from core and utils modules to perform actions.
+ */
+
 export function setupEventListeners() {
   const API_BASE_URL = window.config.API_BASE_URL;
   document.getElementById("formatBtn").addEventListener("click", () => {

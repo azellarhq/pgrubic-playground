@@ -15,7 +15,6 @@ import { transformKeys } from "./editors";
  * @param {Function} params.notify - Function to display notifications.
  * @param {Function} params.printErrors - Function to display SQL formatting errors.
  */
-
 async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors }) {
   var configObject;
   try {
@@ -70,18 +69,18 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
     });
 }
 
-  /**
-   * Lints the SQL code from the provided SQL editor using the configuration from the config editor.
-   * Fetches the linting results from the given API endpoint and updates the DOM with the results.
-   *
-   * @param {Object} params - The parameters for the function.
-   * @param {string} params.API_BASE_URL - The base URL for the API.
-   * @param {Object} params.configEditor - The editor containing the configuration in TOML format.
-   * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
-   * @param {Function} params.notify - Function to display notifications.
-   * @param {Function} params.printViolations - Function to display SQL linting violations.
-   * @param {Function} params.printErrors - Function to display SQL linting errors.
-   */
+/**
+ * Lints the SQL code from the provided SQL editor using the configuration from the config editor.
+ * Fetches the linting results from the given API endpoint and updates the DOM with the results.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {string} params.API_BASE_URL - The base URL for the API.
+ * @param {Object} params.configEditor - The editor containing the configuration in TOML format.
+ * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
+ * @param {Function} params.notify - Function to display notifications.
+ * @param {Function} params.printViolations - Function to display SQL linting violations.
+ * @param {Function} params.printErrors - Function to display SQL linting errors.
+ */
 async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors }) {
   var configObject;
   try {
@@ -140,17 +139,17 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
     });
 }
 
-  /**
-   * Lints the SQL in the editor and attempts to fix the violations.
-   *
-   * @param {Object} params - The function parameters.
-   * @param {string} params.API_BASE_URL - The base URL of the API.
-   * @param {Object} params.configEditor - The editor containing the SQLFluff config.
-   * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
-   * @param {Function} params.notify - Function to display notifications.
-   * @param {Function} params.printViolations - Function to display SQL linting violations.
-   * @param {Function} params.printErrors - Function to display SQL linting errors.
-   */
+/**
+ * Lints the SQL in the editor and attempts to fix the violations.
+ *
+ * @param {Object} params - The function parameters.
+ * @param {string} params.API_BASE_URL - The base URL of the API.
+ * @param {Object} params.configEditor - The editor containing the SQLFluff config.
+ * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
+ * @param {Function} params.notify - Function to display notifications.
+ * @param {Function} params.printViolations - Function to display SQL linting violations.
+ * @param {Function} params.printErrors - Function to display SQL linting errors.
+ */
 async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors }) {
   var configObject;
   try {
