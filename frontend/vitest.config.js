@@ -12,7 +12,7 @@ export default defineConfig({
         branches: 100
       },
       exclude: ["public/config.js", ...coverageConfigDefaults.exclude],
-      reporter: ['text', 'json-summary', 'json'],
+      reporter: ["text", "json-summary", "json"],
       reportOnFailure: true,
     }
   },
