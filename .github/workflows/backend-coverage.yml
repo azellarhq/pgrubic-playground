@@ -4,7 +4,7 @@ name: Post coverage comment
 
 on:  # yamllint disable-line rule:truthy
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["Backend CI"]
     types:
       - completed
 
@@ -25,6 +25,8 @@ jobs:
       # artifact that contains the comment to be published
       actions: read
     steps:
+      # DO NOT run actions/checkout here, for security reasons
+      # For details, refer to https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
       - name: Post comment
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
