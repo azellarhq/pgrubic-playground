@@ -4,6 +4,17 @@ import toml from "toml";
 
 import { transformKeys } from "./editors";
 
+/**
+ * Formats the SQL code from the provided SQL editor using the configuration from the config editor.
+ * Fetches the formatted SQL from the given API endpoint and updates the DOM with the results.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {string} params.API_BASE_URL - The base URL for the API.
+ * @param {Object} params.configEditor - The editor containing the configuration in TOML format.
+ * @param {Object} params.sqlEditor - The editor containing the SQL code to format.
+ * @param {Function} params.notify - Function to display notifications.
+ * @param {Function} params.printErrors - Function to display SQL formatting errors.
+ */
 async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors }) {
   var configObject;
   try {
@@ -17,7 +28,7 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
         ": " +
         error.message
     );
-    notify("Config error", "error");
+    notify("Error in config", "error");
     return;
   }
 
@@ -51,13 +62,25 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
       if (data.errors.length > 0) {
         notify("Errors found in SQL!", "error");
       };
-      lintOutput.innerHTML = printErrors(data.errors || []);
+      lintOutput.innerHTML = printErrors(data.errors);
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 }
 
+/**
+ * Lints the SQL code from the provided SQL editor using the configuration from the config editor.
+ * Fetches the linting results from the given API endpoint and updates the DOM with the results.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {string} params.API_BASE_URL - The base URL for the API.
+ * @param {Object} params.configEditor - The editor containing the configuration in TOML format.
+ * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
+ * @param {Function} params.notify - Function to display notifications.
+ * @param {Function} params.printViolations - Function to display SQL linting violations.
+ * @param {Function} params.printErrors - Function to display SQL linting errors.
+ */
 async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors }) {
   var configObject;
   try {
@@ -108,21 +131,32 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
           notify("Errors found in SQL!", "error");
         } else notify("Violations found!", "warning");
       }
-      lintOutput.innerHTML = printViolations(data.violations || []);
-      lintOutput.innerHTML += printErrors(data.errors || []);
+      lintOutput.innerHTML = printViolations(data.violations);
+      lintOutput.innerHTML += printErrors(data.errors);
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 }
 
+/**
+ * Lints the SQL in the editor and attempts to fix the violations.
+ *
+ * @param {Object} params - The function parameters.
+ * @param {string} params.API_BASE_URL - The base URL of the API.
+ * @param {Object} params.configEditor - The editor containing the SQLFluff config.
+ * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
+ * @param {Function} params.notify - Function to display notifications.
+ * @param {Function} params.printViolations - Function to display SQL linting violations.
+ * @param {Function} params.printErrors - Function to display SQL linting errors.
+ */
 async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors }) {
   var configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
   } catch (error) {
     console.error(
-      "Parsing error on line " +
+      "Error in config. Parsing error on line " +
         error.line +
         ", column " +
         error.column +

@@ -5,10 +5,16 @@ import { notify, copyToClipboard, printViolations, printErrors } from "./utils";
 
 import { formatSql, lintSql, lintAndFixSql } from "./core";
 
-const API_BASE_URL = window.config.API_BASE_URL
+/**
+ * Sets up event listeners for various UI elements.
+ *
+ * - Binds click events to buttons for formatting, linting, lint-fixing SQL,
+ *   copying output, resetting configuration, and toggling visibility of top links.
+ * - Utilizes functions from core and utils modules to perform actions.
+ */
 
-// Hook Up Buttons Once DOM is Ready
-document.addEventListener("DOMContentLoaded", () => {
+export function setupEventListeners() {
+  const API_BASE_URL = window.config.API_BASE_URL;
   document.getElementById("formatBtn").addEventListener("click", () => {
     formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors });
   });
@@ -21,8 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors });
   });
 
-  document.getElementById("copyBtn").onclick = function () {
+  document.getElementById("copyBtn").onclick = () => {
     copyToClipboard("sqlOutput");
+    notify("Copied to clipboard!", "success");
   };
 
   document.getElementById("resetConfigBtn").onclick = () => {
@@ -30,8 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
     notify("Configuration reset to default!", "info");
   };
 
-  // Hamburger Menu
   document.getElementById("hamburger").addEventListener("click", () => {
     document.getElementById("top-links").classList.toggle("show");
   });
-});
+}
+
+// Add event listeners
+document.addEventListener("DOMContentLoaded", setupEventListeners);

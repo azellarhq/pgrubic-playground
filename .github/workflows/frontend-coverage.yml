@@ -1,12 +1,16 @@
 ---
 # yamllint disable rule:line-length
-name: Report Backend Coverage
+name: Report Frontend Coverage
 
 on:  # yamllint disable-line rule:truthy
   workflow_run:
-    workflows: ["Backend CI"]
+    workflows: ["Frontend CI"]
     types:
       - completed
+
+defaults:
+  run:
+    working-directory: frontend
 
 jobs:
   report:
@@ -24,11 +28,16 @@ jobs:
       # workflow that launched this workflow, and download the related
       # artifact that contains the comment to be published
       actions: read
+
     steps:
       # DO NOT run actions/checkout here, for security reasons
       # For details, refer to https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
-      - name: Post comment
-        uses: py-cov-action/python-coverage-comment-action@v3
+      - uses: actions/download-artifact@v4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PR_RUN_ID: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Report Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: Frontend
