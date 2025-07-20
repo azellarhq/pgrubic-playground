@@ -1,12 +1,16 @@
 ---
 # yamllint disable rule:line-length
-name: Report Coverage
+name: Report Frontend Coverage
 
 on:  # yamllint disable-line rule:truthy
   workflow_run:
     workflows: ["Frontend CI"]
     types:
       - completed
+
+defaults:
+  run:
+    working-directory: frontend
 
 jobs:
   report:
@@ -21,5 +25,8 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
-      - name: "Report Coverage"
+      - name: Report Coverage
         uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: Frontend coverage report
+          # vite-config-path: frontend/vite.config.js

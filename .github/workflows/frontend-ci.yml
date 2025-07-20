@@ -21,17 +21,21 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
-      - name: "Install Node"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-      - name: "Install Deps"
+
+      - name: Install Dependencies
         run: npm install
-      - name: "Test"
+
+      - name: Run tests and generate coverage
         run: npx vitest --coverage.enabled true
 
-      - name: "Upload Coverage"
+      - name: Upload Coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage
