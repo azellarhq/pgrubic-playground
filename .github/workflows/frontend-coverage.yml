@@ -28,5 +28,5 @@ jobs:
       - name: Report Coverage
         uses: davelosert/vitest-coverage-report-action@v2
         with:
-          name: Frontend coverage report
-          # vite-config-path: frontend/vite.config.js
+          name: Frontend
+          vite-config-path: frontend/vite.config.js
