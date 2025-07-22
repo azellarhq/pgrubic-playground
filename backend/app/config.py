@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     HOST_BIND: str = "localhost"
     HOST_PORT: int = 8000
+    SHARED_REQUEST_EXPIRE_MINUTES: int = 10080
 
 
 settings = Settings()

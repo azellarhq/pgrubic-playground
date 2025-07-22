@@ -1,45 +1,44 @@
 """pgrubic operations."""
 
+import string
+import secrets
+
 import models
+import diskcache
+from config import settings
+from fastapi import HTTPException, status
 from pgrubic import core
-from pgrubic.core.linter import LintResult  # noqa: TC002
-from pgrubic.core.formatter import FormatResult  # noqa: TC002
 
 # Initialize common infrastructure
 config = core.parse_config()
+cache = diskcache.Cache("query_cache")
 
 
-def lint_source_code(*, lint_source_code: models.LintSourceCode) -> models.LintResult:
+def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:
     """Lint source code."""
     linter = core.Linter(config=config, formatters=core.load_formatters)
 
     # Config overrides
-    config.lint.postgres_target_version = (
-        lint_source_code.config.lint.postgres_target_version
-    )
-    config.lint.select = lint_source_code.config.lint.select
-    config.lint.ignore = lint_source_code.config.lint.ignore
-    config.lint.ignore_noqa = lint_source_code.config.lint.ignore_noqa
-    config.lint.fix = lint_source_code.with_fix
+    config.lint.postgres_target_version = data.config.lint.postgres_target_version
+    config.lint.select = data.config.lint.select
+    config.lint.ignore = data.config.lint.ignore
+    config.lint.ignore_noqa = data.config.lint.ignore_noqa
+    config.lint.fix = data.with_fix
 
-    config.format.comma_at_beginning = lint_source_code.config.format.comma_at_beginning
-    config.format.new_line_before_semicolon = (
-        lint_source_code.config.format.new_line_before_semicolon
-    )
+    config.format.comma_at_beginning = data.config.format.comma_at_beginning
+    config.format.new_line_before_semicolon = data.config.format.new_line_before_semicolon
     config.format.remove_pg_catalog_from_functions = (
-        lint_source_code.config.format.remove_pg_catalog_from_functions
+        data.config.format.remove_pg_catalog_from_functions
     )
-    config.format.lines_between_statements = (
-        lint_source_code.config.format.lines_between_statements
-    )
+    config.format.lines_between_statements = data.config.format.lines_between_statements
 
     rules = core.load_rules(config=config)
     for rule in rules:
         linter.checkers.add(rule())
 
-    lint_result: LintResult = linter.run(
+    lint_result = linter.run(
         source_file="",
-        source_code=lint_source_code.source_code,
+        source_code=data.source_code,
     )
 
     return models.LintResult(
@@ -74,26 +73,22 @@ def lint_source_code(*, lint_source_code: models.LintSourceCode) -> models.LintR
 
 def format_source_code(
     *,
-    format_source_code: models.FormatSourceCode,
+    data: models.FormatSourceCode,
 ) -> models.FormatResult:
     """Format source code."""
     # Config overrides
-    config.format.comma_at_beginning = format_source_code.config.format.comma_at_beginning
-    config.format.new_line_before_semicolon = (
-        format_source_code.config.format.new_line_before_semicolon
-    )
+    config.format.comma_at_beginning = data.config.format.comma_at_beginning
+    config.format.new_line_before_semicolon = data.config.format.new_line_before_semicolon
     config.format.remove_pg_catalog_from_functions = (
-        format_source_code.config.format.remove_pg_catalog_from_functions
+        data.config.format.remove_pg_catalog_from_functions
     )
-    config.format.lines_between_statements = (
-        format_source_code.config.format.lines_between_statements
-    )
+    config.format.lines_between_statements = data.config.format.lines_between_statements
 
     formatter = core.Formatter(config=config, formatters=core.load_formatters)
 
-    format_result: FormatResult = formatter.format(
+    format_result = formatter.format(
         source_file="",
-        source_code=format_source_code.source_code,
+        source_code=data.source_code,
     )
 
     return models.FormatResult(
@@ -107,4 +102,38 @@ def format_source_code(
             )
             for error in format_result.errors
         ],
+    )
+
+
+def _generate_key(length: int = 8) -> str:
+    """Generate a random key."""
+    return "".join(
+        secrets.choice(string.ascii_letters + string.digits) for _ in range(length)
+    )
+
+
+def share_request(*, data: models.ShareRequest) -> models.ShareResponse:
+    """Share request."""
+    request_id = _generate_key()
+    cache.set(
+        request_id,
+        {"source_code": data.source_code, "config": data.config, "action": data.action},
+        expire=settings.SHARED_REQUEST_EXPIRE_MINUTES * 60,
+    )
+    return models.ShareResponse(request_id=request_id)
+
+
+def get_request(*, request_id: str) -> models.ShareRequest:
+    """Get request."""
+    data = cache.get(request_id)
+    if not data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Request not found",
+        )
+
+    return models.ShareRequest(
+        source_code=data["source_code"],
+        config=data["config"],
+        action=data["action"],
     )

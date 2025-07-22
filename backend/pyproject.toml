@@ -48,7 +48,7 @@ disallow_untyped_decorators = false
 explicit_package_bases = true
 
 [[tool.mypy.overrides]]
-module = ["models.*", "config.*", "infrastructure.*", "api.*"]
+module = ["models.*", "config.*", "infrastructure.*", "api.*", "diskcache.*"]
 ignore_missing_imports = true
 
 [tool.ruff]

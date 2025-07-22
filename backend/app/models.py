@@ -112,3 +112,21 @@ class FormatResult(BaseModel):
 
     formatted_source_code: str
     errors: list[Error]
+
+
+class ShareRequest(Request):
+    """Share request."""
+
+    action: str
+
+
+class ShareResponse(BaseModel):
+    """Share response."""
+
+    request_id: str
+
+
+class PgrubicVersion(BaseModel):
+    """Pgrubic version."""
+
+    version: str
