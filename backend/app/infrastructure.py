@@ -11,7 +11,7 @@ from pgrubic import core
 
 # Initialize common infrastructure
 config = core.parse_config()
-cache = diskcache.Cache("query_cache")
+cache = diskcache.Cache()
 
 
 def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:

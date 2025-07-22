@@ -48,7 +48,14 @@ disallow_untyped_decorators = false
 explicit_package_bases = true
 
 [[tool.mypy.overrides]]
-module = ["models.*", "config.*", "infrastructure.*", "api.*", "diskcache.*"]
+module = [
+  "models.*",
+  "config.*",
+  "infrastructure.*",
+  "api.*",
+  "diskcache.*",
+  "app.*"
+]
 ignore_missing_imports = true
 
 [tool.ruff]
@@ -110,6 +117,7 @@ legacy_tox_ini = """
     extras = dev
     deps =
     commands =
+    skip_install = true
 
     [testenv:dev]
     extras = dev
@@ -118,7 +126,6 @@ legacy_tox_ini = """
     commands = conventional-pre-commit .git/COMMIT_EDITMSG
 
     [testenv:tests]
-    passenv = *
     setenv = {[testenv:coverage]setenv}
     commands =
         coverage erase
