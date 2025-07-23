@@ -3,6 +3,7 @@
 import string
 import secrets
 
+import toml
 import models
 import diskcache
 from config import settings
@@ -11,7 +12,7 @@ from pgrubic import core
 
 # Initialize common infrastructure
 config = core.parse_config()
-cache = diskcache.Cache()
+cache = diskcache.Cache(directory=".request_cache")
 
 
 def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:
@@ -117,13 +118,17 @@ def share_request(*, data: models.ShareRequest) -> models.ShareResponse:
     request_id = _generate_key()
     cache.set(
         request_id,
-        {"source_code": data.source_code, "config": data.config, "action": data.action},
+        {
+            "source_code": data.source_code,
+            "config": data.config.model_dump(),
+            "action": data.action,
+        },
         expire=settings.SHARED_REQUEST_EXPIRE_MINUTES * 60,
     )
     return models.ShareResponse(request_id=request_id)
 
 
-def get_request(*, request_id: str) -> models.ShareRequest:
+def get_request(*, request_id: str) -> models.LoadResult:
     """Get request."""
     data = cache.get(request_id)
     if not data:
@@ -132,8 +137,9 @@ def get_request(*, request_id: str) -> models.ShareRequest:
             detail="Request not found",
         )
 
-    return models.ShareRequest(
+    return models.LoadResult(
         source_code=data["source_code"],
         config=data["config"],
+        toml_config=toml.dumps(data["config"]),
         action=data["action"],
     )

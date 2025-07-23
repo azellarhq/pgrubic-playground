@@ -126,6 +126,12 @@ class ShareResponse(BaseModel):
     request_id: str
 
 
+class LoadResult(ShareRequest):
+    """Load result."""
+
+    toml_config: str
+
+
 class PgrubicVersion(BaseModel):
     """Pgrubic version."""
 

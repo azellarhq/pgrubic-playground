@@ -8,7 +8,7 @@
  * @param {string} type - The type of notification (e.g., 'error', 'success', etc.).
  * @param {number} [timeout=1000] - The time in milliseconds after which the notification is removed.
  */
-function notify(message, type, timeout = 1000) {
+function notify(message, type, timeout = 3000) {
   const n = document.createElement("div");
   n.className = `notification ${type}`;
   n.textContent = message;
@@ -72,4 +72,18 @@ function printErrors(errors) {
   return html;
 }
 
-export { notify, copyToClipboard, printViolations, printErrors };
+/**
+ * Sets the disabled property of all buttons in the given array to the given
+ * boolean value.
+ *
+ * @param {Array.<Element>} buttons - The buttons to set the disabled property
+ *   for.
+ * @param {boolean} disabled - The value to set the disabled property to.
+ */
+export function setButtonsDisabled(buttons, disabled) {
+  for (const btn of buttons) {
+    if (btn) btn.disabled = disabled;
+  }
+}
+
+export { notify, copyToClipboard, printViolations, printErrors, setButtonsDisabled };

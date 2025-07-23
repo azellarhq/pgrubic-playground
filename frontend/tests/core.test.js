@@ -1,16 +1,30 @@
 // Test core operations
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { formatSql, lintSql, lintAndFixSql } from "../src/core"
+import { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedRequest } from "../src/core"
 import toml from "toml"
 
 describe("Core Functions", () => {
-  let configEditor, sqlEditor, notify, printErrors, printViolations
+  let configEditor, sqlEditor, notify, printErrors, printViolations, setButtonsDisabled
   let sqlOutputBox, sqlOutput, sqlOutputLabel, lintOutput, lintViolationsSummary
 
   beforeEach(() => {
-    configEditor = { getValue: vi.fn() }
-    sqlEditor = { getValue: vi.fn() }
+    // Mock clipboard
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: vi.fn(),
+      },
+    });
+
+    configEditor = {
+      getValue: vi.fn(),
+      setValue: vi.fn(),
+    }
+    sqlEditor = {
+      getValue: vi.fn(),
+      setValue: vi.fn(),
+    }
+    setButtonsDisabled = vi.fn()
     notify = vi.fn()
     printErrors = vi.fn(() => "errors")
     printViolations = vi.fn(() => "violations")
@@ -50,7 +64,7 @@ describe("Core Functions", () => {
 
   it("formatSql should print error on config error", async () => {
     toml.parse.mockImplementation(() => { throw { line: 1, column: 1, message: "fail" } })
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { })
     await formatSql({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, printViolations, printErrors })
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       "Error in config. Parsing error on line 1, column 1: fail"
@@ -85,7 +99,7 @@ describe("Core Functions", () => {
   it("formatSql should handle fetch failure", async () => {
     toml.parse.mockReturnValue({})
     fetch.mockRejectedValue(new Error("network error"))
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { })
 
     await formatSql({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, printErrors })
 
@@ -103,7 +117,7 @@ describe("Core Functions", () => {
 
   it("lintSql should print error on config error", async () => {
     toml.parse.mockImplementation(() => { throw { line: 1, column: 1, message: "fail" } })
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { })
     await lintSql({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, printViolations, printErrors })
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       "Error in config. Parsing error on line 1, column 1: fail"
@@ -160,7 +174,7 @@ describe("Core Functions", () => {
   it("lintSql should handle fetch failure", async () => {
     toml.parse.mockReturnValue({})
     fetch.mockRejectedValue(new Error("network error"))
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { })
 
     await lintSql({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, printViolations, printErrors })
 
@@ -171,14 +185,13 @@ describe("Core Functions", () => {
   // lintAndFixSql
   it("lintAndFixSql should notify error on config error", async () => {
     toml.parse.mockImplementation(() => { throw { line: 1, column: 1, message: "fail" } })
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
     await lintAndFixSql({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, printViolations, printErrors })
     expect(notify).toHaveBeenCalledWith("Error in config", "error")
   })
 
   it("lintAndFixSql should print error on config error", async () => {
     toml.parse.mockImplementation(() => { throw { line: 1, column: 1, message: "fail" } })
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { })
     await lintAndFixSql({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, printViolations, printErrors })
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       "Error in config. Parsing error on line 1, column 1: fail"
@@ -245,12 +258,65 @@ describe("Core Functions", () => {
   it("lintAndFixSql should handle fetch failure", async () => {
     toml.parse.mockReturnValue({})
     fetch.mockRejectedValue(new Error("network error"))
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { })
 
     await lintAndFixSql({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, printViolations, printErrors })
 
     expect(consoleErrorSpy).toHaveBeenCalled()
     consoleErrorSpy.mockRestore()
   })
+
+  // generateShareLink
+  it("generateShareLink should notify error on config error", async () => {
+    toml.parse.mockImplementation(() => { throw { line: 1, column: 1, message: "fail" } })
+    await generateShareLink({ API_BASE_URL: "/api", configEditor, sqlEditor, notify })
+    expect(notify).toHaveBeenCalledWith("Error in config", "error")
+  })
+
+  it("generateShareLink should print error on config error", async () => {
+    toml.parse.mockImplementation(() => { throw { line: 1, column: 1, message: "fail" } })
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { })
+    await generateShareLink({ API_BASE_URL: "/api", configEditor, sqlEditor, notify })
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error in config. Parsing error on line 1, column 1: fail"
+    )
+    consoleErrorSpy.mockRestore()
+  })
+
+  it("generateShareLink should not call fetch on config error", async () => {
+    toml.parse.mockImplementation(() => { throw { line: 1, column: 1, message: "fail" } })
+    await generateShareLink({ API_BASE_URL: "/api", configEditor, sqlEditor, notify })
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it("generateShareLink should handle fetch failure", async () => {
+    toml.parse.mockReturnValue({})
+    fetch.mockRejectedValue(new Error("network error"))
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { })
+
+    await generateShareLink({ API_BASE_URL: "/api", configEditor, sqlEditor, notify })
+
+    expect(consoleErrorSpy).toHaveBeenCalled()
+    consoleErrorSpy.mockRestore()
+  })
+
+  it("generateShareLink should print success message", async () => {
+    toml.parse.mockReturnValue({})
+    sqlEditor.getValue.mockReturnValue("select 1;")
+    fetch.mockResolvedValue({ json: async () => ({ request_id: "abc123" }) })
+    await generateShareLink({ API_BASE_URL: "/api", configEditor, sqlEditor, notify })
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+      window.location.origin + "/abc123"
+    );
+    expect(notify).toHaveBeenCalledWith("Copied to clipboard!", "success");
+  })
+
+  // loadSharedRequest
+  // it("loadSharedRequest should notify error on invalid link", async () => {
+  //   fetch.mockResolvedValue({ status: 404, json: () => Promise.resolve({}) })
+  //   await loadSharedRequest({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, setButtonsDisabled })
+  //   expect(notify).toHaveBeenCalledWith("Invalid or expired link", "error")
+  // })
+
 
 })

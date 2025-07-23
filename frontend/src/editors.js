@@ -32,6 +32,8 @@ new-line-before-semicolon = false
 remove-pg-catalog-from-functions = true
 lines-between-statements = 1`;
 
+const defaultSql = "CREATE TABLE users (id INT, name TEXT);"
+
 /**
  * Replaces hyphens with underscores in a given string.
  *
@@ -41,7 +43,6 @@ lines-between-statements = 1`;
 function replaceHyphensWithUnderscores(str) {
   return str.replace(/-/g, "_");
 }
-
 
 /**
  * Recursively transforms the keys of an object or array by replacing hyphens with underscores.
@@ -69,7 +70,7 @@ function transformKeys(obj) {
 }
 
 const configEditor = editor.create(document.getElementById("configEditor"), {
-  value: defaultConfig,
+  value: "",
   language: "toml",
   theme: "vs",
   minimap: { enabled: false },
@@ -82,7 +83,7 @@ const configEditor = editor.create(document.getElementById("configEditor"), {
 });
 
 const sqlEditor = editor.create(document.getElementById("sqlEditor"), {
-  value: "CREATE TABLE users (id INT, name TEXT);",
+  value: "",
   language: "sql",
   theme: "vs",
   minimap: { enabled: false },
@@ -94,4 +95,4 @@ const sqlEditor = editor.create(document.getElementById("sqlEditor"), {
   fontFamily: "monospace",
 });
 
-export { transformKeys, defaultConfig, configEditor, sqlEditor };
+export { transformKeys, defaultConfig, defaultSql, configEditor, sqlEditor };

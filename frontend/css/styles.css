@@ -65,7 +65,22 @@ body {
 }
 
 .top-links a:hover {
-  background-color: #8a9f38;
+  background-color: #007a6d;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.top-links button.share-btn {
+  all: unset;
+  text-decoration: none;
+  background-color: #009485;
+  color: white;
+  padding: 4px 10px;
+}
+
+.top-links button.share-btn:hover,
+.top-links button.share-btn:focus {
+  background-color: #007a6d;
   cursor: pointer;
   transition: all 0.2s;
 }

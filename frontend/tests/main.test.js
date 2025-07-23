@@ -12,8 +12,13 @@ vi.mock("../src/editors", () => ({
     getValue: vi.fn(),
     setValue: vi.fn(),
   },
-  sqlEditor: { getValue: vi.fn() },
+  sqlEditor: {
+    getValue: vi.fn(),
+    setValue: vi.fn(),
+  },
   defaultConfig: "",
+  defaultSql: "",
+  transformKeys: vi.fn(),
 }));
 
 
@@ -26,6 +31,7 @@ describe("Main button event listeners", () => {
       <button id="lintBtn"></button>
       <button id="lintFixBtn"></button>
       <button id="copyBtn"></button>
+      <button id="shareBtn"></button>
       <button id="resetConfigBtn"></button>
       <div id="hamburger"></div>
       <div id="top-links"></div>
@@ -35,6 +41,7 @@ describe("Main button event listeners", () => {
     vi.spyOn(core, "formatSql").mockResolvedValue();
     vi.spyOn(core, "lintSql").mockResolvedValue();
     vi.spyOn(core, "lintAndFixSql").mockResolvedValue();
+    vi.spyOn(core, "generateShareLink").mockResolvedValue();
     vi.spyOn(utils, "copyToClipboard").mockImplementation(() => {});
     vi.spyOn(utils, "notify").mockImplementation(() => {});
 
@@ -60,6 +67,11 @@ describe("Main button event listeners", () => {
     document.getElementById("copyBtn").click();
     expect(utils.copyToClipboard).toHaveBeenCalledWith("sqlOutput");
     expect(utils.notify).toHaveBeenCalledWith("Copied to clipboard!", "success");
+  });
+
+  it("calls generateShareLink on shareBtn click", () => {
+    document.getElementById("shareBtn").click();
+    expect(core.generateShareLink).toHaveBeenCalled();
   });
 
   it("resets config and notifies on resetConfigBtn click", () => {

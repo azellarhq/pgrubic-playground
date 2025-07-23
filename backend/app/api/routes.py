@@ -28,8 +28,8 @@ async def share_request(request: models.ShareRequest) -> models.ShareResponse:
     return infrastructure.share_request(data=request)
 
 
-@router.get("/request/{request_id}", response_model=models.ShareRequest, tags=["request"])
-async def get_request(request_id: str) -> models.ShareRequest:
+@router.get("/request/{request_id}", response_model=models.LoadResult, tags=["request"])
+async def get_request(request_id: str) -> models.LoadResult:
     """Get request."""
     return infrastructure.get_request(request_id=request_id)
 
