@@ -1,7 +1,7 @@
 // Test core operations
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedRequest } from "../src/core"
+import { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedlink } from "../src/core"
 import toml from "toml"
 
 describe("Core Functions", () => {

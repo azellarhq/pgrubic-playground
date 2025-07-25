@@ -280,7 +280,7 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify
 
 
 /**
- * Loads a request from a shared link.
+ * Loads the state from a shared link.
  *
  * If the link is invalid or expired, will clear the config and SQL editors and
  * display an error notification. If the link is valid, will load the request
@@ -294,7 +294,7 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify
  * @param {Function} params.notify - Function to display notifications.
  * @param {Function} params.setButtonsDisabled - Function to set the disabled state of the buttons.
  */
-async function loadSharedRequest({ API_BASE_URL, configEditor, sqlEditor, notify, setButtonsDisabled }) {
+async function loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, setButtonsDisabled }) {
   const path = window.location.pathname;
   const requestId = path.slice(1); // remove leading "/"
 
@@ -349,4 +349,4 @@ async function loadSharedRequest({ API_BASE_URL, configEditor, sqlEditor, notify
 }
 
 
-export { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedRequest };
+export { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedlink };

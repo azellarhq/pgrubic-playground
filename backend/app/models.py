@@ -117,11 +117,11 @@ class FormatResult(BaseModel):
 class ShareRequest(Request):
     """Share request."""
 
-    lint_violations_summary: str
-    lint_output: str
-    sql_output_box_style: str
-    sql_output_label: str
-    sql_output: str
+    lint_violations_summary: str | None = None
+    lint_output: str | None = None
+    sql_output_box_style: str | None = None
+    sql_output_label: str | None = None
+    sql_output: str | None = None
 
 
 class ShareResponse(BaseModel):

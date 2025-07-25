@@ -136,35 +136,32 @@ def test_health_check(client: TestClient) -> None:
     assert health_check
 
 
-def test_share_request(client: TestClient) -> None:
-    """Test share request."""
+def test_create_share_id(client: TestClient) -> None:
+    """Test create share id."""
     request_data = {
         "source_code": "CREATE TABLE users (id INT, name);",
         "config": config,
-        "action": "lint",
     }
-    response = client.post(f"{settings.API_V1_STR}/request/share", json=request_data)
+    response = client.post(f"{settings.API_V1_STR}/share", json=request_data)
     request_id = response.json()
     assert response.status_code == 200
     assert request_id
 
 
-def test_get_request(client: TestClient) -> None:
-    """Test get request."""
+def test_get_share_by_id(client: TestClient) -> None:
+    """Test get share by id."""
     request_data = {
         "source_code": "CREATE TABLE users (id INT, name);",
         "config": config,
-        "action": "lint",
     }
-    response = client.post(f"{settings.API_V1_STR}/request/share", json=request_data)
+    response = client.post(f"{settings.API_V1_STR}/share", json=request_data)
     request_id = response.json()
 
-    response = client.get(f"{settings.API_V1_STR}/request/{request_id['request_id']}")
+    response = client.get(f"{settings.API_V1_STR}/share/{request_id['request_id']}")
     share_result = response.json()
     assert response.status_code == 200
     assert share_result["source_code"] == request_data["source_code"]
     assert share_result["config"] == request_data["config"]
-    assert share_result["action"] == request_data["action"]
 
-    response = client.get(f"{settings.API_V1_STR}/request/1234")
+    response = client.get(f"{settings.API_V1_STR}/share/1234")
     assert response.status_code == 404
