@@ -117,7 +117,11 @@ class FormatResult(BaseModel):
 class ShareRequest(Request):
     """Share request."""
 
-    action: str
+    lint_violations_summary: str
+    lint_output: str
+    sql_output_box_style: str
+    sql_output_label: str
+    sql_output: str
 
 
 class ShareResponse(BaseModel):
@@ -126,8 +130,8 @@ class ShareResponse(BaseModel):
     request_id: str
 
 
-class LoadResult(ShareRequest):
-    """Load result."""
+class ShareResult(ShareRequest):
+    """Share result."""
 
     toml_config: str
 

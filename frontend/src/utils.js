@@ -80,7 +80,7 @@ function printErrors(errors) {
  *   for.
  * @param {boolean} disabled - The value to set the disabled property to.
  */
-export function setButtonsDisabled(buttons, disabled) {
+function setButtonsDisabled(buttons, disabled) {
   for (const btn of buttons) {
     if (btn) btn.disabled = disabled;
   }

@@ -243,7 +243,17 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify
     return;
   }
 
-  await fetch(API_BASE_URL + "/request/share", {
+  const sqlOutputBox = document.getElementById("sqlOutputBox");
+  const sqlOutput = document.getElementById("sqlOutput");
+  const sqlOutputLabel = document.getElementById("sqlOutputLabel");
+  const lintOutput = document.getElementById("lintOutput");
+  const lintViolationsSummary = document.getElementById(
+    "lintViolationsSummary"
+  );
+
+  console.log(lintViolationsSummary.innerHTML);
+
+  await fetch(API_BASE_URL + "/share", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -251,7 +261,11 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
       config: transformKeys(configObject),
-      action: "lint",
+      lint_violations_summary: lintViolationsSummary.innerHTML,
+      lint_output: lintOutput.innerHTML,
+      sql_output_box_style: sqlOutputBox.style.display,
+      sql_output_label: sqlOutputLabel.textContent,
+      sql_output: sqlOutput.textContent,
     }),
   })
     .then((response) => response.json())
@@ -291,7 +305,15 @@ async function loadSharedRequest({ API_BASE_URL, configEditor, sqlEditor, notify
     return;
   }
 
-  await fetch(API_BASE_URL + "/request/" + requestId, {
+  const sqlOutputBox = document.getElementById("sqlOutputBox");
+  const sqlOutput = document.getElementById("sqlOutput");
+  const sqlOutputLabel = document.getElementById("sqlOutputLabel");
+  const lintOutput = document.getElementById("lintOutput");
+  const lintViolationsSummary = document.getElementById(
+    "lintViolationsSummary"
+  );
+
+  await fetch(API_BASE_URL + "/share/" + requestId, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -310,6 +332,11 @@ async function loadSharedRequest({ API_BASE_URL, configEditor, sqlEditor, notify
       if (data === null) return;
       configEditor.setValue(data.toml_config);
       sqlEditor.setValue(data.source_code);
+      sqlOutputBox.style.display = data.sql_output_box_style;
+      sqlOutputLabel.textContent = data.sql_output_label;
+      sqlOutput.textContent = data.sql_output;
+      lintViolationsSummary.innerHTML = data.lint_violations_summary;
+      lintOutput.innerHTML = data.lint_output;
       notify("Loaded from shared link", "success");
       setButtonsDisabled(false);
     })

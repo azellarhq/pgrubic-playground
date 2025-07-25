@@ -22,16 +22,16 @@ async def format_source_code(request: models.FormatSourceCode) -> models.FormatR
     )
 
 
-@router.post("/request/share", response_model=models.ShareResponse, tags=["request"])
-async def share_request(request: models.ShareRequest) -> models.ShareResponse:
-    """Share request."""
-    return infrastructure.share_request(data=request)
+@router.post("/share", response_model=models.ShareResponse, tags=["share"])
+async def create_share_id(request: models.ShareRequest) -> models.ShareResponse:
+    """Create share id."""
+    return infrastructure.create_share_id(data=request)
 
 
-@router.get("/request/{request_id}", response_model=models.LoadResult, tags=["request"])
-async def get_request(request_id: str) -> models.LoadResult:
-    """Get request."""
-    return infrastructure.get_request(request_id=request_id)
+@router.get("/share/{request_id}", response_model=models.ShareResult, tags=["share"])
+async def get_share_by_id(request_id: str) -> models.ShareResult:
+    """Get share by id."""
+    return infrastructure.get_share_by_id(request_id=request_id)
 
 
 @router.get("/pgrubic-version", response_model=models.PgrubicVersion, tags=["pgrubic"])
