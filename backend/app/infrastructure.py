@@ -12,7 +12,7 @@ from pgrubic import core
 
 # Initialize common infrastructure
 config = core.parse_config()
-cache = diskcache.Cache(directory=settings.SHARE_CACHE_DIRECTORY)
+cache = diskcache.Cache()
 
 
 def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:
