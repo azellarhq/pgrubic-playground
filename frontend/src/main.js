@@ -49,19 +49,19 @@ export function setupEventListeners() {
     lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors });
   });
 
-  document.getElementById("shareBtn").onclick = () => {
+  document.getElementById("shareBtn").addEventListener("click", () => {
     generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify });
-  };
+  });
 
-  document.getElementById("copyBtn").onclick = () => {
+  document.getElementById("copyBtn").addEventListener("click", () => {
     copyToClipboard("sqlOutput");
     notify("Copied to clipboard!", "success");
-  };
+  });
 
-  document.getElementById("resetConfigBtn").onclick = () => {
+  document.getElementById("resetConfigBtn").addEventListener("click", () => {
     configEditor.setValue(defaultConfig);
     notify("Configuration reset to default!", "info");
-  };
+  });
 
   document.getElementById("hamburger").addEventListener("click", () => {
     document.getElementById("top-links").classList.toggle("show");
