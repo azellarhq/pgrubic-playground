@@ -1,0 +1,30 @@
+---
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pgrubic-playground-backend
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - pgrubic-playground-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pgrubic-playground-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - pgrubic-playground-network
+
+networks:
+  pgrubic-playground-network:
+    driver: bridge
+    name: pgrubic-playground-network
