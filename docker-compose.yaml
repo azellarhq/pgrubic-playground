@@ -8,6 +8,10 @@ services:
     restart: always
     ports:
       - "8000:8000"
+    environment:
+      - HOST_BIND=${HOST_BIND:-localhost}
+      - CORS_ORIGINS=${CORS_ORIGINS:-["http://localhost"]}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
     networks:
       - pgrubic-playground-network
 
