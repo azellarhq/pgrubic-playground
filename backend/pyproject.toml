@@ -27,6 +27,7 @@ dev = [
   "coverage==7.8.2",
   "tox==4.26.0",
   "httpx==0.28.1",
+  "types-toml==0.10.8.20240310",
 ]
 
 [tool.bandit]
@@ -48,7 +49,14 @@ disallow_untyped_decorators = false
 explicit_package_bases = true
 
 [[tool.mypy.overrides]]
-module = ["models.*", "config.*", "infrastructure.*", "api.*"]
+module = [
+  "models.*",
+  "config.*",
+  "infrastructure.*",
+  "api.*",
+  "diskcache.*",
+  "app.*"
+]
 ignore_missing_imports = true
 
 [tool.ruff]
@@ -60,6 +68,7 @@ convention = "google"
 
 [tool.ruff.lint.isort]
 length-sort = true
+combine-as-imports = true
 
 [tool.ruff.lint.per-file-ignores]
 "**/tests/**/*.py" = [
@@ -69,6 +78,7 @@ length-sort = true
 
 [tool.isort]
 profile = "black"
+combine_as_imports = true
 length_sort = true
 
 [tool.pytest.ini_options]
@@ -118,7 +128,6 @@ legacy_tox_ini = """
     commands = conventional-pre-commit .git/COMMIT_EDITMSG
 
     [testenv:tests]
-    passenv = *
     setenv = {[testenv:coverage]setenv}
     commands =
         coverage erase

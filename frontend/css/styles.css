@@ -65,7 +65,22 @@ body {
 }
 
 .top-links a:hover {
-  background-color: #8a9f38;
+  background-color: #007a6d;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.top-links button.share-btn {
+  all: unset;
+  text-decoration: none;
+  background-color: #009485;
+  color: white;
+  padding: 4px 10px;
+}
+
+.top-links button.share-btn:hover,
+.top-links button.share-btn:focus {
+  background-color: #007a6d;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -301,10 +316,8 @@ body {
 
 .lint-violations-summary {
   margin-block: 10px;
-  /* background-color: #e94a4a43; */
   border-radius: 4px;
   font-size: 0.9rem;
-  /* color: #e94a4a; */
   flex: 1;
 }
 
@@ -313,15 +326,14 @@ body {
 }
 
 .no-violations {
-  background-color: #d4edda; /* light green */
-  color: #155724; /* dark green text */
+  background-color: #d4edda;
+  color: #155724;
   border: 1px solid #c3e6cb;
 }
 
 .has-violations {
   background-color: #e94a4a43;
   color: #e94a4a;
-  /* border: 1px solid #f5c6cb; */
 }
 
 .notification {

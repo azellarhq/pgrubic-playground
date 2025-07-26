@@ -6,33 +6,33 @@ from app.config import settings
 
 config = {
     "lint": {
-        "postgres_target_version": 14,
+        "postgres-target-version": 14,
         "select": [],
         "ignore": [],
         "fixable": [],
         "unfixable": [],
-        "ignore_noqa": True,
-        "allowed_extensions": [],
-        "allowed_languages": [],
-        "disallowed_schemas": [],
-        "disallowed_data_types": [],
-        "required_columns": [],
-        "timestamp_column_suffix": "_at",
-        "date_column_suffix": "_date",
-        "regex_partition": "^.+$",
-        "regex_index": "^.+$",
-        "regex_constraint_primary_key": "^.+$",
-        "regex_constraint_unique_key": "^.+$",
-        "regex_constraint_foreign_key": "^.+$",
-        "regex_constraint_check": "^.+$",
-        "regex_constraint_exclusion": "^.+$",
-        "regex_sequence": "^.+$",
+        "ignore-noqa": True,
+        "allowed-extensions": [],
+        "allowed-languages": [],
+        "disallowed-schemas": [],
+        "disallowed-data-types": [],
+        "required-columns": [],
+        "timestamp-column-suffix": "_at",
+        "date-column-suffix": "_date",
+        "regex-partition": "^.+$",
+        "regex-index": "^.+$",
+        "regex-constraint-primary-key": "^.+$",
+        "regex-constraint-unique-key": "^.+$",
+        "regex-constraint-foreign-key": "^.+$",
+        "regex-constraint-check": "^.+$",
+        "regex-constraint-exclusion": "^.+$",
+        "regex-sequence": "^.+$",
     },
     "format": {
-        "comma_at_beginning": True,
-        "new_line_before_semicolon": True,
-        "remove_pg_catalog_from_functions": True,
-        "lines_between_statements": 1,
+        "comma-at-beginning": True,
+        "new-line-before-semicolon": True,
+        "remove-pg-catalog-from-functions": True,
+        "lines-between-statements": 1,
     },
 }
 
@@ -134,3 +134,34 @@ def test_health_check(client: TestClient) -> None:
     health_check = response.json()
     assert response.status_code == 200
     assert health_check
+
+
+def test_create_share_id(client: TestClient) -> None:
+    """Test create share id."""
+    request_data = {
+        "source_code": "CREATE TABLE users (id INT, name);",
+        "config": config,
+    }
+    response = client.post(f"{settings.API_V1_STR}/share", json=request_data)
+    request_id = response.json()
+    assert response.status_code == 200
+    assert request_id
+
+
+def test_get_share_by_id(client: TestClient) -> None:
+    """Test get share by id."""
+    request_data = {
+        "source_code": "CREATE TABLE users (id INT, name);",
+        "config": config,
+    }
+    response = client.post(f"{settings.API_V1_STR}/share", json=request_data)
+    request_id = response.json()
+
+    response = client.get(f"{settings.API_V1_STR}/share/{request_id['request_id']}")
+    share_result = response.json()
+    assert response.status_code == 200
+    assert share_result["source_code"] == request_data["source_code"]
+    assert share_result["config"] == request_data["config"]
+
+    response = client.get(f"{settings.API_V1_STR}/share/1234")
+    assert response.status_code == 404

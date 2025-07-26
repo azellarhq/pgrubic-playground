@@ -8,7 +8,7 @@
  * @param {string} type - The type of notification (e.g., 'error', 'success', etc.).
  * @param {number} [timeout=1000] - The time in milliseconds after which the notification is removed.
  */
-function notify(message, type, timeout = 1000) {
+function notify(message, type, timeout = 3000) {
   const n = document.createElement("div");
   n.className = `notification ${type}`;
   n.textContent = message;

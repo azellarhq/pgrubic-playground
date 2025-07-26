@@ -2,7 +2,7 @@
 
 import toml from "toml";
 
-import { transformKeys } from "./editors";
+import { defaultConfig, defaultSql } from "./editors";
 
 /**
  * Formats the SQL code from the provided SQL editor using the configuration from the config editor.
@@ -22,11 +22,11 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
   } catch (error) {
     console.error(
       "Error in config. Parsing error on line " +
-        error.line +
-        ", column " +
-        error.column +
-        ": " +
-        error.message
+      error.line +
+      ", column " +
+      error.column +
+      ": " +
+      error.message
     );
     notify("Error in config", "error");
     return;
@@ -52,7 +52,7 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
     },
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
-      config: transformKeys(configObject),
+      config: configObject,
     }),
   })
     .then((response) => response.json())
@@ -88,11 +88,11 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
   } catch (error) {
     console.error(
       "Error in config. Parsing error on line " +
-        error.line +
-        ", column " +
-        error.column +
-        ": " +
-        error.message
+      error.line +
+      ", column " +
+      error.column +
+      ": " +
+      error.message
     );
     notify("Error in config", "error");
     return;
@@ -113,7 +113,7 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
     },
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
-      config: transformKeys(configObject),
+      config: configObject,
     }),
   })
     .then((response) => response.json())
@@ -144,7 +144,7 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
  *
  * @param {Object} params - The function parameters.
  * @param {string} params.API_BASE_URL - The base URL of the API.
- * @param {Object} params.configEditor - The editor containing the SQLFluff config.
+ * @param {Object} params.configEditor - The editor containing the pgrubic config.
  * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
  * @param {Function} params.notify - Function to display notifications.
  * @param {Function} params.printViolations - Function to display SQL linting violations.
@@ -157,11 +157,11 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
   } catch (error) {
     console.error(
       "Error in config. Parsing error on line " +
-        error.line +
-        ", column " +
-        error.column +
-        ": " +
-        error.message
+      error.line +
+      ", column " +
+      error.column +
+      ": " +
+      error.message
     );
     notify("Error in config", "error");
     return;
@@ -185,7 +185,7 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
     },
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
-      config: transformKeys(configObject),
+      config: configObject,
       with_fix: true,
     }),
   })
@@ -215,4 +215,138 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
     });
 }
 
-export { formatSql, lintSql, lintAndFixSql };
+/**
+ * Generates a shareable link for the current SQL and configuration.
+ *
+ * @param {Object} params - The function parameters.
+ * @param {string} params.API_BASE_URL - The base URL of the API.
+ * @param {Object} params.configEditor - The editor containing the pgrubic config.
+ * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
+ * @param {Function} params.notify - Function to display notifications.
+ *
+ * @returns {Promise<void>} A promise that resolves when the link has been generated and copied to the clipboard.
+ */
+async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify }) {
+  var configObject;
+  try {
+    configObject = toml.parse(configEditor.getValue());
+  } catch (error) {
+    console.error(
+      "Error in config. Parsing error on line " +
+      error.line +
+      ", column " +
+      error.column +
+      ": " +
+      error.message
+    );
+    notify("Error in config", "error");
+    return;
+  }
+
+  const sqlOutputBox = document.getElementById("sqlOutputBox");
+  const sqlOutput = document.getElementById("sqlOutput");
+  const sqlOutputLabel = document.getElementById("sqlOutputLabel");
+  const lintOutput = document.getElementById("lintOutput");
+  const lintViolationsSummary = document.getElementById(
+    "lintViolationsSummary"
+  );
+
+  await fetch(API_BASE_URL + "/share", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      source_code: sqlEditor.getValue(),
+      config: configObject,
+      lint_violations_summary: lintViolationsSummary.innerHTML,
+      lint_violations_summary_class: lintViolationsSummary.className,
+      lint_output: lintOutput.innerHTML,
+      sql_output_box_style: sqlOutputBox.style.display,
+      sql_output_label: sqlOutputLabel.textContent,
+      sql_output: sqlOutput.textContent,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      navigator.clipboard.writeText(window.location.origin + "/" + data.request_id);
+      notify("Copied to clipboard!", "success");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    })
+}
+
+
+/**
+ * Loads the state from a shared link.
+ *
+ * If the link is invalid or expired, will clear the config and SQL editors and
+ * display an error notification. If the link is valid, will load the request
+ * from the API, set the config and SQL editors, and display a success
+ * notification.
+ *
+ * @param {Object} params - The function parameters.
+ * @param {string} params.API_BASE_URL - The base URL of the API.
+ * @param {Object} params.configEditor - The editor containing the pgrubic config.
+ * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
+ * @param {Function} params.notify - Function to display notifications.
+ * @param {Function} params.setButtonsDisabled - Function to set the disabled state of the buttons.
+ */
+async function loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, setButtonsDisabled }) {
+  const path = window.location.pathname;
+  const requestId = path.slice(1); // remove leading "/"
+
+  if (!requestId) {
+    configEditor.setValue(defaultConfig);
+    sqlEditor.setValue(defaultSql);
+    setButtonsDisabled(false);
+    return;
+  }
+
+  const sqlOutputBox = document.getElementById("sqlOutputBox");
+  const sqlOutput = document.getElementById("sqlOutput");
+  const sqlOutputLabel = document.getElementById("sqlOutputLabel");
+  const lintOutput = document.getElementById("lintOutput");
+  const lintViolationsSummary = document.getElementById(
+    "lintViolationsSummary"
+  );
+
+  await fetch(API_BASE_URL + "/share/" + requestId, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.status === 404) {
+        notify("Invalid or expired link", "error");
+        configEditor.setValue("");
+        sqlEditor.setValue("");
+        return null;
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data === null) return;
+      configEditor.setValue(data.toml_config);
+      sqlEditor.setValue(data.source_code);
+      sqlOutputBox.style.display = data.sql_output_box_style;
+      sqlOutputLabel.textContent = data.sql_output_label;
+      sqlOutput.textContent = data.sql_output;
+      lintViolationsSummary.innerHTML = data.lint_violations_summary;
+      lintViolationsSummary.className = data.lint_violations_summary_class;
+      lintOutput.innerHTML = data.lint_output;
+      notify("Loaded from shared link", "success");
+      setButtonsDisabled(false);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      notify("Failed to load shared link", "error");
+      configEditor.setValue("");
+      sqlEditor.setValue("");
+    })
+}
+
+
+export { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedlink };
