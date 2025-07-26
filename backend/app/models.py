@@ -69,7 +69,7 @@ class FormatterConfig(BaseModel):
     # should still be able to provide them.
     model_config = ConfigDict(extra="allow")
 
-    comma_at_beginning: bool = Field(alias="comma-at-beginning", default=False)
+    comma_at_beginning: bool = Field(alias="comma-at-beginning", default=True)
     new_line_before_semicolon: bool = Field(
         alias="new-line-before-semicolon",
         default=False,
