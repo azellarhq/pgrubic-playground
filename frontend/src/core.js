@@ -2,7 +2,7 @@
 
 import toml from "toml";
 
-import { transformKeys, defaultConfig, defaultSql } from "./editors";
+import { defaultConfig, defaultSql } from "./editors";
 
 /**
  * Formats the SQL code from the provided SQL editor using the configuration from the config editor.
@@ -52,7 +52,7 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
     },
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
-      config: transformKeys(configObject),
+      config: configObject,
     }),
   })
     .then((response) => response.json())
@@ -113,7 +113,7 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
     },
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
-      config: transformKeys(configObject),
+      config: configObject,
     }),
   })
     .then((response) => response.json())
@@ -185,7 +185,7 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
     },
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
-      config: transformKeys(configObject),
+      config: configObject,
       with_fix: true,
     }),
   })
@@ -251,8 +251,6 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify
     "lintViolationsSummary"
   );
 
-  console.log(lintViolationsSummary.innerHTML);
-
   await fetch(API_BASE_URL + "/share", {
     method: "POST",
     headers: {
@@ -260,8 +258,9 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify
     },
     body: JSON.stringify({
       source_code: sqlEditor.getValue(),
-      config: transformKeys(configObject),
+      config: configObject,
       lint_violations_summary: lintViolationsSummary.innerHTML,
+      lint_violations_summary_class: lintViolationsSummary.className,
       lint_output: lintOutput.innerHTML,
       sql_output_box_style: sqlOutputBox.style.display,
       sql_output_label: sqlOutputLabel.textContent,
@@ -336,6 +335,7 @@ async function loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, s
       sqlOutputLabel.textContent = data.sql_output_label;
       sqlOutput.textContent = data.sql_output;
       lintViolationsSummary.innerHTML = data.lint_violations_summary;
+      lintViolationsSummary.className = data.lint_violations_summary_class;
       lintOutput.innerHTML = data.lint_output;
       notify("Loaded from shared link", "success");
       setButtonsDisabled(false);

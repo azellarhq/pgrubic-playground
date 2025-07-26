@@ -316,10 +316,8 @@ body {
 
 .lint-violations-summary {
   margin-block: 10px;
-  /* background-color: #e94a4a43; */
   border-radius: 4px;
   font-size: 0.9rem;
-  /* color: #e94a4a; */
   flex: 1;
 }
 
@@ -328,15 +326,14 @@ body {
 }
 
 .no-violations {
-  background-color: #d4edda; /* light green */
-  color: #155724; /* dark green text */
+  background-color: #d4edda;
+  color: #155724;
   border: 1px solid #c3e6cb;
 }
 
 .has-violations {
   background-color: #e94a4a43;
   color: #e94a4a;
-  /* border: 1px solid #f5c6cb; */
 }
 
 .notification {

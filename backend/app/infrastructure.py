@@ -12,7 +12,7 @@ from pgrubic import core
 
 # Initialize common infrastructure
 config = core.parse_config()
-cache = diskcache.Cache(directory=".request_cache")
+cache = diskcache.Cache(directory=settings.SHARE_CACHE_DIRECTORY)
 
 
 def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:
@@ -120,14 +120,15 @@ def create_share_id(*, data: models.ShareRequest) -> models.ShareResponse:
         request_id,
         {
             "source_code": data.source_code,
-            "config": data.config.model_dump(),
+            "config": data.config.model_dump(by_alias=True),
             "lint_violations_summary": data.lint_violations_summary,
+            "lint_violations_summary_class": data.lint_violations_summary_class,
             "lint_output": data.lint_output,
             "sql_output_box_style": data.sql_output_box_style,
             "sql_output_label": data.sql_output_label,
             "sql_output": data.sql_output,
         },
-        expire=settings.SHARED_REQUEST_EXPIRE_MINUTES * 60,
+        expire=settings.SHARE_EXPIRE_MINUTES * 60,
     )
     return models.ShareResponse(request_id=request_id)
 
@@ -146,6 +147,7 @@ def get_share_by_id(*, request_id: str) -> models.ShareResult:
         config=data["config"],
         toml_config=toml.dumps(data["config"]),
         lint_violations_summary=data["lint_violations_summary"],
+        lint_violations_summary_class=data["lint_violations_summary_class"],
         lint_output=data["lint_output"],
         sql_output_box_style=data["sql_output_box_style"],
         sql_output_label=data["sql_output_label"],

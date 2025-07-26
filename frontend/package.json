@@ -1,5 +1,5 @@
 {
-  "name": "your-app-name",
+  "name": "pgrubic-playground",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -10,8 +10,6 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@iarna/toml": "^2.2.5",
-    "@ltd/j-toml": "^1.38.0",
     "monaco-editor": "^0.52.2",
     "toml": "^3.0.0",
     "vite-plugin-monaco-editor-esm": "^2.0.2"

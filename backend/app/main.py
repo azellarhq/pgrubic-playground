@@ -37,5 +37,4 @@ if __name__ == "__main__":
         host=settings.HOST_BIND,
         port=settings.HOST_PORT,
         reload=settings.ENVIRONMENT == settings.ENVIRONMENT.DEVELOPMENT,
-        log_level="debug",
     )
