@@ -1,0 +1,36 @@
+---
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pgrubic-playground-backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      HOST_BIND: ${HOST_BIND:-localhost}
+      CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost"]}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+    networks:
+      - pgrubic-playground-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pgrubic-playground-frontend
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      API_HOST: ${API_HOST:-http://backend:8000}
+    depends_on:
+      - backend
+    networks:
+      - pgrubic-playground-network
+
+networks:
+  pgrubic-playground-network:
+    driver: bridge
+    name: pgrubic-playground-network
