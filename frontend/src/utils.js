@@ -72,18 +72,4 @@ function printErrors(errors) {
   return html;
 }
 
-/**
- * Sets the disabled property of all buttons in the given array to the given
- * boolean value.
- *
- * @param {Array.<Element>} buttons - The buttons to set the disabled property
- *   for.
- * @param {boolean} disabled - The value to set the disabled property to.
- */
-// function setButtonsDisabled(buttons, disabled) {
-//   for (const btn of buttons) {
-//     if (btn) btn.disabled = disabled;
-//   }
-// }
-
-export { notify, copyToClipboard, printViolations, printErrors, setButtonsDisabled };
+export { notify, copyToClipboard, printViolations, printErrors };

@@ -16,6 +16,12 @@ describe("Core Functions", () => {
       },
     });
 
+    // Mock window
+    Object.defineProperty(window, "location", {
+      value: { pathname: "/abc123" },
+      writable: true,
+    });
+
     configEditor = {
       getValue: vi.fn(),
       setValue: vi.fn(),
@@ -311,12 +317,28 @@ describe("Core Functions", () => {
     expect(notify).toHaveBeenCalledWith("Copied to clipboard!", "success");
   })
 
-  // loadSharedRequest
-  // it("loadSharedRequest should notify error on invalid link", async () => {
-  //   fetch.mockResolvedValue({ status: 404, json: () => Promise.resolve({}) })
-  //   await loadSharedRequest({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, setButtonsDisabled })
-  //   expect(notify).toHaveBeenCalledWith("Invalid or expired link", "error")
-  // })
+  // loadSharedlink
+  it("loadSharedlink should notify error on invalid link", async () => {
+    fetch.mockResolvedValue({ status: 404, json: () => Promise.resolve({}) })
+    await loadSharedlink({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, setButtonsDisabled })
+    expect(notify).toHaveBeenCalledWith("Invalid or expired link", "error")
+  })
 
+  it("loadSharedlink should load shared link", async () => {
+    fetch.mockResolvedValue({ status: 200, json: () => Promise.resolve({}) })
+    await loadSharedlink({ API_BASE_URL: "/api", configEditor, sqlEditor, notify, setButtonsDisabled })
+    expect(notify).toHaveBeenCalledWith("Loaded from shared link", "success")
+  })
+
+  it("loadSharedlink should handle fetch failure", async () => {
+    toml.parse.mockReturnValue({})
+    fetch.mockRejectedValue(new Error("network error"))
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { })
+
+    await loadSharedlink({ API_BASE_URL: "/api", configEditor, sqlEditor, notify })
+
+    expect(consoleErrorSpy).toHaveBeenCalled()
+    consoleErrorSpy.mockRestore()
+  })
 
 })
