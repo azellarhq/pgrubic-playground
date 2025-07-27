@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:24-slim@sha256:37ff334612f77d8f999c10af8797727b731629c26f2e83caa6af390998bdc49c AS build
+FROM node:24-slim@sha256:36ae19f59c91f3303c7a648f07493fe14c4bd91320ac8d898416327bacf1bbfa AS build
 
 WORKDIR /app
 
