@@ -26,7 +26,7 @@
 
 ## Contributing
 
-We welcome and greatly appreciate contributions. If you would like to contribute, please see the [contributing guidelines](contributing.md).
+We welcome and greatly appreciate contributions. If you would like to contribute, please see the [contributing guidelines](CONTRIBUTING.md).
 
 ## Support
 
