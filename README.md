@@ -10,7 +10,7 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v0.json)](https://github.com/charliermarsh/ruff)
 [![types - mypy](https://img.shields.io/badge/types-mypy-blue.svg)](https://github.com/python/mypy)
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
-[![Dependency Review](https://img.shields.io/badge/Dependency%20Review-enabled-deepgreen)](https://github.com/azellarhq/pgrubic/actions/workflows/dependency-review.yml)
+[![Dependency Review](https://img.shields.io/badge/Dependency%20Review-enabled-deepgreen)](https://github.com/azellarhq/pgrubic-playground/actions/workflows/dependency-review.yml)
 [![CodeQL](https://github.com/azellarhq/pgrubic-playground/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/azellarhq/pgrubic-playground/actions/workflows/github-code-scanning/codeql)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
@@ -30,7 +30,7 @@ We welcome and greatly appreciate contributions. If you would like to contribute
 
 ## Support
 
-Encountering issues? Take a look at the existing GitHub [issues](https://github.com/azellar-tech/pgrubic-action/issues), and don't hesitate to open a new one.
+Encountering issues? Take a look at the existing GitHub [issues](https://github.com/azellarhq/pgrubic-playground/issues), and don't hesitate to open a new one.
 
 ## License
 
