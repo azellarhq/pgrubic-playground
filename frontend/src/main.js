@@ -3,7 +3,7 @@
 import { defaultConfig, configEditor, sqlEditor } from "./editors";
 import { notify, copyToClipboard, printViolations, printErrors } from "./utils";
 
-import { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedlink } from "./core";
+import { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedlink, ConfigParseError } from "./core";
 
 /**
  * Sets up event listeners for various buttons and elements on the page.
@@ -49,9 +49,20 @@ export function setupEventListeners() {
     lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors });
   });
 
-  document.getElementById("shareBtn").addEventListener("click", () => {
-    generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify });
+  document.getElementById("shareBtn").addEventListener("click", async () => {
+    try {
+      const url = await generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify });
+      await navigator.clipboard.writeText(url);
+      notify("Copied to clipboard!", "success");
+    } catch (error) {
+      if (error instanceof ConfigParseError) {
+        notify(error.message, "error");
+      } else {
+        notify("Operation failed!", "error");
+      }
+    }
   });
+
 
   document.getElementById("copyBtn").addEventListener("click", () => {
     copyToClipboard("sqlOutput");
