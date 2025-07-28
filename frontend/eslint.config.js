@@ -5,15 +5,9 @@ import prettier from "prettier";
 import prettierConfig from "eslint-config-prettier";
 import prettierPlugin from "eslint-plugin-prettier";
 
-
 export default defineConfig([
   {
-    ignores: [
-      ".vite/**/*",
-      "node_modules",
-      "dist/",
-      "build/",
-    ],
+    ignores: [".vite/**/*", "node_modules", "dist/", "build/"],
   },
   {
     extends: ["js/recommended"],

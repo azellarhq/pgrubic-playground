@@ -10,7 +10,10 @@ vi.mock("monaco-editor/esm/vs/editor/editor.api", () => ({
   },
 }));
 
-vi.mock("monaco-editor/esm/vs/basic-languages/sql/sql.contribution", () => ({}));
+vi.mock(
+  "monaco-editor/esm/vs/basic-languages/sql/sql.contribution",
+  () => ({}),
+);
 
 // Mock toml parser
 vi.mock("toml", () => ({

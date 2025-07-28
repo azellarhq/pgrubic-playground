@@ -73,7 +73,10 @@ describe("Main button event listeners", () => {
   it("calls copyToClipboard on copyBtn click and notifies", () => {
     document.getElementById("copyBtn").click();
     expect(utils.copyToClipboard).toHaveBeenCalledWith("sqlOutput");
-    expect(utils.notify).toHaveBeenCalledWith("Copied to clipboard!", "success");
+    expect(utils.notify).toHaveBeenCalledWith(
+      "Copied to clipboard!",
+      "success",
+    );
   });
 
   it("calls generateShareLink on shareBtn click", () => {
@@ -87,8 +90,13 @@ describe("Main button event listeners", () => {
     await document.getElementById("shareBtn").click();
     await Promise.resolve();
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("https://fake.share/link");
-    expect(utils.notify).toHaveBeenCalledWith("Copied to clipboard!", "success");
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+      "https://fake.share/link",
+    );
+    expect(utils.notify).toHaveBeenCalledWith(
+      "Copied to clipboard!",
+      "success",
+    );
   });
 
   it("generateShareLink notifies with config error message on ConfigParseError", async () => {
@@ -113,7 +121,10 @@ describe("Main button event listeners", () => {
   it("resets config and notifies on resetConfigBtn click", () => {
     document.getElementById("resetConfigBtn").click();
     expect(configEditor.setValue).toHaveBeenCalledWith(defaultConfig);
-    expect(utils.notify).toHaveBeenCalledWith("Configuration reset to default!", "info");
+    expect(utils.notify).toHaveBeenCalledWith(
+      "Configuration reset to default!",
+      "info",
+    );
   });
 
   it("toggles top-links visibility on hamburger click", () => {
