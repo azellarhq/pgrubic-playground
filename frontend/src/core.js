@@ -250,7 +250,7 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor }) {
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
-  } catch (error) {
+  } catch {
     throw new ConfigParseError("Error in config");
   }
 
