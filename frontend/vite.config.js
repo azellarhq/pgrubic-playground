@@ -6,8 +6,6 @@ export default defineConfig(({ mode }) => {
   // eslint-disable-next-line no-undef
   const env = loadEnv(mode, process.cwd(), "");
 
-  console.log(env.VITE_DEBUG);
-
   return {
     plugins: [monacoEditorPlugin()],
     server: {

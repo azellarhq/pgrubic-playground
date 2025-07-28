@@ -21,7 +21,7 @@ vi.mock("toml", () => ({
 }));
 
 // Global fetch
-global.fetch = vi.fn();
+globalThis.fetch = vi.fn();
 
 beforeEach(() => {
   fetch.mockReset();
