@@ -1,7 +1,12 @@
 // Test utils
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { notify, copyToClipboard, printViolations, printErrors } from "../src/utils";
+import {
+  notify,
+  copyToClipboard,
+  printViolations,
+  printErrors,
+} from "../src/utils";
 
 describe("Utils", () => {
   beforeEach(() => {
@@ -38,7 +43,9 @@ describe("Utils", () => {
 
   describe("copyToClipboard", () => {
     it("copies text content of element to clipboard", async () => {
-      const clipboardWriteText = vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue();
+      const clipboardWriteText = vi
+        .spyOn(navigator.clipboard, "writeText")
+        .mockResolvedValue();
       const element = document.createElement("div");
       element.id = "test-id";
       element.textContent = "Copy me";
@@ -53,7 +60,12 @@ describe("Utils", () => {
   describe("printViolations", () => {
     it("renders HTML for violations", () => {
       const violations = [
-        { description: "Test violation", rule_code: "R001", line_number: 1, column_offset: 2 }
+        {
+          description: "Test violation",
+          rule_code: "R001",
+          line_number: 1,
+          column_offset: 2,
+        },
       ];
       const html = printViolations(violations);
       expect(html).toContain("Test violation");
@@ -64,9 +76,7 @@ describe("Utils", () => {
 
   describe("printErrors", () => {
     it("renders HTML for errors", () => {
-      const errors = [
-        { message: "Syntax error", hint: "Check your syntax" }
-      ];
+      const errors = [{ message: "Syntax error", hint: "Check your syntax" }];
       const html = printErrors(errors);
       expect(html).toContain("Syntax error");
       expect(html).toContain("Check your syntax");

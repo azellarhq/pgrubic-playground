@@ -42,7 +42,7 @@ body {
   align-items: center;
   justify-content: space-around;
   padding: 1rem 2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   z-index: 10;
   height: 52px;
 }
@@ -142,7 +142,7 @@ body {
   font-size: 0.7rem;
   font-size: 12px;
   font-weight: 300;
-  margin-top: 0.30rem;
+  margin-top: 0.3rem;
 }
 
 .pgrubic-version {
@@ -238,7 +238,7 @@ body {
   max-height: 40vh;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
-  flex:1;
+  flex: 1;
   overflow: auto;
 }
 
@@ -321,7 +321,7 @@ body {
   flex: 1;
 }
 
-.lint-violations-summary:empty{
+.lint-violations-summary:empty {
   display: none;
 }
 

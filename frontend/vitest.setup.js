@@ -1,4 +1,4 @@
-import { vi, beforeEach } from "vitest"
+import { vi, beforeEach } from "vitest";
 
 // Mock monaco editor
 vi.mock("monaco-editor/esm/vs/editor/editor.api", () => ({
@@ -8,17 +8,20 @@ vi.mock("monaco-editor/esm/vs/editor/editor.api", () => ({
       dispose: vi.fn(),
     })),
   },
-}))
+}));
 
-vi.mock("monaco-editor/esm/vs/basic-languages/sql/sql.contribution", () => ({}))
+vi.mock(
+  "monaco-editor/esm/vs/basic-languages/sql/sql.contribution",
+  () => ({}),
+);
 
 // Mock toml parser
 vi.mock("toml", () => ({
   default: { parse: vi.fn() },
-}))
+}));
 
 // Global fetch
-global.fetch = vi.fn()
+globalThis.fetch = vi.fn();
 
 beforeEach(() => {
   fetch.mockReset();
