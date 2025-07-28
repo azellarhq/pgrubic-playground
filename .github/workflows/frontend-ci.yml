@@ -34,10 +34,10 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
+          node-version: "24.x"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       # - name: Run ESLint
       #   run: npx eslint .
@@ -68,10 +68,10 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
+          node-version: "24.x"
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run tests and generate coverage
         run: npx vitest --coverage.enabled true
