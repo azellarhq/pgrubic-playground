@@ -39,24 +39,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # - name: Run ESLint
-      #   run: npx eslint .
-
       - name: Run ${{ matrix.job }}
         run: npm run ${{ matrix.job }}
-
-  # lint:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-
-  #     - name: Install dependencies
-  #       run: npm install
-
-  #     - name: Run ESLint
-  #       run: npx eslint .
 
   coverage:
     runs-on: ubuntu-latest
@@ -74,7 +58,7 @@ jobs:
         run: npm ci
 
       - name: Run tests and generate coverage
-        run: npx vitest --coverage.enabled true
+        run: npm run coverage
 
       - name: Upload Coverage
         uses: actions/upload-artifact@v4
