@@ -95,8 +95,8 @@ export async function setupEventListeners() {
     }
   });
 
-  document.getElementById("copyBtn").addEventListener("click", () => {
-    copyToClipboard("sqlOutput");
+  document.getElementById("copyBtn").addEventListener("click", async () => {
+    await copyToClipboard("sqlOutput");
     notify("Copied to clipboard!", "success");
   });
 

@@ -70,8 +70,8 @@ describe("Main button event listeners", () => {
     expect(core.lintAndFixSql).toHaveBeenCalled();
   });
 
-  it("calls copyToClipboard on copyBtn click and notifies", () => {
-    document.getElementById("copyBtn").click();
+  it("calls copyToClipboard on copyBtn click and notifies", async () => {
+    await document.getElementById("copyBtn").click();
     expect(utils.copyToClipboard).toHaveBeenCalledWith("sqlOutput");
     expect(utils.notify).toHaveBeenCalledWith(
       "Copied to clipboard!",

@@ -24,10 +24,10 @@ function notify(message, type, timeout = 3000) {
  *
  * @param {string} id The id of the element to copy.
  */
-function copyToClipboard(id) {
+async function copyToClipboard(id) {
   const element = document.getElementById(id);
 
-  navigator.clipboard.writeText(element.textContent);
+  await navigator.clipboard.writeText(element.textContent);
 }
 
 /**
