@@ -19,7 +19,14 @@ permissions:
 jobs:
   lint:
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - lint
+          - format
+          - tests
+    name: ${{ matrix.job }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,6 +41,22 @@ jobs:
 
       - name: Run ESLint
         run: npx eslint .
+
+      - name: Run ${{ matrix.job }}
+        run: npm run ${{ matrix.job }}
+
+  # lint:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Install dependencies
+  #       run: npm install
+
+  #     - name: Run ESLint
+  #       run: npx eslint .
 
   coverage:
     runs-on: ubuntu-latest

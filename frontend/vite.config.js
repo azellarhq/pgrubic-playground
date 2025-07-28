@@ -11,15 +11,15 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [monacoEditorPlugin()],
     server: {
-    ...(env.VITE_DEBUG === "true" && {
-      proxy: {
-        "/api": {
-          target: "http://localhost:8000",
-          changeOrigin: true,
-          secure: false,
+      ...(env.VITE_DEBUG === "true" && {
+        proxy: {
+          "/api": {
+            target: "http://localhost:8000",
+            changeOrigin: true,
+            secure: false,
+          }
         }
       }
-    }
-    )}
+      )}
   };
 });

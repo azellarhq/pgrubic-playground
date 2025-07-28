@@ -3,7 +3,14 @@
 import { defaultConfig, configEditor, sqlEditor } from "./editors";
 import { notify, copyToClipboard, printViolations, printErrors } from "./utils";
 
-import { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedlink, ConfigParseError } from "./core";
+import {
+  formatSql,
+  lintSql,
+  lintAndFixSql,
+  generateShareLink,
+  loadSharedlink,
+  ConfigParseError,
+} from "./core";
 
 /**
  * Sets up event listeners for various buttons and elements on the page.
@@ -25,7 +32,7 @@ export async function setupEventListeners() {
     "shareBtn",
     "copyBtn",
     "resetConfigBtn",
-  ].map(id => document.getElementById(id));
+  ].map((id) => document.getElementById(id));
 
   const setButtonsDisabled = (disabled) => {
     for (const btn of buttons) {
@@ -35,23 +42,48 @@ export async function setupEventListeners() {
 
   setButtonsDisabled(true);
 
-  await loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, setButtonsDisabled });
+  await loadSharedlink({
+    API_BASE_URL,
+    configEditor,
+    sqlEditor,
+    notify,
+    setButtonsDisabled,
+  });
 
   document.getElementById("formatBtn").addEventListener("click", () => {
     formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors });
   });
 
   document.getElementById("lintBtn").addEventListener("click", () => {
-    lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors });
+    lintSql({
+      API_BASE_URL,
+      configEditor,
+      sqlEditor,
+      notify,
+      printViolations,
+      printErrors,
+    });
   });
 
   document.getElementById("lintFixBtn").addEventListener("click", () => {
-    lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors });
+    lintAndFixSql({
+      API_BASE_URL,
+      configEditor,
+      sqlEditor,
+      notify,
+      printViolations,
+      printErrors,
+    });
   });
 
   document.getElementById("shareBtn").addEventListener("click", async () => {
     try {
-      const url = await generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify });
+      const url = await generateShareLink({
+        API_BASE_URL,
+        configEditor,
+        sqlEditor,
+        notify,
+      });
       await navigator.clipboard.writeText(url);
       notify("Copied to clipboard!", "success");
     } catch (error) {

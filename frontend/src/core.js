@@ -4,7 +4,7 @@ import { defaultConfig, defaultSql } from "./editors";
 
 import toml from "toml";
 
-class ConfigParseError extends Error { }
+class ConfigParseError extends Error {}
 
 /**
  * Formats the SQL code from the provided SQL editor using the configuration from the config editor.
@@ -17,7 +17,13 @@ class ConfigParseError extends Error { }
  * @param {Function} params.notify - Function to display notifications.
  * @param {Function} params.printErrors - Function to display SQL formatting errors.
  */
-async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors }) {
+async function formatSql({
+  API_BASE_URL,
+  configEditor,
+  sqlEditor,
+  notify,
+  printErrors,
+}) {
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
@@ -30,9 +36,7 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
     sqlOutput = document.getElementById("sqlOutput"),
     sqlOutputLabel = document.getElementById("sqlOutputLabel"),
     lintOutput = document.getElementById("lintOutput"),
-    lintViolationsSummary = document.getElementById(
-      "lintViolationsSummary"
-    );
+    lintViolationsSummary = document.getElementById("lintViolationsSummary");
 
   lintOutput.innerHTML = "Formatting...";
   lintViolationsSummary.innerHTML = "";
@@ -63,7 +67,7 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
 
     if (data.errors.length > 0) {
       notify("Errors found in SQL!", "error");
-    };
+    }
 
     lintOutput.innerHTML = printErrors(data.errors);
   } catch {
@@ -83,7 +87,14 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
  * @param {Function} params.printViolations - Function to display SQL linting violations.
  * @param {Function} params.printErrors - Function to display SQL linting errors.
  */
-async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors }) {
+async function lintSql({
+  API_BASE_URL,
+  configEditor,
+  sqlEditor,
+  notify,
+  printViolations,
+  printErrors,
+}) {
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
@@ -93,9 +104,7 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
   }
 
   const lintOutput = document.getElementById("lintOutput"),
-    lintViolationsSummary = document.getElementById(
-      "lintViolationsSummary"
-    ),
+    lintViolationsSummary = document.getElementById("lintViolationsSummary"),
     sqlOutputBox = document.getElementById("sqlOutputBox");
 
   lintOutput.innerHTML = "Linting...";
@@ -132,7 +141,9 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
       lintViolationsSummary.classList.add("has-violations");
       if (data.errors.length > 0) {
         notify("Errors found in SQL!", "error");
-      } else { notify("Violations found!", "warning"); }
+      } else {
+        notify("Violations found!", "warning");
+      }
     }
 
     lintOutput.innerHTML = printViolations(data.violations);
@@ -153,7 +164,14 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
  * @param {Function} params.printViolations - Function to display SQL linting violations.
  * @param {Function} params.printErrors - Function to display SQL linting errors.
  */
-async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors }) {
+async function lintAndFixSql({
+  API_BASE_URL,
+  configEditor,
+  sqlEditor,
+  notify,
+  printViolations,
+  printErrors,
+}) {
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
@@ -163,9 +181,7 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
   }
 
   const lintOutput = document.getElementById("lintOutput"),
-    lintViolationsSummary = document.getElementById(
-      "lintViolationsSummary"
-    ),
+    lintViolationsSummary = document.getElementById("lintViolationsSummary"),
     sqlOutputBox = document.getElementById("sqlOutputBox"),
     sqlOutput = document.getElementById("sqlOutput"),
     sqlOutputLabel = document.getElementById("sqlOutputLabel");
@@ -204,7 +220,9 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
       lintViolationsSummary.classList.add("has-violations");
       if (data.errors.length > 0) {
         notify("Errors found in SQL!", "error");
-      } else { notify("Violations found!", "warning"); }
+      } else {
+        notify("Violations found!", "warning");
+      }
     }
 
     lintOutput.innerHTML = printViolations(data.violations);
@@ -213,7 +231,6 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
     sqlOutputBox.style.display = data.fixed_source_code ? "flex" : "none";
     sqlOutputLabel.textContent = "Fixed SQL";
     sqlOutput.textContent = data.fixed_source_code;
-
   } catch {
     notify("Operation failed!", "error");
   }
@@ -241,9 +258,7 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor }) {
     sqlOutput = document.getElementById("sqlOutput"),
     sqlOutputLabel = document.getElementById("sqlOutputLabel"),
     lintOutput = document.getElementById("lintOutput"),
-    lintViolationsSummary = document.getElementById(
-      "lintViolationsSummary"
-    );
+    lintViolationsSummary = document.getElementById("lintViolationsSummary");
 
   const response = await fetch(`${API_BASE_URL}/share`, {
     method: "POST",
@@ -286,7 +301,13 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor }) {
  * @param {Function} params.notify - Function to display notifications.
  * @param {Function} params.setButtonsDisabled - Function to set the disabled state of the buttons.
  */
-async function loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, setButtonsDisabled }) {
+async function loadSharedlink({
+  API_BASE_URL,
+  configEditor,
+  sqlEditor,
+  notify,
+  setButtonsDisabled,
+}) {
   const path = window.location.pathname,
     requestId = path.slice(1); // Remove leading "/"
 
@@ -301,47 +322,51 @@ async function loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, s
     sqlOutput = document.getElementById("sqlOutput"),
     sqlOutputLabel = document.getElementById("sqlOutputLabel"),
     lintOutput = document.getElementById("lintOutput"),
-    lintViolationsSummary = document.getElementById(
-      "lintViolationsSummary"
-    );
+    lintViolationsSummary = document.getElementById("lintViolationsSummary");
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/share/${requestId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  try {
+    const response = await fetch(`${API_BASE_URL}/share/${requestId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      if (!response.ok && response.status !== 404) {
-        notify("Failed to load shared link", "error");
-        configEditor.setValue("");
-        sqlEditor.setValue("");
-        return;
-      }
-
-      if (response.status === 404) {
-        notify("Invalid or expired link", "error");
-        configEditor.setValue("");
-        sqlEditor.setValue("");
-        return null;
-      }
-
-      const data = await response.json();
-      configEditor.setValue(data.toml_config);
-      sqlEditor.setValue(data.source_code);
-      sqlOutputBox.style.display = data.sql_output_box_style;
-      sqlOutputLabel.textContent = data.sql_output_label;
-      sqlOutput.textContent = data.sql_output;
-      lintViolationsSummary.innerHTML = data.lint_violations_summary;
-      lintViolationsSummary.className = data.lint_violations_summary_class;
-      lintOutput.innerHTML = data.lint_output;
-      notify("Loaded from shared link", "success");
-      setButtonsDisabled(false);
-
-    } catch {
-      notify("Operation failed!", "error");
+    if (!response.ok && response.status !== 404) {
+      notify("Failed to load shared link", "error");
+      configEditor.setValue("");
+      sqlEditor.setValue("");
+      return;
     }
+
+    if (response.status === 404) {
+      notify("Invalid or expired link", "error");
+      configEditor.setValue("");
+      sqlEditor.setValue("");
+      return null;
+    }
+
+    const data = await response.json();
+    configEditor.setValue(data.toml_config);
+    sqlEditor.setValue(data.source_code);
+    sqlOutputBox.style.display = data.sql_output_box_style;
+    sqlOutputLabel.textContent = data.sql_output_label;
+    sqlOutput.textContent = data.sql_output;
+    lintViolationsSummary.innerHTML = data.lint_violations_summary;
+    lintViolationsSummary.className = data.lint_violations_summary_class;
+    lintOutput.innerHTML = data.lint_output;
+    notify("Loaded from shared link", "success");
+    setButtonsDisabled(false);
+  } catch {
+    notify("Operation failed!", "error");
+  }
 }
 
-export { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedlink, ConfigParseError };
+export {
+  formatSql,
+  lintSql,
+  lintAndFixSql,
+  generateShareLink,
+  loadSharedlink,
+  ConfigParseError,
+};

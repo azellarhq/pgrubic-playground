@@ -27,10 +27,7 @@ function notify(message, type, timeout = 3000) {
 function copyToClipboard(id) {
   const element = document.getElementById(id);
 
-  if (element) {
-    navigator.clipboard.writeText(element.textContent).then(() => {
-    }).catch(err => console.error("Failed to copy: ", err));
-  }
+  navigator.clipboard.writeText(element.textContent);
 }
 
 /**
@@ -46,10 +43,9 @@ function copyToClipboard(id) {
 function printViolations(violations) {
   var html = "";
 
-  violations.forEach(v => {
+  violations.forEach((v) => {
     html += `<span><b>${v.description} </b>(${v.rule_code}) [Ln ${v.line_number}, Col ${v.column_offset}] <hr></span>`;
-  }
-  );
+  });
 
   return html;
 }
@@ -65,10 +61,9 @@ function printViolations(violations) {
  */
 function printErrors(errors) {
   var html = "";
-  errors.forEach(e => {
+  errors.forEach((e) => {
     html += `<span><b>${e.message} </b>(${e.hint}) <hr></span>`;
-  }
-  );
+  });
   return html;
 }
 
