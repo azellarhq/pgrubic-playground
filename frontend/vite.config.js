@@ -3,9 +3,10 @@ import monacoEditorPlugin from "vite-plugin-monaco-editor-esm";
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "")
+  // eslint-disable-next-line no-undef
+  const env = loadEnv(mode, process.cwd(), "");
 
-  console.log(env.VITE_DEBUG)
+  console.log(env.VITE_DEBUG);
 
   return {
     plugins: [monacoEditorPlugin()],
@@ -20,5 +21,5 @@ export default defineConfig(({ mode }) => {
       }
     }
     )}
-  }
-})
+  };
+});

@@ -15,7 +15,7 @@ import { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedlink, C
  * - Toggles visibility of the top-links section when the hamburger icon is clicked.
  */
 
-export function setupEventListeners() {
+export async function setupEventListeners() {
   const API_BASE_URL = window.config.API_BASE_URL;
 
   const buttons = [
@@ -29,13 +29,13 @@ export function setupEventListeners() {
 
   const setButtonsDisabled = (disabled) => {
     for (const btn of buttons) {
-      if (btn) btn.disabled = disabled;
+      btn.disabled = disabled;
     }
   };
 
   setButtonsDisabled(true);
 
-  loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, setButtonsDisabled });
+  await loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, setButtonsDisabled });
 
   document.getElementById("formatBtn").addEventListener("click", () => {
     formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors });
@@ -56,13 +56,12 @@ export function setupEventListeners() {
       notify("Copied to clipboard!", "success");
     } catch (error) {
       if (error instanceof ConfigParseError) {
-        notify(error.message, "error");
+        notify("Error in config", "error");
       } else {
         notify("Operation failed!", "error");
       }
     }
   });
-
 
   document.getElementById("copyBtn").addEventListener("click", () => {
     copyToClipboard("sqlOutput");

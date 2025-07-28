@@ -32,7 +32,7 @@ new-line-before-semicolon = false
 remove-pg-catalog-from-functions = true
 lines-between-statements = 1`;
 
-const defaultSql = "CREATE TABLE users (id INT, name TEXT);"
+const defaultSql = "CREATE TABLE users (id INT, name TEXT);";
 
 const configEditor = editor.create(document.getElementById("configEditor"), {
   value: "",

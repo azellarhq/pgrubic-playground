@@ -21,12 +21,7 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
-  } catch (error) {
-    console.error(
-      `Error in config. Parsing error on line ${error.line
-      }, column ${error.column
-      }: ${error.message}`
-    );
+  } catch {
     notify("Error in config", "error");
     return;
   }
@@ -71,8 +66,8 @@ async function formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printE
     };
 
     lintOutput.innerHTML = printErrors(data.errors);
-  } catch (error) {
-    console.error(error);
+  } catch {
+    notify("Operation failed!", "error");
   }
 }
 
@@ -92,12 +87,7 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
-  } catch (error) {
-    console.error(
-      `Error in config. Parsing error on line ${error.line
-      }, column ${error.column
-      }: ${error.message}`
-    );
+  } catch {
     notify("Error in config", "error");
     return;
   }
@@ -147,8 +137,8 @@ async function lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printVio
 
     lintOutput.innerHTML = printViolations(data.violations);
     lintOutput.innerHTML += printErrors(data.errors);
-  } catch (error) {
-    console.error(error);
+  } catch {
+    notify("Operation failed!", "error");
   }
 }
 
@@ -167,12 +157,7 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
-  } catch (error) {
-    console.error(
-      `Error in config. Parsing error on line ${error.line
-      }, column ${error.column
-      }: ${error.message}`
-    );
+  } catch {
     notify("Error in config", "error");
     return;
   }
@@ -229,8 +214,8 @@ async function lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, pr
     sqlOutputLabel.textContent = "Fixed SQL";
     sqlOutput.textContent = data.fixed_source_code;
 
-  } catch (error) {
-    console.error(error);
+  } catch {
+    notify("Operation failed!", "error");
   }
 }
 
@@ -249,8 +234,6 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor }) {
   try {
     configObject = toml.parse(configEditor.getValue());
   } catch (error) {
-    // error.name = "configParseError";
-    // error.message = "Error in config";
     throw new ConfigParseError("Error in config", error);
   }
 
@@ -322,23 +305,29 @@ async function loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, s
       "lintViolationsSummary"
     );
 
-  await fetch(`${API_BASE_URL}/share/${requestId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/share/${requestId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok && response.status !== 404) {
+        notify("Failed to load shared link", "error");
+        configEditor.setValue("");
+        sqlEditor.setValue("");
+        return;
+      }
+
       if (response.status === 404) {
         notify("Invalid or expired link", "error");
         configEditor.setValue("");
         sqlEditor.setValue("");
         return null;
       }
-      return response.json();
-    })
-    .then((data) => {
-      if (data === null) { return; }
+
+      const data = await response.json();
       configEditor.setValue(data.toml_config);
       sqlEditor.setValue(data.source_code);
       sqlOutputBox.style.display = data.sql_output_box_style;
@@ -349,13 +338,10 @@ async function loadSharedlink({ API_BASE_URL, configEditor, sqlEditor, notify, s
       lintOutput.innerHTML = data.lint_output;
       notify("Loaded from shared link", "success");
       setButtonsDisabled(false);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      notify("Failed to load shared link", "error");
-      configEditor.setValue("");
-      sqlEditor.setValue("");
-    });
+
+    } catch {
+      notify("Operation failed!", "error");
+    }
 }
 
 export { formatSql, lintSql, lintAndFixSql, generateShareLink, loadSharedlink, ConfigParseError };
