@@ -25,7 +25,7 @@ jobs:
         job:
           - lint
           - format
-          - tests
+          - test
     name: ${{ matrix.job }}
     steps:
       - name: Checkout code
