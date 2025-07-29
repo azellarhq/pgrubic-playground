@@ -126,6 +126,10 @@ body {
   .top-links.show {
     display: flex;
   }
+
+  .top-links button.share-btn {
+    display: none;
+  }
 }
 
 .logo-section {
