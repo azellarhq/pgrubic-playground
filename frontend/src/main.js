@@ -14,7 +14,6 @@ import {
 export async function setupEventListeners() {
   const API_BASE_URL = window.config.API_BASE_URL;
 
-  // Buttons
   const buttons = [
     "formatBtn",
     "lintBtn",
@@ -39,7 +38,6 @@ export async function setupEventListeners() {
     setButtonsDisabled,
   });
 
-  // ===== Button Event Listeners =====
   const formatBtn = document.getElementById("formatBtn");
   if (formatBtn) formatBtn.addEventListener("click", () => {
     formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors });
@@ -87,9 +85,8 @@ export async function setupEventListeners() {
   if (hamburger) hamburger.addEventListener("click", () => {
     document.getElementById("top-links").classList.toggle("show");
   });
-
-  // ===== Theme Toggle =====
-  ThemeToggle(); // attaches click listener and handles Light → Dark → System
+ 
+  ThemeToggle(); // click listener and handles Light → Dark → System
 }
 
 // Initialize after DOM is ready
