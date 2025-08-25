@@ -21,6 +21,7 @@ import {
  *   lint-fixing SQL, generating share links, copying output to clipboard,
  *   and resetting configuration to default.
  * - Toggles visibility of the top-links section when the hamburger icon is clicked.
+ * - Initializes the theme toggle functionality.
  */
 
 export async function setupEventListeners() {
