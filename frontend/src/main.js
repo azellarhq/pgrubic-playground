@@ -1,4 +1,3 @@
-
 // Entry point
 
 import { defaultConfig, configEditor, sqlEditor } from "./editors";
@@ -113,7 +112,6 @@ export async function setupEventListeners() {
     document.getElementById("top-links").classList.toggle("show");
   });
 
- 
   ThemeToggle();
 
 }

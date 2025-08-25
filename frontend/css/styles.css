@@ -189,7 +189,7 @@ body {
 }
 
 .theme-toggle:hover { 
-  background-color: color-mix(in srgb, var(--text-color) 10%, transparent); 
+  background-color: color-mix(in srgb, var(--color) 10%, transparent); 
 }
 
 .theme-toggle .fa-lightbulb { 
@@ -202,7 +202,7 @@ body {
 }
 
 .theme-toggle.dark .fa-lightbulb { 
-  color: #757272; 
+  color: #1c1c16; 
 }
 
 .theme-toggle.system::after {
