@@ -20,20 +20,20 @@ function notify(message, type, timeout = 3000) {
 }
 
 function ThemeToggle() {
-  const toggleBtn = document.querySelector('.theme-toggle');
-  const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+  const toggleBtn = document.querySelector(".theme-toggle");
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
 
-  let currentMode = localStorage.getItem('themeMode') || 'system'; // Default to "system" if nothing saved
+  let currentMode = localStorage.getItem("themeMode") || "system"; // Default to "system" if nothing saved
 
   function getNextMode(mode) {
-    if (mode === 'light') return 'dark';
-    if (mode === 'dark') return 'system';
-    return 'light';
+    if (mode === "light") return "dark";
+    if (mode === "dark") return "system";
+    return "light";
   }
 
   function applyTheme(mode, save = true) {
-    const isDark = mode === 'system' ? systemDark.matches : mode === 'dark';
-    document.documentElement.classList.toggle('dark', isDark);
+    const isDark = mode === "system" ? systemDark.matches : mode === "dark";
+    document.documentElement.classList.toggle("dark", isDark);
     toggleBtn.title = `Switch to ${getNextMode(mode)} mode`;
     toggleBtn.className = `theme-toggle ${mode}`; // Update button class
 
@@ -41,15 +41,15 @@ function ThemeToggle() {
 
     currentMode = mode;
     if (save) {
-      localStorage.setItem('themeMode', mode);
+      localStorage.setItem("themeMode", mode);
     }
   }
-  systemDark.addEventListener('change', () => {
-    if (currentMode === 'system') applyTheme('system', false);
+  systemDark.addEventListener("change", () => {
+    if (currentMode === "system") applyTheme("system", false);
   });
 
   if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
+    toggleBtn.addEventListener("click", () => {
       applyTheme(getNextMode(currentMode));
     });
   }
