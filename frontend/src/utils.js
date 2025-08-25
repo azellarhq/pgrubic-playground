@@ -18,10 +18,6 @@ function notify(message, type, timeout = 3000) {
     n.remove();
   }, timeout);
 }
-// utils.js
-
-// Optional: If you have Monaco editors, import setTheme
-// import { setTheme } from './editors.js';
 
 function ThemeToggle() {
   const toggleBtn = document.querySelector('.theme-toggle');
@@ -44,7 +40,6 @@ function ThemeToggle() {
     setTheme(isDark); // updates both editors
 
     currentMode = mode;
-
     if (save) {
       localStorage.setItem('themeMode', mode);
     }
