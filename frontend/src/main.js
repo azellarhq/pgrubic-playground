@@ -1,7 +1,9 @@
-// main.js
 
-import { defaultConfig, configEditor, sqlEditor } from "./editors.js";
-import { notify, copyToClipboard, printViolations, printErrors, ThemeToggle } from "./utils.js";
+// Entry point
+
+import { defaultConfig, configEditor, sqlEditor } from "./editors";
+import { notify, copyToClipboard, printViolations, printErrors, ThemeToggle } from "./utils";
+
 import {
   formatSql,
   lintSql,
@@ -9,7 +11,17 @@ import {
   generateShareLink,
   loadSharedlink,
   ConfigParseError,
-} from "./core.js";
+} from "./core";
+
+/**
+ * Sets up event listeners for various buttons and elements on the page.
+ *
+ * - Disables buttons at startup and loads shared link configuration.
+ * - Adds click event listeners to buttons for formatting, linting,
+ *   lint-fixing SQL, generating share links, copying output to clipboard,
+ *   and resetting configuration to default.
+ * - Toggles visibility of the top-links section when the hamburger icon is clicked.
+ */
 
 export async function setupEventListeners() {
   const API_BASE_URL = window.config.API_BASE_URL;
@@ -23,13 +35,14 @@ export async function setupEventListeners() {
     "resetConfigBtn",
   ].map((id) => document.getElementById(id));
 
-  // Disable buttons initially
   const setButtonsDisabled = (disabled) => {
-    buttons.forEach((btn) => { if(btn) btn.disabled = disabled; });
+    for (const btn of buttons) {
+      btn.disabled = disabled;
+    }
   };
+  
   setButtonsDisabled(true);
 
-  // Load shared config (async)
   await loadSharedlink({
     API_BASE_URL,
     configEditor,
@@ -38,25 +51,41 @@ export async function setupEventListeners() {
     setButtonsDisabled,
   });
 
-  const formatBtn = document.getElementById("formatBtn");
-  if (formatBtn) formatBtn.addEventListener("click", () => {
+
+  document.getElementById("formatBtn").addEventListener("click", () => {
     formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors });
   });
 
-  const lintBtn = document.getElementById("lintBtn");
-  if (lintBtn) lintBtn.addEventListener("click", () => {
-    lintSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors });
+  document.getElementById("lintBtn").addEventListener("click", () => {
+    lintSql({
+      API_BASE_URL,
+      configEditor,
+      sqlEditor,
+      notify,
+      printViolations,
+      printErrors,
+    });
   });
 
-  const lintFixBtn = document.getElementById("lintFixBtn");
-  if (lintFixBtn) lintFixBtn.addEventListener("click", () => {
-    lintAndFixSql({ API_BASE_URL, configEditor, sqlEditor, notify, printViolations, printErrors });
+  document.getElementById("lintFixBtn").addEventListener("click", () => {
+    lintAndFixSql({
+      API_BASE_URL,
+      configEditor,
+      sqlEditor,
+      notify,
+      printViolations,
+      printErrors,
+    });
   });
 
-  const shareBtn = document.getElementById("shareBtn");
-  if (shareBtn) shareBtn.addEventListener("click", async () => {
+  document.getElementById("shareBtn").addEventListener("click", async () => {
     try {
-      const url = await generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify });
+      const url = await generateShareLink({
+        API_BASE_URL,
+        configEditor,
+        sqlEditor,
+        notify,
+      });
       await navigator.clipboard.writeText(url);
       notify("Copied to clipboard!", "success");
     } catch (error) {
@@ -67,27 +96,26 @@ export async function setupEventListeners() {
       }
     }
   });
+  
 
-  const copyBtn = document.getElementById("copyBtn");
-  if (copyBtn) copyBtn.addEventListener("click", async () => {
+  document.getElementById("copyBtn").addEventListener("click", async () => {
     await copyToClipboard("sqlOutput");
     notify("Copied to clipboard!", "success");
   });
 
-  const resetBtn = document.getElementById("resetConfigBtn");
-  if (resetBtn) resetBtn.addEventListener("click", () => {
+  document.getElementById("resetConfigBtn").addEventListener("click", () => {
     configEditor.setValue(defaultConfig);
     notify("Configuration reset to default!", "info");
   });
 
-  // Hamburger menu
-  const hamburger = document.getElementById("hamburger");
-  if (hamburger) hamburger.addEventListener("click", () => {
+  document.getElementById("hamburger").addEventListener("click", () => {
     document.getElementById("top-links").classList.toggle("show");
   });
+
  
-  ThemeToggle(); // click listener and handles Light → Dark → System
+  ThemeToggle();
+
 }
 
-// Initialize after DOM is ready
 document.addEventListener("DOMContentLoaded", setupEventListeners);
+
