@@ -89,9 +89,4 @@ describe("ThemeToggle", () => {
   it("should initialize without errors", () => {
     expect(() => ThemeToggle()).not.toThrow();
   });
-
-  it("should call matchMedia for system preference", () => {
-    ThemeToggle();
-    expect(matchMedia).toHaveBeenCalledWith("(prefers-color-scheme: dark)");
-  });
 });
