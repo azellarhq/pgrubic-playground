@@ -1,5 +1,5 @@
 // Utils
-
+import { setTheme } from "./editors.js";
 /**
  * Creates a notification element with the specified message and type,
  * adds it to the document body, and removes it after the specified timeout.
@@ -18,6 +18,80 @@ function notify(message, type, timeout = 3000) {
     n.remove();
   }, timeout);
 }
+function ThemeToggle() {
+  const toggleBtn = document.querySelector(".theme-toggle");
+  if (!toggleBtn) return;
+  const systemDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : {matches: false};
+  let currentMode = (localStorage && localStorage.getItem("themeMode")) || "system";
+
+  function getNextMode(mode) {
+    if (mode === "light") return "dark";
+    if (mode === "dark") return "system";
+    return "light";
+  }
+
+  function applyTheme(mode, save = true) {
+    const isDark = mode === "system" ? systemDark.matches : mode === "dark";
+    document.documentElement.classList.toggle("dark", isDark);
+    toggleBtn.title = `Switch to ${getNextMode(mode)} mode`;
+    toggleBtn.className = `theme-toggle ${mode}`;
+    if (typeof setTheme === "function") setTheme(isDark);
+    
+    currentMode = mode;
+    if (save && localStorage) localStorage.setItem("themeMode", mode);
+  }
+
+  if (systemDark.addEventListener) {
+    systemDark.addEventListener("change", () => {
+      if (currentMode === "system") applyTheme("system", false);
+    });
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    applyTheme(currentMode === "light" ? "dark" : currentMode === "dark" ? "system" : "light");
+  });
+  
+  applyTheme(currentMode, false);
+}
+/** 
+function ThemeToggle() {
+  if (typeof document === 'undefined') return;
+  
+  const toggleBtn = document.querySelector('.theme-toggle');
+  const systemDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : {matches: false};
+  let currentMode = (localStorage && localStorage.getItem('themeMode')) || 'system';
+
+  function getNextMode(mode) {
+    if (mode === 'light') return 'dark';
+    if (mode === 'dark') return 'system';
+    return 'light';
+  }
+
+  function applyTheme(mode, save = true) {
+    const isDark = mode === 'system' ? systemDark.matches : mode === 'dark';
+    document.documentElement.classList.toggle('dark', isDark);
+    toggleBtn.title = `Switch to ${getNextMode(mode)} mode`;
+    toggleBtn.className = `theme-toggle ${mode}`; // Update button class
+
+    setTheme(isDark); // updates both editors
+
+    currentMode = mode;
+    if (save) {
+      localStorage.setItem('themeMode', mode);
+    }
+  }
+  systemDark.addEventListener('change', () => {
+    if (currentMode === 'system') applyTheme('system', false);
+  });
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      applyTheme(getNextMode(currentMode));
+    });
+  }
+  applyTheme(currentMode, false);
+}
+*/
 
 /**
  * Copies the content of the element with the given id to the user's clipboard.
@@ -67,4 +141,4 @@ function printErrors(errors) {
   return html;
 }
 
-export { notify, copyToClipboard, printViolations, printErrors };
+export { notify, ThemeToggle, copyToClipboard, printViolations, printErrors };
