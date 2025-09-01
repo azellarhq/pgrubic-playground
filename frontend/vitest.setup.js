@@ -27,16 +27,13 @@ beforeEach(() => {
   fetch.mockReset();
   vi.restoreAllMocks();
 });
-describe('ThemeToggle', () => {
-  beforeEach(() => {
-    vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({
-      matches: false,
-      addEventListener: vi.fn(),
-    }));
-    
-    vi.stubGlobal('localStorage', {
-      getItem: vi.fn(() => 'system'),
-      setItem: vi.fn(),
-    });
-  });
+
+vi.stubGlobal("matchMedia", vi.fn().mockReturnValue({
+  matches: false,
+  addEventListener: vi.fn(),
+}));
+
+vi.stubGlobal("localStorage", {
+  getItem: vi.fn(() => "system"),
+  setItem: vi.fn(),
 });
