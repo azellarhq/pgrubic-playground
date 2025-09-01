@@ -85,13 +85,13 @@ describe("Utils", () => {
   });
 });
 
-describe('ThemeToggle', () => {
-  it('should initialize without errors', () => {
+describe("ThemeToggle", () => {
+  it("should initialize without errors", () => {
     expect(() => ThemeToggle()).not.toThrow();
   });
 
-  it('should call matchMedia for system preference', () => {
+  it("should call matchMedia for system preference", () => {
     ThemeToggle();
-    expect(matchMedia).toHaveBeenCalledWith('(prefers-color-scheme: dark)');
+    expect(matchMedia).toHaveBeenCalledWith("(prefers-color-scheme: dark)");
   });
 });

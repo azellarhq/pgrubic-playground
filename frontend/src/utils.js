@@ -19,37 +19,37 @@ function notify(message, type, timeout = 3000) {
   }, timeout);
 }
 function ThemeToggle() {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") return;
   
-  const toggleBtn = document.querySelector('.theme-toggle');
-  const systemDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : {matches: false};
-  let currentMode = (localStorage && localStorage.getItem('themeMode')) || 'system';
+  const toggleBtn = document.querySelector(".theme-toggle");
+  const systemDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : {matches: false};
+  let currentMode = (localStorage && localStorage.getItem("themeMode")) || "system";
 
   function getNextMode(mode) {
-    if (mode === 'light') return 'dark';
-    if (mode === 'dark') return 'system';
-    return 'light';
+    if (mode === "light") return "dark";
+    if (mode === "dark") return "system";
+    return "light";
   }
 
   function applyTheme(mode, save = true) {
-    const isDark = mode === 'system' ? systemDark.matches : mode === 'dark';
-    document.documentElement.classList.toggle('dark', isDark);
+    const isDark = mode === "system" ? systemDark.matches : mode === "dark";
+    document.documentElement.classList.toggle("dark", isDark);
     toggleBtn.title = `Switch to ${getNextMode(mode)} mode`;
     toggleBtn.className = `theme-toggle ${mode}`;
-    if (typeof setTheme === 'function') setTheme(isDark);
+    if (typeof setTheme === "function") setTheme(isDark);
     
     currentMode = mode;
-    if (save && localStorage) localStorage.setItem('themeMode', mode);
+    if (save && localStorage) localStorage.setItem("themeMode", mode);
   }
 
   if (systemDark.addEventListener) {
-    systemDark.addEventListener('change', () => {
-      if (currentMode === 'system') applyTheme('system', false);
+    systemDark.addEventListener("change", () => {
+      if (currentMode === "system") applyTheme("system", false);
     });
   }
 
-  toggleBtn.addEventListener('click', () => {
-    applyTheme(currentMode === 'light' ? 'dark' : currentMode === 'dark' ? 'system' : 'light');
+  toggleBtn.addEventListener("click", () => {
+    applyTheme(currentMode === "light" ? "dark" : currentMode === "dark" ? "system" : "light");
   });
   
   applyTheme(currentMode, false);
