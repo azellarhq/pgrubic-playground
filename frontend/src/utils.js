@@ -19,9 +19,8 @@ function notify(message, type, timeout = 3000) {
   }, timeout);
 }
 function ThemeToggle() {
-  if (typeof document === "undefined") return;
-  
   const toggleBtn = document.querySelector(".theme-toggle");
+  if (!toggleBtn) return;
   const systemDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : {matches: false};
   let currentMode = (localStorage && localStorage.getItem("themeMode")) || "system";
 

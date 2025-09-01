@@ -37,3 +37,5 @@ vi.stubGlobal("localStorage", {
   getItem: vi.fn(() => "system"),
   setItem: vi.fn(),
 });
+
+vi.stubGlobal("setTheme", vi.fn());
