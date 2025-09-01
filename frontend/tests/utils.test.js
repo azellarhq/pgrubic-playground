@@ -6,6 +6,7 @@ import {
   copyToClipboard,
   printViolations,
   printErrors,
+  ThemeToggle
 } from "../src/utils";
 
 describe("Utils", () => {
@@ -81,5 +82,16 @@ describe("Utils", () => {
       expect(html).toContain("Syntax error");
       expect(html).toContain("Check your syntax");
     });
+  });
+});
+
+describe('ThemeToggle', () => {
+  it('should initialize without errors', () => {
+    expect(() => ThemeToggle()).not.toThrow();
+  });
+
+  it('should call matchMedia for system preference', () => {
+    ThemeToggle();
+    expect(matchMedia).toHaveBeenCalledWith('(prefers-color-scheme: dark)');
   });
 });

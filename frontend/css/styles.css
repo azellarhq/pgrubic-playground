@@ -182,16 +182,11 @@ body {
   justify-content: center;
   cursor: pointer;
   font-size: 1.5rem;
-  color: #555;
+  color: var(--bg-color);
   padding: 0.5rem;
   margin-right: 2rem;
   transition: transform 0.3s ease, color 0.3s ease;
 }
-
-.theme-toggle:hover { 
-  background-color: color-mix(in srgb, var(--color) 10%, transparent); 
-}
-
 .theme-toggle .fa-lightbulb { 
   transition: all 0.3s ease; 
 }
@@ -210,7 +205,7 @@ body {
   margin-left: 0.3rem;   /* space between bulb and A */
   font-size: 0.8rem;
   font-weight: 900;
-  color: var(--color);
+  color: var(--bg-color);
 }
 
 
