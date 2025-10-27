@@ -13,7 +13,7 @@ dependencies = {file = ["requirements.txt"]}
 
 [project.optional-dependencies]
 dev = [
-  "ruff==0.14.1",
+  "ruff==0.14.2",
   "mypy==1.18.2",
   "isort==7.0.0",
   "bandit==1.8.6",
@@ -25,7 +25,7 @@ dev = [
   "conventional-pre-commit==4.3.0",
   "pytest==8.4.2",
   "coverage==7.11.0",
-  "tox==4.31.0",
+  "tox==4.32.0",
   "httpx==0.28.1",
   "types-toml==0.10.8.20240310",
 ]
