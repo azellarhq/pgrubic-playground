@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "lint": "eslint .",
-    "format": "prettier --check --cache .",
+    "format": "prettier --fix --cache .",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {

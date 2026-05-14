@@ -60,4 +60,10 @@ const sqlEditor = editor.create(document.getElementById("sqlEditor"), {
   fontFamily: "monospace",
 });
 
-export { defaultConfig, defaultSql, configEditor, sqlEditor };
+function setTheme(isDark) {
+  const theme = isDark ? "vs-dark" : "vs";
+  if (configEditor) configEditor.updateOptions({ theme });
+  if (sqlEditor) sqlEditor.updateOptions({ theme });
+}
+
+export { defaultConfig, defaultSql, configEditor, sqlEditor, setTheme };

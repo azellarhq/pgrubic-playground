@@ -1,7 +1,7 @@
 // Entry point
 
 import { defaultConfig, configEditor, sqlEditor } from "./editors";
-import { notify, copyToClipboard, printViolations, printErrors } from "./utils";
+import { notify, copyToClipboard, printViolations, printErrors, ThemeToggle } from "./utils";
 
 import {
   formatSql,
@@ -20,6 +20,7 @@ import {
  *   lint-fixing SQL, generating share links, copying output to clipboard,
  *   and resetting configuration to default.
  * - Toggles visibility of the top-links section when the hamburger icon is clicked.
+ * - Initializes the theme toggle functionality.
  */
 
 export async function setupEventListeners() {
@@ -39,7 +40,7 @@ export async function setupEventListeners() {
       btn.disabled = disabled;
     }
   };
-
+  
   setButtonsDisabled(true);
 
   await loadSharedlink({
@@ -49,6 +50,7 @@ export async function setupEventListeners() {
     notify,
     setButtonsDisabled,
   });
+
 
   document.getElementById("formatBtn").addEventListener("click", () => {
     formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors });
@@ -94,6 +96,7 @@ export async function setupEventListeners() {
       }
     }
   });
+  
 
   document.getElementById("copyBtn").addEventListener("click", async () => {
     await copyToClipboard("sqlOutput");
@@ -108,6 +111,10 @@ export async function setupEventListeners() {
   document.getElementById("hamburger").addEventListener("click", () => {
     document.getElementById("top-links").classList.toggle("show");
   });
+
+  ThemeToggle();
+
 }
 
 document.addEventListener("DOMContentLoaded", setupEventListeners);
+
