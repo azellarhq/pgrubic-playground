@@ -10,8 +10,8 @@
 | app/config.py           |       17 |        0 |     100% |           |
 | app/infrastructure.py   |       45 |        0 |     100% |           |
 | app/main.py             |       10 |        0 |     100% |           |
-| app/models.py           |       77 |        0 |     100% |           |
-|               **TOTAL** |  **172** |    **0** | **100%** |           |
+| app/models.py           |       52 |        0 |     100% |           |
+| **TOTAL**               |  **147** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
