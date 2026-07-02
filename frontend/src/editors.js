@@ -4,7 +4,7 @@ import { editor } from "monaco-editor/esm/vs/editor/editor.api";
 import "monaco-editor/esm/vs/basic-languages/sql/sql.contribution";
 
 const defaultConfig = `[lint]
-postgres-target-version = 14
+target-postgres-version = 14
 select = []
 ignore = []
 fixable = []
