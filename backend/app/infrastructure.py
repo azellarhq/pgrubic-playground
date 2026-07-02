@@ -20,7 +20,7 @@ def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:
     linter = core.Linter(config=config, formatters=core.load_formatters)
 
     # Config overrides
-    config.lint.postgres_target_version = data.config.lint.postgres_target_version
+    config.lint.target_postgres_version = data.config.lint.target_postgres_version
     config.lint.select = data.config.lint.select
     config.lint.ignore = data.config.lint.ignore
     config.lint.ignore_noqa = data.config.lint.ignore_noqa
@@ -33,9 +33,10 @@ def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:
     )
     config.format.lines_between_statements = data.config.format.lines_between_statements
 
-    rules = core.load_rules(config=config)
+    rules: set[type[core.BaseChecker]] = core.load_rules(config=config)
+
     for rule in rules:
-        linter.checkers.add(rule())
+        linter.checkers.add(rule(config=config))
 
     lint_result = linter.run(
         source_file="",

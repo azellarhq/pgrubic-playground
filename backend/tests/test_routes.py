@@ -6,7 +6,7 @@ from app.config import settings
 
 config = {
     "lint": {
-        "postgres-target-version": 14,
+        "target-postgres-version": 14,
         "select": [],
         "ignore": [],
         "fixable": [],

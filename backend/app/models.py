@@ -27,7 +27,7 @@ class LinterConfig(BaseModel):
     # should still be able to provide them.
     model_config = ConfigDict(extra="allow")
 
-    postgres_target_version: int = Field(alias="postgres-target-version", default=14)
+    target_postgres_version: int = Field(alias="target-postgres-version", default=14)
     select: list[str] = []
     ignore: list[str] = []
     fixable: list[str] = []
