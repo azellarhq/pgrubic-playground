@@ -25,5 +25,5 @@ globalThis.fetch = vi.fn();
 
 beforeEach(() => {
   fetch.mockReset();
-  vi.restoreAllMocks();
+  vi.resetAllMocks();
 });
