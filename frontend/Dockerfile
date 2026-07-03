@@ -27,6 +27,6 @@ COPY public/config.js /usr/share/nginx/html/public/config.js
 EXPOSE 80
 
 # Switch to non-root user.
-USER 1001
+USER 10001
 
 CMD ["nginx", "-g", "daemon off;"]
