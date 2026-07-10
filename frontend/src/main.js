@@ -9,7 +9,7 @@ import {
   lintAndFixSql,
   generateShareLink,
   loadSharedlink,
-  ConfigParseError,
+  loadPgrubicVersion,
 } from "./core";
 
 /**
@@ -24,6 +24,8 @@ import {
 
 export async function setupEventListeners() {
   const API_BASE_URL = window.config.API_BASE_URL;
+
+  await loadPgrubicVersion({ API_BASE_URL, notify });
 
   const buttons = [
     "formatBtn",
@@ -77,22 +79,14 @@ export async function setupEventListeners() {
   });
 
   document.getElementById("shareBtn").addEventListener("click", async () => {
-    try {
-      const url = await generateShareLink({
-        API_BASE_URL,
-        configEditor,
-        sqlEditor,
-        notify,
-      });
-      await navigator.clipboard.writeText(url);
-      notify("Copied to clipboard!", "success");
-    } catch (error) {
-      if (error instanceof ConfigParseError) {
-        notify("Error in config", "error");
-      } else {
-        notify("Operation failed!", "error");
-      }
-    }
+    const url = await generateShareLink({
+      API_BASE_URL,
+      configEditor,
+      sqlEditor,
+      notify,
+    });
+    await navigator.clipboard.writeText(url);
+    notify("Copied to clipboard!", "success");
   });
 
   document.getElementById("copyBtn").addEventListener("click", async () => {

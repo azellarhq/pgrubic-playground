@@ -4,8 +4,6 @@ import { defaultConfig, defaultSql } from "./editors";
 
 import toml from "toml";
 
-class ConfigParseError extends Error {}
-
 /**
  * Formats the SQL code from the provided SQL editor using the configuration from the config editor.
  * Fetches the formatted SQL from the given API endpoint and updates the DOM with the results.
@@ -243,15 +241,17 @@ async function lintAndFixSql({
  * @param {string} params.API_BASE_URL - The base URL of the API.
  * @param {Object} params.configEditor - The editor containing the pgrubic config.
  * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
+ * @param {Function} params.notify - Function to display notifications.
  *
  * @returns {Promise<string>} A promise that resolves with the share link.
  */
-async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor }) {
+async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify }) {
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
   } catch {
-    throw new ConfigParseError("Error in config");
+    notify("Error in config", "error");
+    return;
   }
 
   const sqlOutputBox = document.getElementById("sqlOutputBox"),
@@ -279,7 +279,8 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor }) {
 
   if (!response.ok) {
     lintOutput.innerHTML = "";
-    throw new Error("Operation failed!");
+    notify("Operation failed!", "error");
+    return;
   }
 
   const data = await response.json();
@@ -362,11 +363,47 @@ async function loadSharedlink({
   }
 }
 
+/**
+ * Loads pgrubic version.
+ *
+ * Fetches the pgrubic version from the API and updates the DOM with the version.
+ *
+ * @param {Object} params - The function parameters.
+ * @param {string} params.API_BASE_URL - The base URL of the API.
+ * @param {Function} params.notify - Function to display notifications.
+ */
+async function loadPgrubicVersion({API_BASE_URL, notify}) {
+  const versionElement = document.getElementById("pgrubic-version");
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/pgrubic-version`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      notify("Failed to load pgrubic version:", "info");
+      versionElement.textContent = "Unavailable";
+      return;
+    }
+
+
+    const { version } = await response.json();
+    versionElement.textContent = version;
+  } catch {
+    // notify("Failed to load pgrubic version", "info");
+    versionElement.textContent = "Unavailable";
+    return;
+  }
+}
+
 export {
   formatSql,
   lintSql,
   lintAndFixSql,
   generateShareLink,
   loadSharedlink,
-  ConfigParseError,
+  loadPgrubicVersion,
 };
