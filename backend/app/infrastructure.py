@@ -9,7 +9,6 @@ import diskcache
 from config import settings
 from fastapi import HTTPException, status
 from pgrubic import core
-from pgrubic.core import errors
 
 # Initialize common infrastructure
 cache = diskcache.Cache()
@@ -17,13 +16,7 @@ cache = diskcache.Cache()
 
 def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:
     """Lint source code."""
-    try:
-        config = core.parse_config(data.config.model_dump(by_alias=True))
-    except errors.MissingConfigError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Missing config: {e}",
-        ) from e
+    config = core.parse_config(data.config.model_dump(by_alias=True))
 
     config.lint.fix = data.with_fix
     linter = core.Linter(config=config, formatters=core.load_formatters)
@@ -73,13 +66,7 @@ def format_source_code(
     data: models.FormatSourceCode,
 ) -> models.FormatResult:
     """Format source code."""
-    try:
-        config = core.parse_config(data.config.model_dump(by_alias=True))
-    except errors.MissingConfigError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Missing config: {e}",
-        ) from e
+    config = core.parse_config(data.config.model_dump(by_alias=True))
 
     formatter = core.Formatter(config=config, formatters=core.load_formatters)
 
