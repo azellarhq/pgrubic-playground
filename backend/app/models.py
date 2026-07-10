@@ -20,24 +20,65 @@ class Error(BaseModel):
 
 
 # Configurations
-class LinterConfig(BaseModel):
+class BaseConfig(BaseModel):
+    """Base configuration."""
+
+    model_config = ConfigDict(extra="forbid")
+
+
+class Disallowed(BaseConfig):
+    """Disallowed."""
+
+    name: str
+    reason: str
+    use_instead: str = Field(alias="use-instead")
+
+
+class DisallowedSchema(Disallowed):
+    """Disallowed schema."""
+
+
+class Column(BaseConfig):
+    """Column."""
+
+    name: str
+    data_type: str = Field(alias="data-type")
+
+
+class DisallowedDataType(Disallowed):
+    """Disallowed data type."""
+
+
+class LinterConfig(BaseConfig):
     """Linter configuration."""
 
-    # We are not supporting every configuration option from pgrubic but clients
-    # should still be able to provide them.
-    model_config = ConfigDict(extra="allow")
-
     target_postgres_version: int = Field(alias="target-postgres-version", default=14)
-    select: list[str] = []
-    ignore: list[str] = []
-    fixable: list[str] = []
-    unfixable: list[str] = []
+    additional_non_volatile_functions: list[str] = Field(
+        alias="additional-non-volatile-functions",
+        default_factory=list,
+    )
+    select: list[str] = Field(default_factory=list)
+    ignore: list[str] = Field(default_factory=list)
+    fixable: list[str] = Field(default_factory=list)
+    unfixable: list[str] = Field(default_factory=list)
     ignore_noqa: bool = Field(alias="ignore-noqa", default=False)
-    allowed_extensions: list[str] = Field(alias="allowed-extensions", default=[])
-    allowed_languages: list[str] = Field(alias="allowed-languages", default=[])
-    disallowed_schemas: list[str] = Field(alias="disallowed-schemas", default=[])
-    disallowed_data_types: list[str] = Field(alias="disallowed-data-types", default=[])
-    required_columns: list[str] = Field(alias="required-columns", default=[])
+    allowed_extensions: list[str] = Field(
+        alias="allowed-extensions",
+        default_factory=list,
+    )
+    allowed_languages: list[str] = Field(alias="allowed-languages", default_factory=list)
+    disallowed_schemas: list[DisallowedSchema] = Field(
+        alias="disallowed-schemas",
+        default_factory=list,
+    )
+    disallowed_data_types: list[DisallowedDataType] = Field(
+        alias="disallowed-data-types",
+        default_factory=list,
+    )
+    required_columns: list[Column] = Field(
+        alias="required-columns",
+        default_factory=list,
+    )
     timestamp_column_suffix: str = Field(alias="timestamp-column-suffix", default="_at")
     date_column_suffix: str = Field(alias="date-column-suffix", default="_date")
     regex_partition: str = Field(alias="regex-partition", default="^.+$")
@@ -62,12 +103,8 @@ class LinterConfig(BaseModel):
     regex_sequence: str = Field(alias="regex-sequence", default="^.+$")
 
 
-class FormatterConfig(BaseModel):
+class FormatterConfig(BaseConfig):
     """Formatter configuration."""
-
-    # We are not supporting every configuration option from pgrubic but clients
-    # should still be able to provide them.
-    model_config = ConfigDict(extra="allow")
 
     comma_at_beginning: bool = Field(alias="comma-at-beginning", default=True)
     new_line_before_semicolon: bool = Field(
@@ -81,7 +118,7 @@ class FormatterConfig(BaseModel):
     lines_between_statements: int = Field(alias="lines-between-statements", default=1)
 
 
-class Config(BaseModel):
+class Config(BaseConfig):
     """Configuration."""
 
     lint: LinterConfig
@@ -89,7 +126,7 @@ class Config(BaseModel):
 
 
 # Request
-class Request(BaseModel):
+class Request(BaseConfig):
     """Request."""
 
     source_code: str

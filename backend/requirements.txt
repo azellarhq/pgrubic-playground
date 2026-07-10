@@ -1,4 +1,4 @@
-pgrubic==1.0.0
+pgrubic==1.1.0
 toml==0.10.2
 pydantic==2.13.4
 pydantic-settings==2.14.2

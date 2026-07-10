@@ -11,27 +11,15 @@ from fastapi import HTTPException, status
 from pgrubic import core
 
 # Initialize common infrastructure
-config = core.parse_config()
 cache = diskcache.Cache()
 
 
 def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:
     """Lint source code."""
-    linter = core.Linter(config=config, formatters=core.load_formatters)
+    config = core.parse_config(data.config.model_dump(by_alias=True))
 
-    # Config overrides
-    config.lint.target_postgres_version = data.config.lint.target_postgres_version
-    config.lint.select = data.config.lint.select
-    config.lint.ignore = data.config.lint.ignore
-    config.lint.ignore_noqa = data.config.lint.ignore_noqa
     config.lint.fix = data.with_fix
-
-    config.format.comma_at_beginning = data.config.format.comma_at_beginning
-    config.format.new_line_before_semicolon = data.config.format.new_line_before_semicolon
-    config.format.remove_pg_catalog_from_functions = (
-        data.config.format.remove_pg_catalog_from_functions
-    )
-    config.format.lines_between_statements = data.config.format.lines_between_statements
+    linter = core.Linter(config=config, formatters=core.load_formatters)
 
     rules: set[type[core.BaseChecker]] = core.load_rules(config=config)
 
@@ -78,13 +66,7 @@ def format_source_code(
     data: models.FormatSourceCode,
 ) -> models.FormatResult:
     """Format source code."""
-    # Config overrides
-    config.format.comma_at_beginning = data.config.format.comma_at_beginning
-    config.format.new_line_before_semicolon = data.config.format.new_line_before_semicolon
-    config.format.remove_pg_catalog_from_functions = (
-        data.config.format.remove_pg_catalog_from_functions
-    )
-    config.format.lines_between_statements = data.config.format.lines_between_statements
+    config = core.parse_config(data.config.model_dump(by_alias=True))
 
     formatter = core.Formatter(config=config, formatters=core.load_formatters)
 
