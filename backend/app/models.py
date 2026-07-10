@@ -53,9 +53,9 @@ class LinterConfig(BaseConfig):
     """Linter configuration."""
 
     target_postgres_version: int = Field(alias="target-postgres-version", default=14)
-    additional_non_volatile_functions: frozenset[str] = Field(
+    additional_non_volatile_functions: list[str] = Field(
         alias="additional-non-volatile-functions",
-        default_factory=frozenset,
+        default_factory=list,
     )
     select: list[str] = Field(default_factory=list)
     ignore: list[str] = Field(default_factory=list)
