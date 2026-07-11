@@ -242,8 +242,7 @@ async function lintAndFixSql({
  * @param {Object} params.configEditor - The editor containing the pgrubic config.
  * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
  * @param {Function} params.notify - Function to display notifications.
- *
- * @returns {Promise<string>} A promise that resolves with the share link.
+ * @returns {Promise<string | null>} A promise that resolves with the share link, or null on failure.
  */
 async function generateShareLink({
   API_BASE_URL,
@@ -256,7 +255,7 @@ async function generateShareLink({
     configObject = toml.parse(configEditor.getValue());
   } catch {
     notify("Error in config", "error");
-    return;
+    return null;
   }
 
   const sqlOutputBox = document.getElementById("sqlOutputBox"),
@@ -286,13 +285,14 @@ async function generateShareLink({
     if (!response.ok) {
       lintOutput.innerHTML = "";
       notify("Operation failed!", "error");
-      return;
+      return null;
     }
 
     const data = await response.json();
     return `${window.location.origin}/${data.request_id}`;
   } catch {
     notify("Operation failed!", "error");
+    return null;
   }
 }
 

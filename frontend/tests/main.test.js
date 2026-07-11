@@ -53,7 +53,7 @@ describe("Main button event listeners", () => {
     vi.spyOn(utils, "notify").mockImplementation(() => {});
     vi.spyOn(core, "loadPgrubicVersion").mockResolvedValue();
 
-    setupEventListeners();
+    return setupEventListeners();
   });
 
   it("calls formatSql on formatBtn click", async () => {

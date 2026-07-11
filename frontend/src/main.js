@@ -25,7 +25,7 @@ import {
 export async function setupEventListeners() {
   const API_BASE_URL = window.config.API_BASE_URL;
 
-  await loadPgrubicVersion({ API_BASE_URL, notify });
+  loadPgrubicVersion({ API_BASE_URL });
 
   const buttons = [
     "formatBtn",
@@ -86,6 +86,11 @@ export async function setupEventListeners() {
       sqlEditor,
       notify,
     });
+
+    if (!url) {
+      return;
+    }
+
     await navigator.clipboard.writeText(url);
     notify("Copied to clipboard!", "success");
   });
