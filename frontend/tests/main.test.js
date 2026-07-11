@@ -100,7 +100,7 @@ describe("Main button event listeners", () => {
     );
   });
 
-  it("shareBtn notifies on clipboard write failure", async () => {
+  it("shareBtn notifies on clipboard write failure with error message", async () => {
     const shareLink = "https://fake.share/link";
 
     vi.spyOn(navigator.clipboard, "writeText").mockRejectedValue(
@@ -115,6 +115,23 @@ describe("Main button event listeners", () => {
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(shareLink);
 
     expect(utils.notify).toHaveBeenCalledWith("Permission denied", "error");
+  });
+
+  it("shareBtn notifies on clipboard write failure without error message", async () => {
+    const shareLink = "https://fake.share/link";
+
+    vi.spyOn(navigator.clipboard, "writeText").mockRejectedValue(
+      new DOMException("", "NotAllowedError"),
+    );
+
+    core.generateShareLink.mockResolvedValue(shareLink);
+
+    await document.getElementById("shareBtn").click();
+    await Promise.resolve();
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(shareLink);
+
+    expect(utils.notify).toHaveBeenCalledWith("Failed to copy to clipboard.", "error");
   });
 
   it("resets config and notifies on resetConfigBtn click", () => {
