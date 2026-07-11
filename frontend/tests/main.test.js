@@ -7,24 +7,24 @@ import * as utils from "../src/utils";
 import { setupEventListeners } from "../src/main";
 import { configEditor, defaultConfig } from "../src/editors";
 
+// Mocks
+vi.mock("../src/editors", () => ({
+  configEditor: {
+    getValue: vi.fn(),
+    setValue: vi.fn(),
+  },
+
+  sqlEditor: {
+    getValue: vi.fn(),
+    setValue: vi.fn(),
+  },
+
+  defaultConfig: "",
+
+  defaultSql: "",
+}));
+
 describe("Main button event listeners", () => {
-  // Mocks
-  vi.mock("../src/editors", () => ({
-    configEditor: {
-      getValue: vi.fn(),
-      setValue: vi.fn(),
-    },
-
-    sqlEditor: {
-      getValue: vi.fn(),
-      setValue: vi.fn(),
-    },
-
-    defaultConfig: "",
-
-    defaultSql: "",
-  }));
-
   Object.assign(navigator, {
     clipboard: { writeText: vi.fn().mockResolvedValue() },
   });
@@ -99,38 +99,6 @@ describe("Main button event listeners", () => {
       "success",
     );
   });
-
-  // it("generateShareLink notifies with config error message on ConfigParseError", async () => {
-  //   const error = new core.ConfigParseError("Error in config");
-  //   core.generateShareLink.mockRejectedValue(error);
-
-  //   await document.getElementById("shareBtn").click();
-  //   await Promise.resolve();
-
-  //   expect(utils.notify).toHaveBeenCalledWith("Error in config", "error");
-  // });
-
-  // it("notifies with generic error message on unexpected error", async () => {
-  //   core.generateShareLink.mockRejectedValue(new TypeError("Network down"));
-
-  //   document.getElementById("shareBtn").click();
-  //   await Promise.resolve();
-
-  //   expect(utils.notify).toHaveBeenCalledWith("Operation failed!", "error");
-  // });
-
-  // it("notifies with generic error message on network failure", async () => {
-  //   vi.stubGlobal(
-  //     "fetch",
-  //     vi.fn().mockRejectedValue(new TypeError("Network down")),
-  //   );
-
-  //   document.getElementById("shareBtn").click();
-
-  //   await Promise.resolve();
-
-  //   expect(utils.notify).toHaveBeenCalledWith("Operation failed!", "error");
-  // });
 
   it("resets config and notifies on resetConfigBtn click", () => {
     document.getElementById("resetConfigBtn").click();

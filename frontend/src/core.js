@@ -374,7 +374,6 @@ async function loadSharedlink({
  *
  * @param {Object} params - The function parameters.
  * @param {string} params.API_BASE_URL - The base URL of the API.
- * @param {Function} params.notify - Function to display notifications.
  */
 async function loadPgrubicVersion({API_BASE_URL}) {
   const pgrubicVersion = document.getElementById("pgrubicVersion");

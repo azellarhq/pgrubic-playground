@@ -19,6 +19,7 @@ describe("Core Functions", () => {
     printErrors,
     printViolations,
     setButtonsDisabled;
+
   let sqlOutputBox,
     sqlOutput,
     sqlOutputLabel,
@@ -65,6 +66,7 @@ describe("Core Functions", () => {
     sqlOutputLabel,
     lintOutput,
     lintViolationsSummary,
+    pgrubicVersion,
   );
 
   // formatSql
