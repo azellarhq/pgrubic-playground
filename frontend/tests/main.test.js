@@ -86,17 +86,41 @@ describe("Main button event listeners", () => {
   });
 
   it("shareBtn writes share link to clipboard and notifies on success", async () => {
-    core.generateShareLink.mockResolvedValue("https://fake.share/link");
+    const shareLink = "https://fake.share/link";
+
+    core.generateShareLink.mockResolvedValue(shareLink);
 
     await document.getElementById("shareBtn").click();
     await Promise.resolve();
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-      "https://fake.share/link",
-    );
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(shareLink);
     expect(utils.notify).toHaveBeenCalledWith(
       "Copied to clipboard!",
       "success",
+    );
+  });
+
+  it ("shareBtn notifies on clipboard write failure", async () => {
+    const shareLink = "https://fake.share/link";
+
+    vi.stubGlobal("navigator", {
+      clipboard: {
+        writeText: vi.fn().mockRejectedValue(
+          new DOMException("Permission denied", "NotAllowedError"),
+        ),
+      },
+    });
+
+    core.generateShareLink.mockResolvedValue(shareLink);
+
+    await document.getElementById("shareBtn").click();
+    await Promise.resolve();
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(shareLink);
+
+    expect(utils.notify).toHaveBeenCalledWith(
+      "Permission denied",
+      "error",
     );
   });
 
@@ -119,4 +143,5 @@ describe("Main button event listeners", () => {
     document.getElementById("hamburger").click();
     expect(topLinks.classList.contains("show")).toBe(false);
   });
+
 });

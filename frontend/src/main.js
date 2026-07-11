@@ -91,8 +91,12 @@ export async function setupEventListeners() {
       return;
     }
 
-    await navigator.clipboard.writeText(url);
-    notify("Copied to clipboard!", "success");
+    try {
+      await navigator.clipboard.writeText(url);
+      notify("Copied to clipboard!", "success");
+    } catch (error) {
+      notify(error.message, "error");
+    }
   });
 
   document.getElementById("copyBtn").addEventListener("click", async () => {
