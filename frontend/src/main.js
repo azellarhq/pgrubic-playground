@@ -42,6 +42,7 @@ export async function setupEventListeners() {
     }
   };
 
+  // Disable buttons at startup
   setButtonsDisabled(true);
 
   await loadSharedlink({

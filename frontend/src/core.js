@@ -260,31 +260,35 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify
     lintOutput = document.getElementById("lintOutput"),
     lintViolationsSummary = document.getElementById("lintViolationsSummary");
 
-  const response = await fetch(`${API_BASE_URL}/share`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      source_code: sqlEditor.getValue(),
-      config: configObject,
-      lint_violations_summary: lintViolationsSummary.innerHTML,
-      lint_violations_summary_class: lintViolationsSummary.className,
-      lint_output: lintOutput.innerHTML,
-      sql_output_box_style: sqlOutputBox.style.display,
-      sql_output_label: sqlOutputLabel.textContent,
-      sql_output: sqlOutput.textContent,
-    }),
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/share`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        source_code: sqlEditor.getValue(),
+        config: configObject,
+        lint_violations_summary: lintViolationsSummary.innerHTML,
+        lint_violations_summary_class: lintViolationsSummary.className,
+        lint_output: lintOutput.innerHTML,
+        sql_output_box_style: sqlOutputBox.style.display,
+        sql_output_label: sqlOutputLabel.textContent,
+        sql_output: sqlOutput.textContent,
+      }),
+    });
 
-  if (!response.ok) {
-    lintOutput.innerHTML = "";
+    if (!response.ok) {
+      lintOutput.innerHTML = "";
+      notify("Operation failed!", "error");
+      return;
+    }
+
+    const data = await response.json();
+    return `${window.location.origin}/${data.request_id}`;
+  } catch {
     notify("Operation failed!", "error");
-    return;
   }
-
-  const data = await response.json();
-  return `${window.location.origin}/${data.request_id}`;
 }
 
 /**
@@ -300,7 +304,7 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify
  * @param {Object} params.configEditor - The editor containing the pgrubic config.
  * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
  * @param {Function} params.notify - Function to display notifications.
- * @param {Function} params.setButtonsDisabled - Function to set the disabled state of the buttons.
+ * @param {Function} params.setButtonsDisabled - Function to disable buttons.
  */
 async function loadSharedlink({
   API_BASE_URL,
@@ -372,8 +376,8 @@ async function loadSharedlink({
  * @param {string} params.API_BASE_URL - The base URL of the API.
  * @param {Function} params.notify - Function to display notifications.
  */
-async function loadPgrubicVersion({API_BASE_URL, notify}) {
-  const versionElement = document.getElementById("pgrubic-version");
+async function loadPgrubicVersion({API_BASE_URL}) {
+  const pgrubicVersion = document.getElementById("pgrubicVersion");
 
   try {
     const response = await fetch(`${API_BASE_URL}/pgrubic-version`, {
@@ -384,17 +388,14 @@ async function loadPgrubicVersion({API_BASE_URL, notify}) {
     });
 
     if (!response.ok) {
-      notify("Failed to load pgrubic version:", "info");
-      versionElement.textContent = "Unavailable";
+      pgrubicVersion.textContent = "Unavailable";
       return;
     }
 
-
     const { version } = await response.json();
-    versionElement.textContent = version;
+    pgrubicVersion.textContent = version;
   } catch {
-    // notify("Failed to load pgrubic version", "info");
-    versionElement.textContent = "Unavailable";
+    pgrubicVersion.textContent = "Unavailable";
     return;
   }
 }
