@@ -100,14 +100,16 @@ describe("Main button event listeners", () => {
     );
   });
 
-  it ("shareBtn notifies on clipboard write failure", async () => {
+  it("shareBtn notifies on clipboard write failure", async () => {
     const shareLink = "https://fake.share/link";
 
     vi.stubGlobal("navigator", {
       clipboard: {
-        writeText: vi.fn().mockRejectedValue(
-          new DOMException("Permission denied", "NotAllowedError"),
-        ),
+        writeText: vi
+          .fn()
+          .mockRejectedValue(
+            new DOMException("Permission denied", "NotAllowedError"),
+          ),
       },
     });
 
@@ -118,10 +120,7 @@ describe("Main button event listeners", () => {
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(shareLink);
 
-    expect(utils.notify).toHaveBeenCalledWith(
-      "Permission denied",
-      "error",
-    );
+    expect(utils.notify).toHaveBeenCalledWith("Permission denied", "error");
   });
 
   it("resets config and notifies on resetConfigBtn click", () => {
@@ -143,5 +142,4 @@ describe("Main button event listeners", () => {
     document.getElementById("hamburger").click();
     expect(topLinks.classList.contains("show")).toBe(false);
   });
-
 });
