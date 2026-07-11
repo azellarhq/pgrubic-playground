@@ -95,7 +95,12 @@ export async function setupEventListeners() {
       await navigator.clipboard.writeText(url);
       notify("Copied to clipboard!", "success");
     } catch (error) {
-      notify(error.message, "error");
+      const message =
+        error && typeof error.message === "string" && error.message
+          ? error.message
+          : "Failed to copy to clipboard.";
+
+      notify(message, "error");
     }
   });
 
