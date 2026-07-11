@@ -245,7 +245,12 @@ async function lintAndFixSql({
  *
  * @returns {Promise<string>} A promise that resolves with the share link.
  */
-async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor, notify }) {
+async function generateShareLink({
+  API_BASE_URL,
+  configEditor,
+  sqlEditor,
+  notify,
+}) {
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
@@ -375,7 +380,7 @@ async function loadSharedlink({
  * @param {Object} params - The function parameters.
  * @param {string} params.API_BASE_URL - The base URL of the API.
  */
-async function loadPgrubicVersion({API_BASE_URL}) {
+async function loadPgrubicVersion({ API_BASE_URL }) {
   const pgrubicVersion = document.getElementById("pgrubicVersion");
 
   try {
