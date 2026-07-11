@@ -103,15 +103,9 @@ describe("Main button event listeners", () => {
   it("shareBtn notifies on clipboard write failure", async () => {
     const shareLink = "https://fake.share/link";
 
-    vi.stubGlobal("navigator", {
-      clipboard: {
-        writeText: vi
-          .fn()
-          .mockRejectedValue(
-            new DOMException("Permission denied", "NotAllowedError"),
-          ),
-      },
-    });
+    vi.spyOn(navigator.clipboard, "writeText").mockRejectedValue(
+      new DOMException("Permission denied", "NotAllowedError"),
+    );
 
     core.generateShareLink.mockResolvedValue(shareLink);
 

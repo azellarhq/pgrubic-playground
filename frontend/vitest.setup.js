@@ -1,4 +1,4 @@
-import { vi, beforeEach } from "vitest";
+import { vi, beforeEach, afterEach } from "vitest";
 
 // Mock monaco editor
 vi.mock("monaco-editor/esm/vs/editor/editor.api", () => ({
@@ -26,4 +26,8 @@ globalThis.fetch = vi.fn();
 beforeEach(() => {
   fetch.mockReset();
   vi.resetAllMocks();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
