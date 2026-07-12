@@ -131,7 +131,10 @@ describe("Main button event listeners", () => {
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(shareLink);
 
-    expect(utils.notify).toHaveBeenCalledWith("Failed to copy to clipboard.", "error");
+    expect(utils.notify).toHaveBeenCalledWith(
+      "Failed to copy to clipboard.",
+      "error",
+    );
   });
 
   it("resets config and notifies on resetConfigBtn click", () => {
