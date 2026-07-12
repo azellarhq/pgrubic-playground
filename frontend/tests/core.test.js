@@ -7,8 +7,8 @@ import {
   lintAndFixSql,
   generateShareLink,
   loadSharedlink,
+  loadPgrubicVersion,
 } from "../src/core";
-import { ConfigParseError } from "../src/core";
 
 import toml from "toml";
 
@@ -19,11 +19,13 @@ describe("Core Functions", () => {
     printErrors,
     printViolations,
     setButtonsDisabled;
+
   let sqlOutputBox,
     sqlOutput,
     sqlOutputLabel,
     lintOutput,
-    lintViolationsSummary;
+    lintViolationsSummary,
+    pgrubicVersion;
 
   // Mocks
   Object.defineProperty(window, "location", {
@@ -56,12 +58,15 @@ describe("Core Functions", () => {
   lintOutput.id = "lintOutput";
   lintViolationsSummary = document.createElement("div");
   lintViolationsSummary.id = "lintViolationsSummary";
+  pgrubicVersion = document.createElement("span");
+  pgrubicVersion.id = "pgrubicVersion";
   document.body.append(
     sqlOutputBox,
     sqlOutput,
     sqlOutputLabel,
     lintOutput,
     lintViolationsSummary,
+    pgrubicVersion,
   );
 
   // formatSql
@@ -435,22 +440,41 @@ describe("Core Functions", () => {
   });
 
   // generateShareLink
-  it("throws ConfigParseError if TOML parsing fails", async () => {
+  it("generateShareLink should notify error on config error", async () => {
     toml.parse.mockImplementation(() => {
       throw { line: 1, column: 1, message: "fail" };
     });
-    await expect(() =>
-      generateShareLink({ API_BASE_URL: "/api", configEditor, sqlEditor }),
-    ).rejects.toThrow(ConfigParseError);
+    await generateShareLink({
+      API_BASE_URL: "/api",
+      configEditor,
+      sqlEditor,
+      notify,
+    });
+    expect(notify).toHaveBeenCalledWith("Error in config", "error");
   });
 
   it("generateShareLink should handle fetch failure", async () => {
     fetch.mockResolvedValue({
       ok: false,
     });
-    await expect(() =>
-      generateShareLink({ API_BASE_URL: "/api", configEditor, sqlEditor }),
-    ).rejects.toThrow("Operation failed!");
+    await generateShareLink({
+      API_BASE_URL: "/api",
+      configEditor,
+      sqlEditor,
+      notify,
+    });
+    expect(notify).toHaveBeenCalledWith("Operation failed!", "error");
+  });
+
+  it("generateShareLink should handle other fetch failure", async () => {
+    fetch.mockRejectedValue(new Error("network error"));
+    await generateShareLink({
+      API_BASE_URL: "/api",
+      configEditor,
+      sqlEditor,
+      notify,
+    });
+    expect(notify).toHaveBeenCalledWith("Operation failed!", "error");
   });
 
   it("generateShareLink should generate share link on success", async () => {
@@ -463,6 +487,7 @@ describe("Core Functions", () => {
       API_BASE_URL: "/api",
       configEditor,
       sqlEditor,
+      notify,
     });
 
     expect(url).toBe(window.location.origin + "/abc123");
@@ -523,5 +548,27 @@ describe("Core Functions", () => {
       setButtonsDisabled,
     });
     expect(notify).toHaveBeenCalledWith("Operation failed!", "error");
+  });
+
+  // loadPgrubicVersion
+  it("loadPgrubicVersion should display version on success", async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ version: "1.0.0" }),
+    });
+    await loadPgrubicVersion({ API_BASE_URL: "/api" });
+    expect(pgrubicVersion.textContent).toBe("1.0.0");
+  });
+
+  it("loadPgrubicVersion should display 'Unavailable' on fetch failure", async () => {
+    fetch.mockResolvedValue({ ok: false });
+    await loadPgrubicVersion({ API_BASE_URL: "/api" });
+    expect(pgrubicVersion.textContent).toBe("Unavailable");
+  });
+
+  it("loadPgrubicVersion should display 'Unavailable' on other fetch failure", async () => {
+    fetch.mockRejectedValue(new Error("network error"));
+    await loadPgrubicVersion({ API_BASE_URL: "/api" });
+    expect(pgrubicVersion.textContent).toBe("Unavailable");
   });
 });

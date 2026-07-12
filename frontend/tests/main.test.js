@@ -7,24 +7,24 @@ import * as utils from "../src/utils";
 import { setupEventListeners } from "../src/main";
 import { configEditor, defaultConfig } from "../src/editors";
 
+// Mocks
+vi.mock("../src/editors", () => ({
+  configEditor: {
+    getValue: vi.fn(),
+    setValue: vi.fn(),
+  },
+
+  sqlEditor: {
+    getValue: vi.fn(),
+    setValue: vi.fn(),
+  },
+
+  defaultConfig: "",
+
+  defaultSql: "",
+}));
+
 describe("Main button event listeners", () => {
-  // Mocks
-  vi.mock("../src/editors", () => ({
-    configEditor: {
-      getValue: vi.fn(),
-      setValue: vi.fn(),
-    },
-
-    sqlEditor: {
-      getValue: vi.fn(),
-      setValue: vi.fn(),
-    },
-
-    defaultConfig: "",
-
-    defaultSql: "",
-  }));
-
   Object.assign(navigator, {
     clipboard: { writeText: vi.fn().mockResolvedValue() },
   });
@@ -51,8 +51,9 @@ describe("Main button event listeners", () => {
     vi.spyOn(core, "generateShareLink").mockResolvedValue();
     vi.spyOn(utils, "copyToClipboard").mockImplementation(() => {});
     vi.spyOn(utils, "notify").mockImplementation(() => {});
+    vi.spyOn(core, "loadPgrubicVersion").mockResolvedValue();
 
-    setupEventListeners();
+    return setupEventListeners();
   });
 
   it("calls formatSql on formatBtn click", async () => {
@@ -85,37 +86,55 @@ describe("Main button event listeners", () => {
   });
 
   it("shareBtn writes share link to clipboard and notifies on success", async () => {
-    core.generateShareLink.mockResolvedValue("https://fake.share/link");
+    const shareLink = "https://fake.share/link";
+
+    core.generateShareLink.mockResolvedValue(shareLink);
 
     await document.getElementById("shareBtn").click();
     await Promise.resolve();
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-      "https://fake.share/link",
-    );
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(shareLink);
     expect(utils.notify).toHaveBeenCalledWith(
       "Copied to clipboard!",
       "success",
     );
   });
 
-  it("generateShareLink notifies with config error message on ConfigParseError", async () => {
-    const error = new core.ConfigParseError("Error in config");
-    core.generateShareLink.mockRejectedValue(error);
+  it("shareBtn notifies on clipboard write failure with error message", async () => {
+    const shareLink = "https://fake.share/link";
+
+    vi.spyOn(navigator.clipboard, "writeText").mockRejectedValue(
+      new DOMException("Permission denied", "NotAllowedError"),
+    );
+
+    core.generateShareLink.mockResolvedValue(shareLink);
 
     await document.getElementById("shareBtn").click();
     await Promise.resolve();
 
-    expect(utils.notify).toHaveBeenCalledWith("Error in config", "error");
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(shareLink);
+
+    expect(utils.notify).toHaveBeenCalledWith("Permission denied", "error");
   });
 
-  it("notifies with generic error message on unexpected error", async () => {
-    core.generateShareLink.mockRejectedValue(new Error("Network down"));
+  it("shareBtn notifies on clipboard write failure without error message", async () => {
+    const shareLink = "https://fake.share/link";
+
+    vi.spyOn(navigator.clipboard, "writeText").mockRejectedValue(
+      new DOMException("", "NotAllowedError"),
+    );
+
+    core.generateShareLink.mockResolvedValue(shareLink);
 
     await document.getElementById("shareBtn").click();
     await Promise.resolve();
 
-    expect(utils.notify).toHaveBeenCalledWith("Operation failed!", "error");
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(shareLink);
+
+    expect(utils.notify).toHaveBeenCalledWith(
+      "Failed to copy to clipboard.",
+      "error",
+    );
   });
 
   it("resets config and notifies on resetConfigBtn click", () => {

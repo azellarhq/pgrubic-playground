@@ -9,7 +9,7 @@ import {
   lintAndFixSql,
   generateShareLink,
   loadSharedlink,
-  ConfigParseError,
+  loadPgrubicVersion,
 } from "./core";
 
 /**
@@ -24,6 +24,8 @@ import {
 
 export async function setupEventListeners() {
   const API_BASE_URL = window.config.API_BASE_URL;
+
+  loadPgrubicVersion({ API_BASE_URL });
 
   const buttons = [
     "formatBtn",
@@ -40,6 +42,7 @@ export async function setupEventListeners() {
     }
   };
 
+  // Disable buttons at startup
   setButtonsDisabled(true);
 
   await loadSharedlink({
@@ -77,21 +80,27 @@ export async function setupEventListeners() {
   });
 
   document.getElementById("shareBtn").addEventListener("click", async () => {
+    const url = await generateShareLink({
+      API_BASE_URL,
+      configEditor,
+      sqlEditor,
+      notify,
+    });
+
+    if (!url) {
+      return;
+    }
+
     try {
-      const url = await generateShareLink({
-        API_BASE_URL,
-        configEditor,
-        sqlEditor,
-        notify,
-      });
       await navigator.clipboard.writeText(url);
       notify("Copied to clipboard!", "success");
     } catch (error) {
-      if (error instanceof ConfigParseError) {
-        notify("Error in config", "error");
-      } else {
-        notify("Operation failed!", "error");
-      }
+      const message =
+        error && typeof error.message === "string" && error.message
+          ? error.message
+          : "Failed to copy to clipboard.";
+
+      notify(message, "error");
     }
   });
 

@@ -4,8 +4,6 @@ import { defaultConfig, defaultSql } from "./editors";
 
 import toml from "toml";
 
-class ConfigParseError extends Error {}
-
 /**
  * Formats the SQL code from the provided SQL editor using the configuration from the config editor.
  * Fetches the formatted SQL from the given API endpoint and updates the DOM with the results.
@@ -243,15 +241,21 @@ async function lintAndFixSql({
  * @param {string} params.API_BASE_URL - The base URL of the API.
  * @param {Object} params.configEditor - The editor containing the pgrubic config.
  * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
- *
- * @returns {Promise<string>} A promise that resolves with the share link.
+ * @param {Function} params.notify - Function to display notifications.
+ * @returns {Promise<string | null>} A promise that resolves with the share link, or null on failure.
  */
-async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor }) {
+async function generateShareLink({
+  API_BASE_URL,
+  configEditor,
+  sqlEditor,
+  notify,
+}) {
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
   } catch {
-    throw new ConfigParseError("Error in config");
+    notify("Error in config", "error");
+    return null;
   }
 
   const sqlOutputBox = document.getElementById("sqlOutputBox"),
@@ -260,30 +264,36 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor }) {
     lintOutput = document.getElementById("lintOutput"),
     lintViolationsSummary = document.getElementById("lintViolationsSummary");
 
-  const response = await fetch(`${API_BASE_URL}/share`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      source_code: sqlEditor.getValue(),
-      config: configObject,
-      lint_violations_summary: lintViolationsSummary.innerHTML,
-      lint_violations_summary_class: lintViolationsSummary.className,
-      lint_output: lintOutput.innerHTML,
-      sql_output_box_style: sqlOutputBox.style.display,
-      sql_output_label: sqlOutputLabel.textContent,
-      sql_output: sqlOutput.textContent,
-    }),
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/share`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        source_code: sqlEditor.getValue(),
+        config: configObject,
+        lint_violations_summary: lintViolationsSummary.innerHTML,
+        lint_violations_summary_class: lintViolationsSummary.className,
+        lint_output: lintOutput.innerHTML,
+        sql_output_box_style: sqlOutputBox.style.display,
+        sql_output_label: sqlOutputLabel.textContent,
+        sql_output: sqlOutput.textContent,
+      }),
+    });
 
-  if (!response.ok) {
-    lintOutput.innerHTML = "";
-    throw new Error("Operation failed!");
+    if (!response.ok) {
+      lintOutput.innerHTML = "";
+      notify("Operation failed!", "error");
+      return null;
+    }
+
+    const data = await response.json();
+    return `${window.location.origin}/${data.request_id}`;
+  } catch {
+    notify("Operation failed!", "error");
+    return null;
   }
-
-  const data = await response.json();
-  return `${window.location.origin}/${data.request_id}`;
 }
 
 /**
@@ -299,7 +309,7 @@ async function generateShareLink({ API_BASE_URL, configEditor, sqlEditor }) {
  * @param {Object} params.configEditor - The editor containing the pgrubic config.
  * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
  * @param {Function} params.notify - Function to display notifications.
- * @param {Function} params.setButtonsDisabled - Function to set the disabled state of the buttons.
+ * @param {Function} params.setButtonsDisabled - Function to disable buttons.
  */
 async function loadSharedlink({
   API_BASE_URL,
@@ -362,11 +372,43 @@ async function loadSharedlink({
   }
 }
 
+/**
+ * Loads pgrubic version.
+ *
+ * Fetches the pgrubic version from the API and updates the DOM with the version.
+ *
+ * @param {Object} params - The function parameters.
+ * @param {string} params.API_BASE_URL - The base URL of the API.
+ */
+async function loadPgrubicVersion({ API_BASE_URL }) {
+  const pgrubicVersion = document.getElementById("pgrubicVersion");
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/pgrubic-version`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      pgrubicVersion.textContent = "Unavailable";
+      return;
+    }
+
+    const { version } = await response.json();
+    pgrubicVersion.textContent = version;
+  } catch {
+    pgrubicVersion.textContent = "Unavailable";
+    return;
+  }
+}
+
 export {
   formatSql,
   lintSql,
   lintAndFixSql,
   generateShareLink,
   loadSharedlink,
-  ConfigParseError,
+  loadPgrubicVersion,
 };
