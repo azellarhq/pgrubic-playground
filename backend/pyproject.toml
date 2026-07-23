@@ -13,8 +13,8 @@ dependencies = {file = ["requirements.txt"]}
 
 [project.optional-dependencies]
 dev = [
-  "ruff==0.15.20",
-  "mypy==2.1.0",
+  "ruff==0.15.22",
+  "mypy==2.3.0",
   "isort==8.0.1",
   "bandit==1.9.4",
   "add-trailing-comma==4.0.0",
@@ -24,9 +24,9 @@ dev = [
   "yamllint==1.38.0",
   "conventional-pre-commit==4.4.0",
   "pytest==9.1.1",
-  "coverage==7.15.0",
-  "tox==4.56.1",
-  "httpx2==2.5.0",
+  "coverage==7.15.2",
+  "tox==4.57.0",
+  "httpx2==2.7.0",
   "types-toml==0.10.8.20260518",
 ]
 
