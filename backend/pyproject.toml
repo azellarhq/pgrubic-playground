@@ -74,6 +74,7 @@ combine-as-imports = true
 "**/tests/**/*.py" = [
   "S101", # asserts allowed in tests...
   "PLR2004", # magic value used in comparison
+  "CPY001", # ignore missing copyright
 ]
 
 [tool.isort]
