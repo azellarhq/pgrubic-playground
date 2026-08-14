@@ -61,6 +61,7 @@ ignore_missing_imports = true
 
 [tool.ruff]
 lint.select = ["ALL"]
+lint.ignore= ["CPY001"]
 line-length = 90
 
 [tool.ruff.lint.pydocstyle]
@@ -74,7 +75,6 @@ combine-as-imports = true
 "**/tests/**/*.py" = [
   "S101", # asserts allowed in tests...
   "PLR2004", # magic value used in comparison
-  "CPY001", # ignore missing copyright
 ]
 
 [tool.isort]
