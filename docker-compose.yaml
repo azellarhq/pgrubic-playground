@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      HOST_BIND: ${HOST_BIND:-localhost}
+      HOST_BIND: ${HOST_BIND:-backend}
       CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost"]}
       ENVIRONMENT: ${ENVIRONMENT:-development}
     networks:
