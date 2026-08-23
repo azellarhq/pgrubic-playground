@@ -4,7 +4,7 @@ import { describe, it, beforeEach, vi, expect } from "vitest";
 
 import * as core from "../src/core";
 import * as utils from "../src/utils";
-import { setupEventListeners } from "../src/main";
+import { setupEventListeners, resolveExternalLinks } from "../src/main";
 import { configEditor, defaultConfig } from "../src/editors";
 
 // Mocks
@@ -28,8 +28,6 @@ describe("Main button event listeners", () => {
   Object.assign(navigator, {
     clipboard: { writeText: vi.fn().mockResolvedValue() },
   });
-
-  window.config = { API_BASE_URL: "/api" };
 
   beforeEach(() => {
     // Mock DOM
@@ -155,5 +153,34 @@ describe("Main button event listeners", () => {
 
     document.getElementById("hamburger").click();
     expect(topLinks.classList.contains("show")).toBe(false);
+  });
+});
+
+describe("resolveExternalLinks", () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <a id="repoLink" pgrubic-repo></a>
+      <a id="rulesLink" pgrubic-docs="rules"></a>
+      <a id="formatterLink" pgrubic-docs="formatter"></a>
+    `;
+  });
+
+  it("points [pgrubic-repo] links at PGRUBIC_REPOSITORY_URL", () => {
+    resolveExternalLinks();
+
+    expect(document.getElementById("repoLink").href).toBe(
+      window.config.PGRUBIC_REPOSITORY_URL,
+    );
+  });
+
+  it("resolves each [pgrubic-docs] link against PGRUBIC_DOCUMENTATION_URL", () => {
+    resolveExternalLinks();
+
+    expect(document.getElementById("rulesLink").href).toBe(
+      new URL("rules", window.config.PGRUBIC_DOCUMENTATION_URL).href,
+    );
+    expect(document.getElementById("formatterLink").href).toBe(
+      new URL("formatter", window.config.PGRUBIC_DOCUMENTATION_URL).href,
+    );
   });
 });

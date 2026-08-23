@@ -119,4 +119,23 @@ export async function setupEventListeners() {
   });
 }
 
+/**
+ * Points [pgrubic-repo] elements at the pgrubic repository, and [pgrubic-docs]
+ * elements at their given path resolved against the documentation site, both
+ * read from window.config.
+ */
+export function resolveExternalLinks() {
+  document.querySelectorAll("[pgrubic-repo]").forEach((link) => {
+    link.href = window.config["PGRUBIC_REPOSITORY_URL"];
+  });
+
+  document.querySelectorAll("[pgrubic-docs]").forEach((link) => {
+    link.href = new URL(
+      link.getAttribute("pgrubic-docs"),
+      window.config["PGRUBIC_DOCUMENTATION_URL"],
+    ).href;
+  });
+}
+
 document.addEventListener("DOMContentLoaded", setupEventListeners);
+document.addEventListener("DOMContentLoaded", resolveExternalLinks);
