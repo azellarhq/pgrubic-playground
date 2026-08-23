@@ -162,6 +162,8 @@ describe("resolveExternalLinks", () => {
       <a id="repoLink" pgrubic-repo></a>
       <a id="rulesLink" pgrubic-docs="rules"></a>
       <a id="formatterLink" pgrubic-docs="formatter"></a>
+      <a id="lintLink" pgrubic-docs="linter"></a>
+      <a id="settingsLink" pgrubic-docs="settings"></a>
     `;
   });
 
