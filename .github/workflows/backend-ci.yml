@@ -29,7 +29,6 @@ jobs:
           - typing
           - security
           - tests
-          - pre-commit
     name: ${{ matrix.job }}
     steps:
       - name: Checkout repository
