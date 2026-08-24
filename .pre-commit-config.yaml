@@ -91,6 +91,13 @@ repos:
         language: python
         types: [python]
         args: [--recursive, --config=backend/pyproject.toml]
+      - id: eslint
+        stages: [pre-commit]
+        name: Lint JS with eslint
+        entry: npm --prefix frontend run lint
+        language: system
+        files: ^frontend/
+        exclude: ^frontend/(dist|node_modules)/
       # Formatters should be run late so that they can re-format
       # any prior changes
       - id: ruff
@@ -100,3 +107,10 @@ repos:
         language: python
         args: [format]
         types: [python]
+      - id: prettier
+        stages: [pre-commit]
+        name: Formatting JS with prettier
+        entry: npm --prefix frontend run format:fix
+        language: system
+        files: ^frontend/
+        exclude: ^frontend/(dist|node_modules)/

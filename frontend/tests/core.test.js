@@ -13,6 +13,8 @@ import {
 import toml from "toml";
 
 describe("Core Functions", () => {
+  const API_BASE_URL = window.config.API_BASE_URL;
+
   let configEditor,
     sqlEditor,
     notify,
@@ -75,7 +77,7 @@ describe("Core Functions", () => {
       throw { line: 1, column: 1, message: "fail" };
     });
     await formatSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -90,7 +92,7 @@ describe("Core Functions", () => {
       json: async () => ({ violations: [], errors: ["error"] }),
     });
     await formatSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -108,7 +110,7 @@ describe("Core Functions", () => {
       }),
     });
     await formatSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -124,7 +126,7 @@ describe("Core Functions", () => {
       ok: false,
     });
     await formatSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -136,7 +138,7 @@ describe("Core Functions", () => {
   it("formatSql should handle other fetch failure", async () => {
     fetch.mockRejectedValue(new Error("network error"));
     await formatSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -151,7 +153,7 @@ describe("Core Functions", () => {
       throw { line: 1, column: 1, message: "fail" };
     });
     await lintSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -167,7 +169,7 @@ describe("Core Functions", () => {
       json: async () => ({ violations: [], errors: ["err"] }),
     });
     await lintSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -183,7 +185,7 @@ describe("Core Functions", () => {
       json: async () => ({ violations: [], errors: [] }),
     });
     await lintSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -199,7 +201,7 @@ describe("Core Functions", () => {
       json: async () => ({ violations: [], errors: [] }),
     });
     await lintSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -215,7 +217,7 @@ describe("Core Functions", () => {
       json: async () => ({ violations: [1], errors: [] }),
     });
     await lintSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -235,7 +237,7 @@ describe("Core Functions", () => {
       }),
     });
     await lintSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -252,7 +254,7 @@ describe("Core Functions", () => {
       ok: false,
     });
     await lintSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -265,7 +267,7 @@ describe("Core Functions", () => {
   it("lintSql should handle other fetch failure", async () => {
     fetch.mockRejectedValue(new Error("network error"));
     await lintSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -281,7 +283,7 @@ describe("Core Functions", () => {
       throw { line: 1, column: 1, message: "fail" };
     });
     await lintAndFixSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -301,7 +303,7 @@ describe("Core Functions", () => {
       }),
     });
     await lintAndFixSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -321,7 +323,7 @@ describe("Core Functions", () => {
       }),
     });
     await lintAndFixSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -341,7 +343,7 @@ describe("Core Functions", () => {
       }),
     });
     await lintAndFixSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -359,7 +361,7 @@ describe("Core Functions", () => {
       json: async () => ({ violations: [], errors: [] }),
     });
     await lintAndFixSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -379,7 +381,7 @@ describe("Core Functions", () => {
       }),
     });
     await lintAndFixSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -399,7 +401,7 @@ describe("Core Functions", () => {
       }),
     });
     await lintAndFixSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -416,7 +418,7 @@ describe("Core Functions", () => {
       ok: false,
     });
     await lintAndFixSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -429,7 +431,7 @@ describe("Core Functions", () => {
   it("lintAndFixSql should handle other fetch failure", async () => {
     fetch.mockRejectedValue(new Error("network error"));
     await lintAndFixSql({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -445,7 +447,7 @@ describe("Core Functions", () => {
       throw { line: 1, column: 1, message: "fail" };
     });
     await generateShareLink({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -458,7 +460,7 @@ describe("Core Functions", () => {
       ok: false,
     });
     await generateShareLink({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -469,7 +471,7 @@ describe("Core Functions", () => {
   it("generateShareLink should handle other fetch failure", async () => {
     fetch.mockRejectedValue(new Error("network error"));
     await generateShareLink({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -484,7 +486,7 @@ describe("Core Functions", () => {
     });
 
     const url = await generateShareLink({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -501,7 +503,7 @@ describe("Core Functions", () => {
       json: () => Promise.resolve({}),
     });
     await loadSharedlink({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -517,7 +519,7 @@ describe("Core Functions", () => {
       json: () => Promise.resolve({}),
     });
     await loadSharedlink({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -529,7 +531,7 @@ describe("Core Functions", () => {
   it("loadSharedlink should handle fetch failure", async () => {
     fetch.mockResolvedValue({ ok: false, json: () => Promise.resolve({}) });
     await loadSharedlink({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -541,7 +543,7 @@ describe("Core Functions", () => {
   it("loadSharedlink should handle other fetch failure", async () => {
     fetch.mockRejectedValue(new Error("network error"));
     await loadSharedlink({
-      API_BASE_URL: "/api",
+      API_BASE_URL,
       configEditor,
       sqlEditor,
       notify,
@@ -556,19 +558,19 @@ describe("Core Functions", () => {
       ok: true,
       json: async () => ({ version: "1.0.0" }),
     });
-    await loadPgrubicVersion({ API_BASE_URL: "/api" });
+    await loadPgrubicVersion({ API_BASE_URL });
     expect(pgrubicVersion.textContent).toBe("1.0.0");
   });
 
   it("loadPgrubicVersion should display 'Unavailable' on fetch failure", async () => {
     fetch.mockResolvedValue({ ok: false });
-    await loadPgrubicVersion({ API_BASE_URL: "/api" });
+    await loadPgrubicVersion({ API_BASE_URL });
     expect(pgrubicVersion.textContent).toBe("Unavailable");
   });
 
   it("loadPgrubicVersion should display 'Unavailable' on other fetch failure", async () => {
     fetch.mockRejectedValue(new Error("network error"));
-    await loadPgrubicVersion({ API_BASE_URL: "/api" });
+    await loadPgrubicVersion({ API_BASE_URL });
     expect(pgrubicVersion.textContent).toBe("Unavailable");
   });
 });

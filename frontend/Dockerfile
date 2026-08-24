@@ -22,8 +22,6 @@ COPY config/nginx/default.conf.template  /etc/nginx/templates/default.conf.templ
 
 COPY --from=build /app/dist /usr/share/nginx/html
 
-COPY public/config.js /usr/share/nginx/html/public/config.js
-
 EXPOSE 80
 
 # Switch to non-root user.

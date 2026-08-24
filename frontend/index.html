@@ -3,11 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="icon"
-      type="image/png"
-      href="https://bolajiwahab.github.io/pgrubic/assets/logo.png"
-    />
+    <link rel="icon" type="image/png" href="/assets/logo.png" />
     <title>pgrubic playground</title>
     <link rel="stylesheet" href="css/styles.css" />
     <link
@@ -19,51 +15,65 @@
   <body>
     <div class="top-bar">
       <h1>
-        <img
-          class="logo"
-          src="https://bolajiwahab.github.io/pgrubic/assets/logo.png"
-          alt="logo"
-        />
+        <img class="logo" src="/assets/logo.png" alt="logo" />
         <div class="logo-section">
           <span class="main-title">pgrubic playground</span>
           <span class="sub-title"
             >An in-browser version of
-            <a href="https://github.com/bolajiwahab/pgrubic" target="_blank"
-              ><b>pgrubic</b></a
-            ></span
-          >
+            <a pgrubic-repo href="" target="_blank" rel="noopener noreferrer">
+              <b>pgrubic</b>
+            </a>
+          </span>
         </div>
       </h1>
+
       <div id="hamburger" class="hamburger" aria-label="Menu" tabindex="0">
         <span></span>
         <span></span>
         <span></span>
       </div>
+
       <nav class="top-links" id="top-links">
         <span id="pgrubicVersion" class="pgrubic-version">Loading...</span>
 
-        <a href="https://github.com/bolajiwahab/pgrubic" target="_blank"
-          ><i class="fab fa-github"></i> GitHub</a
-        >
-        <a href="https://bolajiwahab.github.io/pgrubic/rules/" target="_blank"
-          ><i class="fas fa-book"></i> Rules</a
-        >
+        <a pgrubic-repo href="" target="_blank" rel="noopener noreferrer"
+          ><i class="fab fa-github"></i> GitHub
+        </a>
         <a
-          href="https://bolajiwahab.github.io/pgrubic/formatter"
+          pgrubic-docs="rules"
+          href=""
           target="_blank"
-          ><i class="fas fa-broom"></i> Format</a
-        >
-        <a href="https://bolajiwahab.github.io/pgrubic/linter" target="_blank"
-          ><i class="fas fa-shield-alt"></i> Lint</a
-        >
-        <a href="https://bolajiwahab.github.io/pgrubic/settings" target="_blank"
-          ><i class="fas fa-cog"></i> Config</a
-        >
+          rel="noopener noreferrer"
+          ><i class="fas fa-book"></i> Rules
+        </a>
+        <a
+          pgrubic-docs="formatter"
+          href=""
+          target="_blank"
+          rel="noopener noreferrer"
+          ><i class="fas fa-broom"></i> Format
+        </a>
+        <a
+          pgrubic-docs="linter"
+          href=""
+          target="_blank"
+          rel="noopener noreferrer"
+          ><i class="fas fa-shield-alt"></i> Lint
+        </a>
+        <a
+          pgrubic-docs="settings"
+          href=""
+          target="_blank"
+          rel="noopener noreferrer"
+          ><i class="fas fa-cog"></i> Config
+        </a>
+
         <button class="share-btn" id="shareBtn">
           <i class="fa fa-share-alt"></i> Share
         </button>
       </nav>
     </div>
+
     <div class="main-container">
       <div class="config-panel">
         <div class="config-header">
@@ -114,7 +124,7 @@
       </div>
     </div>
 
+    <script src="/config.js"></script>
     <script type="module" src="src/main.js" defer></script>
-    <script src="./public/config.js"></script>
   </body>
 </html>
