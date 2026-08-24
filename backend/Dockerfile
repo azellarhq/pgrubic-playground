@@ -10,9 +10,9 @@ WORKDIR /src
 
 COPY pyproject.toml uv.lock ./
 
-COPY app app
+RUN uv sync --locked --no-dev --no-install-project
 
-RUN uv sync --locked --no-dev --no-editable
+COPY app app
 
 FROM ${PYTHON_IMAGE}
 
