@@ -22,8 +22,8 @@ class Settings(BaseSettings):
         extra="ignore",
     )
     ENVIRONMENT: Environment = Environment.DEVELOPMENT
-    PROJECT_NAME: str = "pgrubic-playground"
-    PROJECT_DESCRIPTION: str = "An in-browser playground for pgrubic, a PostgreSQL linter and formatter for schema migrations and design best practices."  # noqa: E501
+    PROJECT_NAME: str = "pgrubic-online"
+    PROJECT_DESCRIPTION: str = "An in-browser environment for pgrubic, a PostgreSQL linter and formatter for schema migrations and design best practices."  # noqa: E501
     CORS_ORIGINS: list[str] = []
     API_V1_STR: str = "/api/v1"
     HOST_BIND: str = "localhost"
