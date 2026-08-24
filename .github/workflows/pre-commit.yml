@@ -35,7 +35,7 @@ jobs:
 
       - name: Install backend dependencies
         working-directory: backend
-        run: pip install --no-cache-dir --upgrade pip tox
+        run: pip install --no-cache-dir --upgrade pip tox tox-uv
 
       - name: Run pre-commit
         working-directory: backend

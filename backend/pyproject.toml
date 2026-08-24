@@ -7,9 +7,15 @@ license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
 
-dynamic = ["dependencies"]
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
+dependencies = [
+  "pgrubic==2.0.0",
+  "toml==0.10.2",
+  "pydantic==2.13.4",
+  "pydantic-settings==2.15.0",
+  "uvicorn==0.52.4",
+  "fastapi==0.141.1",
+  "diskcache==5.6.3"
+]
 
 [project.optional-dependencies]
 dev = [
@@ -28,6 +34,8 @@ dev = [
   "tox==4.60.0",
   "httpx2==2.12.0",
   "types-toml==0.10.8.20260518",
+  "uv==0.12.5",
+  "tox-uv==1.36.0",
 ]
 
 [tool.bandit]
@@ -119,8 +127,8 @@ legacy_tox_ini = """
         pre-commit
 
     [testenv]
+    runner = uv-venv-lock-runner
     extras = dev
-    deps =
     commands =
 
     [testenv:dev]
@@ -159,6 +167,9 @@ legacy_tox_ini = """
 
     [testenv:typing]
     commands = mypy {posargs:.}
+
+    [testenv:lock]
+    commands = uv lock
 
     [testenv:security]
     commands = bandit --severity-level all -r src
