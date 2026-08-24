@@ -173,7 +173,7 @@ legacy_tox_ini = """
     commands = uv lock
 
     [testenv:security]
-    commands = bandit --severity-level all -r src
+    commands = bandit --severity-level all -r app
 
     [testenv:pre-commit]
     commands = pre-commit {posargs:run --hook-stage pre-commit --all-files}
