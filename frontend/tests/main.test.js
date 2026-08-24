@@ -185,4 +185,30 @@ describe("resolveExternalLinks", () => {
       new URL("formatter", window.config.PGRUBIC_DOCUMENTATION_URL).href,
     );
   });
+
+  it("leaves [pgrubic-repo] hrefs untouched when PGRUBIC_REPOSITORY_URL is missing or empty", () => {
+    const repoLink = document.getElementById("repoLink");
+    repoLink.href = "https://example.com/fallback";
+
+    delete window.config.PGRUBIC_REPOSITORY_URL;
+    resolveExternalLinks();
+    expect(repoLink.href).toBe("https://example.com/fallback");
+
+    window.config.PGRUBIC_REPOSITORY_URL = "";
+    resolveExternalLinks();
+    expect(repoLink.href).toBe("https://example.com/fallback");
+  });
+
+  it("leaves [pgrubic-docs] hrefs untouched when PGRUBIC_DOCUMENTATION_URL is missing or empty", () => {
+    const rulesLink = document.getElementById("rulesLink");
+    rulesLink.href = "https://example.com/fallback";
+
+    delete window.config.PGRUBIC_DOCUMENTATION_URL;
+    resolveExternalLinks();
+    expect(rulesLink.href).toBe("https://example.com/fallback");
+
+    window.config.PGRUBIC_DOCUMENTATION_URL = "";
+    resolveExternalLinks();
+    expect(rulesLink.href).toBe("https://example.com/fallback");
+  });
 });
