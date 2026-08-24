@@ -16,3 +16,9 @@ jobs:
 
       - name: Dependency Review
         uses: actions/dependency-review-action@v5
+        with:
+          # DiskCache uses Python's pickle serialization internally.
+          # In this application, all cached objects are created exclusively
+          # by the backend from validated JSON requests.
+          # The DiskCache directory resides on the container's ephemeral filesystem.
+          allow-ghsas: GHSA-w8v5-vhqr-4h9v
