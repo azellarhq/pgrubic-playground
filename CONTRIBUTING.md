@@ -22,7 +22,10 @@ other.
 
 ```bash
 cd backend
-pip install -e ".[dev]"
+tox -e dev --devenv .venv
+
+# activate the virtual environment
+source .venv/bin/activate
 ```
 
 Common commands (all wired through `tox`, matching CI):
@@ -67,7 +70,7 @@ Common commands (from `frontend/`):
 ## Running the full stack with Docker
 
 ```bash
-docker compose up --build
+docker compose up --build --detach
 ```
 
 Frontend on `http://localhost`, backend on `http://localhost:8000`.
