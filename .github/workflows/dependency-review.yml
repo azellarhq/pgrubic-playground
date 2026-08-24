@@ -1,4 +1,5 @@
 ---
+# yamllint disable rule:line-length
 name: Dependency Review
 on:  # yamllint disable-line rule:truthy
   pull_request:
@@ -12,7 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
 
       - name: Dependency Review
-        uses: actions/dependency-review-action@v5
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294  # v5
+        with:
+          # DiskCache uses Python's pickle serialization internally.
+          # In this application, all cached objects are created exclusively
+          # by the backend from validated JSON requests.
+          # The DiskCache directory resides on the container's ephemeral filesystem.
+          allow-ghsas: GHSA-w8v5-vhqr-4h9v

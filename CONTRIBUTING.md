@@ -14,7 +14,9 @@ other.
 
 ## Prerequisites
 
-- Python 3.12+ and [`tox`](https://tox.wiki) (`pip install tox`)
+- Python 3.12+ and [`tox`](https://tox.wiki) with the [`tox-uv`](https://github.com/tox-dev/tox-uv)
+  plugin (`pip install tox tox-uv`), which makes tox resolve and install dependencies
+  from `uv.lock` for reproducible environments
 - Node 24+
 - Docker, only if you want to run the full stack together
 
@@ -40,6 +42,7 @@ Common commands (all wired through `tox`, matching CI):
 | `tox -e isort` | Import sort check |
 | `tox -e security` | `bandit` |
 | `tox -e docstrings-coverage` | `interrogate` (100% required) |
+| `tox -e lock` | Regenerate `uv.lock` after changing dependencies |
 
 Run the API locally:
 
