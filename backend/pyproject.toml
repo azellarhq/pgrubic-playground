@@ -170,6 +170,10 @@ legacy_tox_ini = """
     commands = mypy {posargs:.}
 
     [testenv:lock]
+    # A stale uv.lock (e.g. after editing dependencies) would otherwise fail
+    # env creation itself under the default lock-runner, before this env's
+    # own command (which regenerates the lock) ever gets to run.
+    runner = uv-venv-runner
     commands = uv lock
 
     [testenv:security]
