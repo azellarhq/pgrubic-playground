@@ -98,6 +98,7 @@ repos:
         language: system
         files: ^frontend/
         exclude: ^frontend/(dist|node_modules)/
+        pass_filenames: false
       # Formatters should be run late so that they can re-format
       # any prior changes
       - id: ruff
@@ -114,3 +115,4 @@ repos:
         language: system
         files: ^frontend/
         exclude: ^frontend/(dist|node_modules)/
+        pass_filenames: false
