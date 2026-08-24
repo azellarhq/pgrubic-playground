@@ -78,6 +78,31 @@ describe("Main button event listeners", () => {
     );
   });
 
+  it("copyBtn notifies on clipboard write failure with error message", async () => {
+    utils.copyToClipboard.mockRejectedValue(
+      new DOMException("Permission denied", "NotAllowedError"),
+    );
+
+    await document.getElementById("copyBtn").click();
+    await Promise.resolve();
+
+    expect(utils.notify).toHaveBeenCalledWith("Permission denied", "error");
+  });
+
+  it("copyBtn notifies on clipboard write failure without error message", async () => {
+    utils.copyToClipboard.mockRejectedValue(
+      new DOMException("", "NotAllowedError"),
+    );
+
+    await document.getElementById("copyBtn").click();
+    await Promise.resolve();
+
+    expect(utils.notify).toHaveBeenCalledWith(
+      "Failed to copy to clipboard.",
+      "error",
+    );
+  });
+
   it("calls generateShareLink on shareBtn click", () => {
     document.getElementById("shareBtn").click();
     expect(core.generateShareLink).toHaveBeenCalled();
