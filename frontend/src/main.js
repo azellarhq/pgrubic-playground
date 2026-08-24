@@ -105,17 +105,8 @@ export async function setupEventListeners() {
   });
 
   document.getElementById("copyBtn").addEventListener("click", async () => {
-    try {
-      await copyToClipboard("sqlOutput");
-      notify("Copied to clipboard!", "success");
-    } catch (error) {
-      const message =
-        error && typeof error.message === "string" && error.message
-          ? error.message
-          : "Failed to copy to clipboard.";
-
-      notify(message, "error");
-    }
+    await copyToClipboard("sqlOutput");
+    notify("Copied to clipboard!", "success");
   });
 
   document.getElementById("resetConfigBtn").addEventListener("click", () => {
