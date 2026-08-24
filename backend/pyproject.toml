@@ -116,6 +116,7 @@ legacy_tox_ini = """
         tests
         coverage
         docstrings-coverage
+        pre-commit
 
     [testenv]
     extras = dev
