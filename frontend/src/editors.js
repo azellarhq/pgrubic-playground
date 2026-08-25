@@ -10,6 +10,7 @@ ignore = []
 fixable = []
 unfixable = []
 ignore-noqa = false
+additional-non-volatile-functions = []
 allowed-extensions = []
 allowed-languages = []
 disallowed-schemas = []
@@ -28,9 +29,14 @@ regex-sequence = "^.+$"
 
 [format]
 comma-at-beginning = true
+compact-parenthesized-lists-margin = 90
+uppercase-keywords = true
+type-casting-style = "standard"
+rewrite-function-calls-as-equivalent-syntax = true
 new-line-before-semicolon = false
+lines-between-statements = 1
 remove-pg-catalog-from-functions = true
-lines-between-statements = 1`;
+remove-default-index-access-method = true`;
 
 const defaultSql = "CREATE TABLE users (id INT, name TEXT);";
 

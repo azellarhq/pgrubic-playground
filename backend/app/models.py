@@ -107,15 +107,29 @@ class FormatterConfig(BaseConfig):
     """Formatter configuration."""
 
     comma_at_beginning: bool = Field(alias="comma-at-beginning", default=True)
+    compact_parenthesized_lists_margin: int = Field(
+        alias="compact-parenthesized-lists-margin",
+        default=90,
+    )
+    uppercase_keywords: bool = Field(alias="uppercase-keywords", default=True)
+    type_casting_style: str = Field(alias="type-casting-style", default="standard")
+    rewrite_function_calls_as_equivalent_syntax: bool = Field(
+        alias="rewrite-function-calls-as-equivalent-syntax",
+        default=True,
+    )
     new_line_before_semicolon: bool = Field(
         alias="new-line-before-semicolon",
         default=False,
     )
+    lines_between_statements: int = Field(alias="lines-between-statements", default=1)
     remove_pg_catalog_from_functions: bool = Field(
         alias="remove-pg-catalog-from-functions",
         default=True,
     )
-    lines_between_statements: int = Field(alias="lines-between-statements", default=1)
+    remove_default_index_access_method: bool = Field(
+        alias="remove-default-index-access-method",
+        default=True,
+    )
 
 
 class Config(BaseConfig):

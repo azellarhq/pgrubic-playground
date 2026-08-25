@@ -31,9 +31,14 @@ config = {
     },
     "format": {
         "comma-at-beginning": True,
+        "compact-parenthesized-lists-margin": 90,
+        "uppercase-keywords": True,
+        "type-casting-style": "standard",
+        "rewrite-function-calls-as-equivalent-syntax": True,
         "new-line-before-semicolon": True,
-        "remove-pg-catalog-from-functions": True,
         "lines-between-statements": 1,
+        "remove-pg-catalog-from-functions": True,
+        "remove-default-index-access-method": True,
     },
 }
 
