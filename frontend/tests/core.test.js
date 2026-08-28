@@ -284,6 +284,45 @@ describe("Core Functions", () => {
   });
 
   // lintSql
+  it.each([
+    [lintSql, "Linting...", {}],
+    [lintAndFixSql, "Linting with fix...", { outputEditor }],
+  ])(
+    "%s clears previous lint results before the request completes",
+    async (operation, progressMessage, extraParams) => {
+      let resolveRequest;
+      fetch.mockReturnValue(
+        new Promise((resolve) => {
+          resolveRequest = resolve;
+        }),
+      );
+      lintOutput.textContent = "Previous violation";
+      lintViolationsSummary.textContent =
+        "Found 1 violation(s) and 0 error(s).";
+      lintViolationsSummary.classList.add("has-violations");
+
+      const request = operation({
+        API_BASE_URL,
+        configEditor,
+        sqlEditor,
+        notify,
+        printViolations,
+        printErrors,
+        ...extraParams,
+      });
+
+      expect(lintOutput.textContent).toBe(progressMessage);
+      expect(lintViolationsSummary.textContent).toBe("");
+      expect(lintViolationsSummary.className).toBe("");
+
+      resolveRequest({
+        ok: true,
+        json: async () => ({ violations: [], errors: [] }),
+      });
+      await request;
+    },
+  );
+
   it("lintSql should notify error on config error", async () => {
     toml.parse.mockImplementation(() => {
       throw { line: 1, column: 1, message: "fail" };

@@ -90,6 +90,13 @@ function printErrors(errors) {
   return output;
 }
 
+/**
+ * Creates a single output row element with the specified message and optional details.
+ *
+ * @param {string} message - The main message to display in the output row.
+ * @param {string} [details] - Optional additional details to display alongside the message.
+ * @returns {HTMLElement} - The constructed output row element.
+ */
 function createOutputRow(message, details = "") {
   const row = document.createElement("div");
   row.className = "lint-message";
@@ -108,6 +115,12 @@ function createOutputRow(message, details = "") {
   return row;
 }
 
+/*
+ * Render output lines as safely constructed, readable output rows.
+ *
+ * @param {string} value - The output lines to print, where each line is a string.
+ * @returns {DocumentFragment} - The rendered output lines.
+ */
 function printOutputLines(value) {
   const output = document.createDocumentFragment();
 

@@ -6,7 +6,7 @@ import "monaco-editor/esm/vs/basic-languages/sql/sql.contribution";
 const defaultSql = "CREATE TABLE users (id INT, name TEXT);";
 
 const sharedEditorOptions = {
-  theme: "vs",
+  theme: document.documentElement.dataset.theme === "dark" ? "vs-dark" : "vs",
   minimap: { enabled: false },
   scrollBeyondLastLine: false,
   lineNumbersMinChars: 0,
@@ -43,4 +43,8 @@ const outputEditor = editor.create(document.getElementById("sqlOutput"), {
   ariaLabel: "Formatted or fixed SQL output",
 });
 
-export { defaultSql, configEditor, sqlEditor, outputEditor };
+function setEditorTheme(theme) {
+  editor.setTheme(theme === "dark" ? "vs-dark" : "vs");
+}
+
+export { defaultSql, configEditor, sqlEditor, outputEditor, setEditorTheme };

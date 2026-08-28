@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.get("/config/defaults", response_class=Response, tags=["config"])
-async def default_config() -> Response:
+async def get_default_config() -> Response:
     """Get the default configuration available to API consumers."""
     return Response(
         content=infrastructure.load_default_config(),

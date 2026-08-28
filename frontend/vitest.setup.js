@@ -8,8 +8,11 @@ vi.mock("monaco-editor/esm/vs/editor/editor.api", () => ({
       setValue: vi.fn(),
       dispose: vi.fn(),
     })),
+    setTheme: vi.fn(),
   },
 }));
+
+window.matchMedia = vi.fn();
 
 vi.mock(
   "monaco-editor/esm/vs/basic-languages/sql/sql.contribution",
@@ -46,6 +49,11 @@ beforeEach(() => {
   window.config = { ...DEFAULT_CONFIG };
   fetch.mockReset();
   vi.resetAllMocks();
+  window.matchMedia.mockReturnValue({
+    matches: false,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  });
 });
 
 afterEach(() => {

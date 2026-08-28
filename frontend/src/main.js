@@ -1,7 +1,19 @@
 // Entry point
 
-import { defaultSql, configEditor, sqlEditor, outputEditor } from "./editors";
+import {
+  defaultSql,
+  configEditor,
+  sqlEditor,
+  outputEditor,
+  setEditorTheme,
+} from "./editors";
 import { notify, copyToClipboard, printViolations, printErrors } from "./utils";
+import {
+  readStoredValue,
+  writeStoredValue,
+  removeStoredValue,
+} from "./storage";
+import { setupThemeSelector } from "./theme";
 
 import {
   formatSql,
@@ -16,31 +28,15 @@ import {
 const CONFIG_STORAGE_KEY = "pgrubic.config";
 const SQL_STORAGE_KEY = "pgrubic.sql";
 
-function readStoredValue(key) {
-  try {
-    return localStorage.getItem(key);
-  } catch {
-    return null;
-  }
-}
-
-function writeStoredValue(key, value) {
-  try {
-    localStorage.setItem(key, value);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function removeStoredValue(key) {
-  try {
-    localStorage.removeItem(key);
-  } catch {
-    // Storage is optional; resetting the editor must still succeed.
-  }
-}
-
+/**
+ * Runs an asynchronous operation while managing the state of the UI.
+ *
+ * @param {Object} params - The parameters for the operation.
+ * @param {HTMLElement} params.button - The button that was clicked to trigger the operation.
+ * @param {string} params.busyLabel - The label to display on the button while the operation is in progress.
+ * @param {HTMLElement[]} params.buttons - An array of buttons to disable during the operation.
+ * @param {Function} params.operation - The asynchronous operation to run.
+ */
 async function runOperation({ button, busyLabel, buttons, operation }) {
   const label = button.textContent;
 
@@ -71,10 +67,11 @@ async function runOperation({ button, busyLabel, buttons, operation }) {
  * - Toggles visibility of the top-links section when the hamburger icon is clicked.
  */
 
-export async function setupEventListeners() {
+async function setupEventListeners() {
   const API_BASE_URL = window.config.API_BASE_URL;
 
-  loadPgrubicVersion({ API_BASE_URL });
+  setupThemeSelector({ setEditorTheme });
+  void loadPgrubicVersion({ API_BASE_URL });
 
   const buttons = [
     "formatBtn",
@@ -160,7 +157,7 @@ export async function setupEventListeners() {
     );
 
   document.getElementById("formatBtn").addEventListener("click", (event) => {
-    runOperation({
+    void runOperation({
       button: event.currentTarget,
       busyLabel: "Formatting…",
       buttons: operationButtons,
@@ -177,7 +174,7 @@ export async function setupEventListeners() {
   });
 
   document.getElementById("lintBtn").addEventListener("click", (event) => {
-    runOperation({
+    void runOperation({
       button: event.currentTarget,
       busyLabel: "Linting…",
       buttons: operationButtons,
@@ -194,7 +191,7 @@ export async function setupEventListeners() {
   });
 
   document.getElementById("lintFixBtn").addEventListener("click", (event) => {
-    runOperation({
+    void runOperation({
       button: event.currentTarget,
       busyLabel: "Fixing…",
       buttons: operationButtons,
@@ -288,7 +285,7 @@ export async function setupEventListeners() {
  * read from window.config. Links are left untouched when the corresponding
  * config value is missing or empty.
  */
-export function resolveExternalLinks() {
+function resolveExternalLinks() {
   const repositoryUrl = window.config["PGRUBIC_REPOSITORY_URL"];
 
   if (typeof repositoryUrl === "string" && repositoryUrl) {

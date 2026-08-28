@@ -6,6 +6,7 @@ import * as core from "../src/core";
 import * as utils from "../src/utils";
 import { setupEventListeners, resolveExternalLinks } from "../src/main";
 import { configEditor, sqlEditor } from "../src/editors";
+import { setEditorTheme } from "../src/editors";
 
 const defaultConfig = "[lint]\nselect = []";
 
@@ -26,6 +27,7 @@ vi.mock("../src/editors", () => ({
     getValue: vi.fn(() => "formatted sql"),
     setValue: vi.fn(),
   },
+  setEditorTheme: vi.fn(),
   defaultSql: "SELECT 1;",
 }));
 
@@ -43,6 +45,7 @@ describe("Main button event listeners", () => {
       <button id="copyBtn"></button>
       <button id="shareBtn"></button>
       <button id="resetConfigBtn"></button>
+      <button id="themeSelector"></button>
       <button id="hamburger"></button>
       <div id="top-links"></div>
       <span id="configSaveStatus"></span>
@@ -70,6 +73,50 @@ describe("Main button event listeners", () => {
   ])("dispatches %s to %s", (buttonId, operation) => {
     document.getElementById(buttonId).click();
     expect(core[operation]).toHaveBeenCalled();
+  });
+
+  it("uses and persists an explicit theme", async () => {
+    localStorage.setItem("pgrubic.theme", "dark");
+
+    await setupEventListeners();
+
+    const selector = document.getElementById("themeSelector");
+    expect(selector.dataset.theme).toBe("dark");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(setEditorTheme).toHaveBeenCalledWith("dark");
+
+    selector.click();
+
+    expect(localStorage.getItem("pgrubic.theme")).toBe("auto");
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(setEditorTheme).toHaveBeenLastCalledWith("light");
+    expect(selector.getAttribute("aria-label")).toBe("Switch to light mode");
+  });
+
+  it("follows system theme changes in auto mode", async () => {
+    let handleThemeChange;
+    const mediaQuery = {
+      matches: true,
+      addEventListener: vi.fn((event, handler) => {
+        handleThemeChange = handler;
+      }),
+      removeEventListener: vi.fn(),
+    };
+    window.matchMedia.mockReturnValue(mediaQuery);
+    localStorage.setItem("pgrubic.theme", "unsupported");
+
+    await setupEventListeners();
+
+    expect(document.getElementById("themeSelector").dataset.theme).toBe("auto");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+
+    mediaQuery.matches = false;
+    handleThemeChange();
+    expect(document.documentElement.dataset.theme).toBe("light");
+
+    document.getElementById("themeSelector").dataset.theme = "dark";
+    handleThemeChange();
+    expect(document.documentElement.dataset.theme).toBe("light");
   });
 
   it("disables SQL actions while an operation is running", async () => {

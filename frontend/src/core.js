@@ -3,8 +3,15 @@
 import toml from "toml";
 import { printOutputLines } from "./utils";
 
-const REQUEST_TIMEOUT_MS = 10_000;
+const REQUEST_TIMEOUT_MS = 10_000; // 10 seconds
 
+/**
+ * Fetches a URL with a timeout set by REQUEST_TIMEOUT_MS.
+ *
+ * @param {string} url - The URL to fetch.
+ * @param {Object} options - The options for the fetch request.
+ * @returns {Promise<Response>} A promise that resolves with the fetch response.
+ */
 function fetchApi(url, options = {}) {
   const signal =
     typeof AbortSignal.timeout === "function"
@@ -17,6 +24,11 @@ function fetchApi(url, options = {}) {
   });
 }
 
+/**
+ * Creates an AbortSignal that will abort after REQUEST_TIMEOUT_MS milliseconds.
+ *
+ * @returns {AbortSignal} An AbortSignal that will abort after the timeout specified by REQUEST_TIMEOUT_MS.
+ */
 function createTimeoutSignal() {
   const controller = new AbortController();
 
@@ -27,15 +39,23 @@ function createTimeoutSignal() {
   return controller.signal;
 }
 
+/*
+ * Notifies of a request failure.
+ * @param {Error} error - The error that occurred during the request.
+ * @param {Function} notify - The function to call to display the notification.
+ */
 function notifyRequestFailure(error, notify) {
   notify(
-    error?.name === "TimeoutError"
-      ? "Request timed out after 10 seconds"
-      : "Operation failed!",
+    error?.name === "TimeoutError" ? "Request timed out!" : "Operation failed!",
     "error",
   );
 }
 
+/*
+ * Notifies of a response failure.
+ * @param {Response} response - The response that failed.
+ * @param {Function} notify - The function to call to display the notification.
+ */
 async function notifyResponseFailure(response, notify) {
   if (response.status !== 422) {
     notify("Operation failed!", "error");
@@ -64,6 +84,13 @@ async function notifyResponseFailure(response, notify) {
   notify("Invalid request", "error");
 }
 
+/*
+ * Loads the default configuration from the backend.
+ * @param {Object} params - The parameters for the function.
+ * @param {string} params.API_BASE_URL - The base URL of the API.
+ * @returns {Promise<string>} A promise that resolves with the default configuration in TOML format.
+ * @throws {Error} If the request fails or the response is not OK.
+ */
 async function loadDefaultConfig({ API_BASE_URL }) {
   const response = await fetchApi(`${API_BASE_URL}/config/defaults`);
 
@@ -79,7 +106,7 @@ async function loadDefaultConfig({ API_BASE_URL }) {
  * Fetches the formatted SQL from the given API endpoint and updates the DOM with the results.
  *
  * @param {Object} params - The parameters for the function.
- * @param {string} params.API_BASE_URL - The base URL for the API.
+ * @param {string} params.API_BASE_URL - The base URL of the API.
  * @param {Object} params.configEditor - The editor containing the configuration in TOML format.
  * @param {Object} params.sqlEditor - The editor containing the SQL code to format.
  * @param {Object} params.outputEditor - The read-only formatted SQL editor.
@@ -150,7 +177,7 @@ async function formatSql({
  * Fetches the linting results from the given API endpoint and updates the DOM with the results.
  *
  * @param {Object} params - The parameters for the function.
- * @param {string} params.API_BASE_URL - The base URL for the API.
+ * @param {string} params.API_BASE_URL - The base URL of the API.
  * @param {Object} params.configEditor - The editor containing the configuration in TOML format.
  * @param {Object} params.sqlEditor - The editor containing the SQL code to lint.
  * @param {Function} params.notify - Function to display notifications.
@@ -165,6 +192,14 @@ async function lintSql({
   printViolations,
   printErrors,
 }) {
+  const lintOutput = document.getElementById("lintOutput"),
+    lintViolationsSummary = document.getElementById("lintViolationsSummary"),
+    sqlOutputBox = document.getElementById("sqlOutputBox");
+
+  lintOutput.textContent = "Linting...";
+  lintViolationsSummary.textContent = "";
+  lintViolationsSummary.classList.remove("no-violations", "has-violations");
+
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
@@ -172,12 +207,6 @@ async function lintSql({
     notify("Error in config", "error");
     return;
   }
-
-  const lintOutput = document.getElementById("lintOutput"),
-    lintViolationsSummary = document.getElementById("lintViolationsSummary"),
-    sqlOutputBox = document.getElementById("sqlOutputBox");
-
-  lintOutput.textContent = "Linting...";
 
   try {
     const response = await fetchApi(`${API_BASE_URL}/lint`, {
@@ -247,6 +276,15 @@ async function lintAndFixSql({
   printViolations,
   printErrors,
 }) {
+  const lintOutput = document.getElementById("lintOutput"),
+    lintViolationsSummary = document.getElementById("lintViolationsSummary"),
+    sqlOutputBox = document.getElementById("sqlOutputBox"),
+    sqlOutputLabel = document.getElementById("sqlOutputLabel");
+
+  lintOutput.textContent = "Linting with fix...";
+  lintViolationsSummary.textContent = "";
+  lintViolationsSummary.classList.remove("no-violations", "has-violations");
+
   let configObject;
   try {
     configObject = toml.parse(configEditor.getValue());
@@ -254,13 +292,6 @@ async function lintAndFixSql({
     notify("Error in config", "error");
     return;
   }
-
-  const lintOutput = document.getElementById("lintOutput"),
-    lintViolationsSummary = document.getElementById("lintViolationsSummary"),
-    sqlOutputBox = document.getElementById("sqlOutputBox"),
-    sqlOutputLabel = document.getElementById("sqlOutputLabel");
-
-  lintOutput.textContent = "Linting with fix...";
 
   try {
     const response = await fetchApi(`${API_BASE_URL}/lint`, {
