@@ -6,12 +6,12 @@
 |------------------------ | -------: | -------: | -------: | --------: |
 | app/\_\_init\_\_.py     |        0 |        0 |     100% |           |
 | app/api/\_\_init\_\_.py |        0 |        0 |     100% |           |
-| app/api/routes.py       |       23 |        0 |     100% |           |
+| app/api/routes.py       |       26 |        0 |     100% |           |
 | app/config.py           |       17 |        0 |     100% |           |
-| app/infrastructure.py   |       34 |        0 |     100% |           |
+| app/infrastructure.py   |       37 |        0 |     100% |           |
 | app/main.py             |       10 |        0 |     100% |           |
-| app/models.py           |       59 |        0 |     100% |           |
-| **TOTAL**               |  **143** |    **0** | **100%** |           |
+| app/models.py           |       26 |        0 |     100% |           |
+| **TOTAL**               |  **116** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
