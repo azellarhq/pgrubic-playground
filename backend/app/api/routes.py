@@ -2,10 +2,20 @@
 
 import models
 import infrastructure
-from fastapi import APIRouter
+from fastapi import Response, APIRouter
 from pgrubic import __version__
 
 router = APIRouter()
+
+
+@router.get("/config/defaults", response_class=Response, tags=["config"])
+async def default_config() -> Response:
+    """Get the default configuration available to API consumers."""
+    return Response(
+        content=infrastructure.load_default_config(),
+        media_type="application/toml",
+        headers={"Cache-Control": "no-cache"},
+    )
 
 
 @router.post("/lint", response_model=models.LintResult, tags=["linter"])

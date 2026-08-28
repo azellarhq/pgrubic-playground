@@ -3,67 +3,44 @@
 import { editor } from "monaco-editor/esm/vs/editor/editor.api";
 import "monaco-editor/esm/vs/basic-languages/sql/sql.contribution";
 
-const defaultConfig = `[lint]
-target-postgres-version = 14
-select = []
-ignore = []
-fixable = []
-unfixable = []
-ignore-noqa = false
-additional-non-volatile-functions = []
-allowed-extensions = []
-allowed-languages = []
-disallowed-schemas = []
-disallowed-data-types = []
-required-columns = []
-timestamp-column-suffix = "_at"
-date-column-suffix = "_date"
-regex-partition = "^.+$"
-regex-index = "^.+$"
-regex-constraint-primary-key = "^.+$"
-regex-constraint-unique-key = "^.+$"
-regex-constraint-foreign-key = "^.+$"
-regex-constraint-check = "^.+$"
-regex-constraint-exclusion = "^.+$"
-regex-sequence = "^.+$"
-
-[format]
-comma-at-beginning = true
-compact-parenthesized-lists-margin = 90
-uppercase-keywords = true
-type-casting-style = "standard"
-rewrite-function-calls-as-equivalent-syntax = true
-new-line-before-semicolon = false
-lines-between-statements = 1
-remove-pg-catalog-from-functions = true
-remove-default-index-access-method = true`;
-
 const defaultSql = "CREATE TABLE users (id INT, name TEXT);";
 
-const configEditor = editor.create(document.getElementById("configEditor"), {
-  value: "",
-  language: "toml",
+const sharedEditorOptions = {
   theme: "vs",
   minimap: { enabled: false },
   scrollBeyondLastLine: false,
   lineNumbersMinChars: 0,
   lineDecorationsWidth: 0,
   overviewRulerLanes: 0,
-  fontSize: 14,
-  fontFamily: "monospace",
+  fontSize: 13,
+  lineHeight: 21,
+  fontFamily: "Roboto Mono, SFMono-Regular, Consolas, monospace",
+  padding: { top: 10, bottom: 10 },
+  automaticLayout: true,
+};
+
+const configEditor = editor.create(document.getElementById("configEditor"), {
+  ...sharedEditorOptions,
+  value: "",
+  language: "toml",
+  ariaLabel: "pgrubic configuration in TOML",
 });
 
 const sqlEditor = editor.create(document.getElementById("sqlEditor"), {
+  ...sharedEditorOptions,
   value: "",
   language: "sql",
-  theme: "vs",
-  minimap: { enabled: false },
-  scrollBeyondLastLine: false,
-  lineNumbersMinChars: 0,
-  lineDecorationsWidth: 0,
-  overviewRulerLanes: 0,
-  fontSize: 14,
-  fontFamily: "monospace",
+  ariaLabel: "SQL source",
 });
 
-export { defaultConfig, defaultSql, configEditor, sqlEditor };
+const outputEditor = editor.create(document.getElementById("sqlOutput"), {
+  ...sharedEditorOptions,
+  value: "",
+  language: "sql",
+  readOnly: true,
+  domReadOnly: true,
+  renderLineHighlight: "none",
+  ariaLabel: "Formatted or fixed SQL output",
+});
+
+export { defaultSql, configEditor, sqlEditor, outputEditor };

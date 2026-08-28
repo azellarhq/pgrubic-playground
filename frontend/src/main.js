@@ -1,6 +1,6 @@
 // Entry point
 
-import { defaultConfig, configEditor, sqlEditor } from "./editors";
+import { defaultSql, configEditor, sqlEditor, outputEditor } from "./editors";
 import { notify, copyToClipboard, printViolations, printErrors } from "./utils";
 
 import {
@@ -8,9 +8,58 @@ import {
   lintSql,
   lintAndFixSql,
   generateShareLink,
+  loadDefaultConfig,
   loadSharedlink,
   loadPgrubicVersion,
 } from "./core";
+
+const CONFIG_STORAGE_KEY = "pgrubic.config";
+const SQL_STORAGE_KEY = "pgrubic.sql";
+
+function readStoredValue(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredValue(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function removeStoredValue(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Storage is optional; resetting the editor must still succeed.
+  }
+}
+
+async function runOperation({ button, busyLabel, buttons, operation }) {
+  const label = button.textContent;
+
+  buttons.forEach((item) => {
+    item.disabled = true;
+  });
+  button.textContent = busyLabel;
+  button.setAttribute("aria-busy", "true");
+
+  try {
+    await operation();
+  } finally {
+    button.textContent = label;
+    button.removeAttribute("aria-busy");
+    buttons.forEach((item) => {
+      item.disabled = false;
+    });
+  }
+}
 
 /**
  * Sets up event listeners for various buttons and elements on the page.
@@ -35,6 +84,9 @@ export async function setupEventListeners() {
     "copyBtn",
     "resetConfigBtn",
   ].map((id) => document.getElementById(id));
+  const operationButtons = ["formatBtn", "lintBtn", "lintFixBtn"].map((id) =>
+    document.getElementById(id),
+  );
 
   const setButtonsDisabled = (disabled) => {
     for (const btn of buttons) {
@@ -45,37 +97,117 @@ export async function setupEventListeners() {
   // Disable buttons at startup
   setButtonsDisabled(true);
 
-  await loadSharedlink({
+  const savedConfig = readStoredValue(CONFIG_STORAGE_KEY);
+  const savedSql = readStoredValue(SQL_STORAGE_KEY);
+  let defaultConfig = null;
+
+  try {
+    defaultConfig = await loadDefaultConfig({ API_BASE_URL });
+  } catch {
+    if (!savedConfig) {
+      notify("Failed to load default configuration", "error");
+      return;
+    }
+
+    notify(
+      "Default configuration unavailable; using saved settings",
+      "warning",
+    );
+  }
+
+  const sharedSession = await loadSharedlink({
     API_BASE_URL,
     configEditor,
     sqlEditor,
+    outputEditor,
     notify,
     setButtonsDisabled,
+    initialConfig: savedConfig ?? defaultConfig,
+    initialSql: savedSql ?? defaultSql,
+  });
+  document.getElementById("resetConfigBtn").disabled = defaultConfig === null;
+
+  configEditor.onDidChangeModelContent(() => {
+    const saved = writeStoredValue(CONFIG_STORAGE_KEY, configEditor.getValue());
+    document
+      .getElementById("configSaveStatus")
+      .replaceChildren(saved ? "Saved locally" : "Not saved");
+  });
+  sqlEditor.onDidChangeModelContent(() => {
+    const saved = writeStoredValue(SQL_STORAGE_KEY, sqlEditor.getValue());
+    document
+      .getElementById("sqlSaveStatus")
+      .replaceChildren(saved ? "Saved locally" : "Not saved");
   });
 
-  document.getElementById("formatBtn").addEventListener("click", () => {
-    formatSql({ API_BASE_URL, configEditor, sqlEditor, notify, printErrors });
-  });
+  document
+    .getElementById("configSaveStatus")
+    .replaceChildren(
+      sharedSession
+        ? "Shared configuration"
+        : savedConfig
+          ? "Saved locally"
+          : "Using defaults",
+    );
+  document
+    .getElementById("sqlSaveStatus")
+    .replaceChildren(
+      sharedSession
+        ? "Shared SQL"
+        : savedSql
+          ? "Saved locally"
+          : "Using example",
+    );
 
-  document.getElementById("lintBtn").addEventListener("click", () => {
-    lintSql({
-      API_BASE_URL,
-      configEditor,
-      sqlEditor,
-      notify,
-      printViolations,
-      printErrors,
+  document.getElementById("formatBtn").addEventListener("click", (event) => {
+    runOperation({
+      button: event.currentTarget,
+      busyLabel: "Formatting…",
+      buttons: operationButtons,
+      operation: () =>
+        formatSql({
+          API_BASE_URL,
+          configEditor,
+          sqlEditor,
+          outputEditor,
+          notify,
+          printErrors,
+        }),
     });
   });
 
-  document.getElementById("lintFixBtn").addEventListener("click", () => {
-    lintAndFixSql({
-      API_BASE_URL,
-      configEditor,
-      sqlEditor,
-      notify,
-      printViolations,
-      printErrors,
+  document.getElementById("lintBtn").addEventListener("click", (event) => {
+    runOperation({
+      button: event.currentTarget,
+      busyLabel: "Linting…",
+      buttons: operationButtons,
+      operation: () =>
+        lintSql({
+          API_BASE_URL,
+          configEditor,
+          sqlEditor,
+          notify,
+          printViolations,
+          printErrors,
+        }),
+    });
+  });
+
+  document.getElementById("lintFixBtn").addEventListener("click", (event) => {
+    runOperation({
+      button: event.currentTarget,
+      busyLabel: "Fixing…",
+      buttons: operationButtons,
+      operation: () =>
+        lintAndFixSql({
+          API_BASE_URL,
+          configEditor,
+          sqlEditor,
+          outputEditor,
+          notify,
+          printViolations,
+          printErrors,
+        }),
     });
   });
 
@@ -84,6 +216,7 @@ export async function setupEventListeners() {
       API_BASE_URL,
       configEditor,
       sqlEditor,
+      outputEditor,
       notify,
     });
 
@@ -105,17 +238,47 @@ export async function setupEventListeners() {
   });
 
   document.getElementById("copyBtn").addEventListener("click", async () => {
-    await copyToClipboard("sqlOutput");
-    notify("Copied to clipboard!", "success");
+    try {
+      await copyToClipboard(outputEditor.getValue());
+      notify("Copied to clipboard!", "success");
+    } catch {
+      notify("Failed to copy output", "error");
+    }
   });
 
   document.getElementById("resetConfigBtn").addEventListener("click", () => {
     configEditor.setValue(defaultConfig);
+    removeStoredValue(CONFIG_STORAGE_KEY);
+    document
+      .getElementById("configSaveStatus")
+      .replaceChildren("Using defaults");
     notify("Configuration reset to default!", "info");
   });
 
-  document.getElementById("hamburger").addEventListener("click", () => {
-    document.getElementById("top-links").classList.toggle("show");
+  const hamburger = document.getElementById("hamburger");
+  const topLinks = document.getElementById("top-links");
+  const closeMenu = () => {
+    hamburger.setAttribute("aria-expanded", "false");
+    hamburger.setAttribute("aria-label", "Open menu");
+    topLinks.classList.remove("show");
+  };
+
+  hamburger.addEventListener("click", () => {
+    const expanded = hamburger.getAttribute("aria-expanded") === "true";
+    hamburger.setAttribute("aria-expanded", String(!expanded));
+    hamburger.setAttribute("aria-label", expanded ? "Open menu" : "Close menu");
+    topLinks.classList.toggle("show", !expanded);
+  });
+  topLinks.addEventListener("click", (event) => {
+    if (event.target.closest("a, button")) {
+      closeMenu();
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMenu();
+      hamburger.focus();
+    }
   });
 }
 

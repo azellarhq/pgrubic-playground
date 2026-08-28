@@ -1,5 +1,6 @@
 """Test API routes."""
 
+import toml
 from fastapi.testclient import TestClient
 
 from app.config import settings
@@ -41,6 +42,18 @@ config = {
         "remove-default-index-access-method": True,
     },
 }
+
+
+def test_default_config(client: TestClient) -> None:
+    """Return general defaults as TOML."""
+    response = client.get(f"{settings.API_V1_STR}/config/defaults")
+    defaults = toml.loads(response.text)
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/toml"
+    assert response.headers["cache-control"] == "no-cache"
+    assert defaults["lint"]["select"] == []
+    assert "fix" not in defaults["lint"]
 
 
 def test_lint_source_code_no_violations_no_errors(client: TestClient) -> None:

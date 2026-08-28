@@ -1,6 +1,7 @@
 """Models."""
 
-from pydantic import Field, BaseModel as PydanticBaseModel, ConfigDict
+from pydantic import BaseModel as PydanticBaseModel, ConfigDict
+from pgrubic.core import config as pgrubic_config
 
 
 class BaseModel(PydanticBaseModel):
@@ -23,120 +24,10 @@ class Error(BaseModel):
 class BaseConfig(BaseModel):
     """Base configuration."""
 
-    model_config = ConfigDict(extra="forbid")
 
-
-class Disallowed(BaseConfig):
-    """Disallowed."""
-
-    name: str
-    reason: str
-    use_instead: str = Field(alias="use-instead")
-
-
-class DisallowedSchema(Disallowed):
-    """Disallowed schema."""
-
-
-class Column(BaseConfig):
-    """Column."""
-
-    name: str
-    data_type: str = Field(alias="data-type")
-
-
-class DisallowedDataType(Disallowed):
-    """Disallowed data type."""
-
-
-class LinterConfig(BaseConfig):
-    """Linter configuration."""
-
-    target_postgres_version: int = Field(alias="target-postgres-version", default=14)
-    additional_non_volatile_functions: list[str] = Field(
-        alias="additional-non-volatile-functions",
-        default_factory=list,
-    )
-    select: list[str] = Field(default_factory=list)
-    ignore: list[str] = Field(default_factory=list)
-    fixable: list[str] = Field(default_factory=list)
-    unfixable: list[str] = Field(default_factory=list)
-    ignore_noqa: bool = Field(alias="ignore-noqa", default=False)
-    allowed_extensions: list[str] = Field(
-        alias="allowed-extensions",
-        default_factory=list,
-    )
-    allowed_languages: list[str] = Field(alias="allowed-languages", default_factory=list)
-    disallowed_schemas: list[DisallowedSchema] = Field(
-        alias="disallowed-schemas",
-        default_factory=list,
-    )
-    disallowed_data_types: list[DisallowedDataType] = Field(
-        alias="disallowed-data-types",
-        default_factory=list,
-    )
-    required_columns: list[Column] = Field(
-        alias="required-columns",
-        default_factory=list,
-    )
-    timestamp_column_suffix: str = Field(alias="timestamp-column-suffix", default="_at")
-    date_column_suffix: str = Field(alias="date-column-suffix", default="_date")
-    regex_partition: str = Field(alias="regex-partition", default="^.+$")
-    regex_index: str = Field(alias="regex-index", default="^.+$")
-    regex_constraint_primary_key: str = Field(
-        alias="regex-constraint-primary-key",
-        default="^.+$",
-    )
-    regex_constraint_unique_key: str = Field(
-        alias="regex-constraint-unique-key",
-        default="^.+$",
-    )
-    regex_constraint_foreign_key: str = Field(
-        alias="regex-constraint-foreign-key",
-        default="^.+$",
-    )
-    regex_constraint_check: str = Field(alias="regex-constraint-check", default="^.+$")
-    regex_constraint_exclusion: str = Field(
-        alias="regex-constraint-exclusion",
-        default="^.+$",
-    )
-    regex_sequence: str = Field(alias="regex-sequence", default="^.+$")
-
-
-class FormatterConfig(BaseConfig):
-    """Formatter configuration."""
-
-    comma_at_beginning: bool = Field(alias="comma-at-beginning", default=True)
-    compact_parenthesized_lists_margin: int = Field(
-        alias="compact-parenthesized-lists-margin",
-        default=90,
-    )
-    uppercase_keywords: bool = Field(alias="uppercase-keywords", default=True)
-    type_casting_style: str = Field(alias="type-casting-style", default="standard")
-    rewrite_function_calls_as_equivalent_syntax: bool = Field(
-        alias="rewrite-function-calls-as-equivalent-syntax",
-        default=True,
-    )
-    new_line_before_semicolon: bool = Field(
-        alias="new-line-before-semicolon",
-        default=False,
-    )
-    lines_between_statements: int = Field(alias="lines-between-statements", default=1)
-    remove_pg_catalog_from_functions: bool = Field(
-        alias="remove-pg-catalog-from-functions",
-        default=True,
-    )
-    remove_default_index_access_method: bool = Field(
-        alias="remove-default-index-access-method",
-        default=True,
-    )
-
-
-class Config(BaseConfig):
-    """Configuration."""
-
-    lint: LinterConfig
-    format: FormatterConfig
+Config = pgrubic_config.create_scoped_config_model_from_defaults(
+    scope=pgrubic_config.ConfigScope.GENERAL,
+)
 
 
 # Request
@@ -144,7 +35,7 @@ class Request(BaseConfig):
     """Request."""
 
     source_code: str
-    config: Config
+    config: Config  # type: ignore[valid-type]
 
 
 # Lint
@@ -218,3 +109,4 @@ class PgrubicVersion(BaseModel):
     """Pgrubic version."""
 
     version: str
+    """The version of Pgrubic, represented as a string."""

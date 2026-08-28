@@ -5,6 +5,7 @@ vi.mock("monaco-editor/esm/vs/editor/editor.api", () => ({
   editor: {
     create: vi.fn(() => ({
       getValue: vi.fn(() => "mocked sql"),
+      setValue: vi.fn(),
       dispose: vi.fn(),
     })),
   },

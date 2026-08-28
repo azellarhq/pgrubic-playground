@@ -8,7 +8,7 @@ license-files = ["LICENSE"]
 requires-python = ">=3.12"
 
 dependencies = [
-  "pgrubic==2.0.0",
+  "pgrubic==2.1.0",
   "toml==0.10.2",
   "pydantic==2.13.4",
   "pydantic-settings==2.15.0",

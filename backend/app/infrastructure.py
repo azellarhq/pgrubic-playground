@@ -14,6 +14,14 @@ from pgrubic import core
 cache = diskcache.Cache()
 
 
+def load_default_config() -> str:
+    """Load the default configuration exposed to API consumers."""
+    defaults = core.config.load_default_config_by_scope(
+        scope=core.config.ConfigScope.GENERAL,
+    )
+    return toml.dumps(defaults)
+
+
 def lint_source_code(*, data: models.LintSourceCode) -> models.LintResult:
     """Lint source code."""
     config = core.parse_config(data.config.model_dump(by_alias=True))
