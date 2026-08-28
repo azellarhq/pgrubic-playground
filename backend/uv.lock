@@ -775,7 +775,7 @@ wheels = [
 
 [[package]]
 name = "pgrubic"
-version = "2.0.0"
+version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "case-converter" },
@@ -789,9 +789,9 @@ dependencies = [
     { name = "rich" },
     { name = "toml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6f/2e/1131685ac6f2ab4c2e7858ea3d3f84f721285ceb9cb1e76b8cb796f3b04c/pgrubic-2.0.0.tar.gz", hash = "sha256:47d13094d8a0f293591d4a2a15532d57565f90ba7dff1b253af82f4e58011a64", size = 123470, upload-time = "2026-08-22T15:04:04.759Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/38/ba/bf3e760b2eacc78e4a996f0797776375eda906accd767053056eec6fc709/pgrubic-2.1.0.tar.gz", hash = "sha256:5bdd04eb2801a8439aa3a5c02d386582b674613399d667d55b82e852da9fbfbb", size = 127543, upload-time = "2026-08-27T17:56:55.127Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/27/dc3a80f70629af23a5761e8b391db66ccc40e78b5e4a29ed0e9a2f3379b7/pgrubic-2.0.0-py3-none-any.whl", hash = "sha256:a3e8a441b9e5a4fb4536abb2024fb887bb48f6745124d45f23e9ea7bdd4b07a7", size = 197934, upload-time = "2026-08-22T15:04:03.448Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/71/8b24f2c3409044fe0036ed4baaec8b2bad4dc66b938b19a69855ce3fb760/pgrubic-2.1.0-py3-none-any.whl", hash = "sha256:26ea0b0cefe512c0405f0ad10d4fd2457ae1937dfa0c08b546480903103fb202", size = 200585, upload-time = "2026-08-27T17:56:53.675Z" },
 ]
 
 [[package]]
@@ -841,7 +841,7 @@ requires-dist = [
     { name = "interrogate", marker = "extra == 'dev'", specifier = "==1.7.0" },
     { name = "isort", marker = "extra == 'dev'", specifier = "==8.0.1" },
     { name = "mypy", marker = "extra == 'dev'", specifier = "==2.3.1" },
-    { name = "pgrubic", specifier = "==2.0.0" },
+    { name = "pgrubic", specifier = "==2.1.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = "==4.6.2" },
     { name = "pre-commit-hooks", marker = "extra == 'dev'", specifier = "==6.0.0" },
     { name = "pydantic", specifier = "==2.13.4" },
