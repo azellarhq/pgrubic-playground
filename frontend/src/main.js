@@ -306,5 +306,7 @@ function resolveExternalLinks() {
   }
 }
 
+export { setupEventListeners, resolveExternalLinks };
+
 document.addEventListener("DOMContentLoaded", setupEventListeners);
 document.addEventListener("DOMContentLoaded", resolveExternalLinks);

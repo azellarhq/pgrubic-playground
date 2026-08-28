@@ -112,7 +112,23 @@ describe("Utils", () => {
       expect(container.querySelector("strong").textContent).toBe(
         "Syntax error",
       );
-      expect(container.textContent).toContain("Check your syntax");
+      expect(container.querySelector(".lint-error-hint").textContent).toBe(
+        "Hint: Check your syntax",
+      );
+      expect(container.querySelector(".lint-message-error")).not.toBeNull();
+      expect(container.textContent).toBe(
+        "Syntax error\nHint: Check your syntax",
+      );
+    });
+
+    it("omits empty error hints", () => {
+      const container = document.createElement("div");
+      container.appendChild(
+        printErrors([{ message: "Syntax error", hint: "" }]),
+      );
+
+      expect(container.textContent).toBe("Syntax error");
+      expect(container.querySelector(".lint-error-hint")).toBeNull();
     });
   });
 

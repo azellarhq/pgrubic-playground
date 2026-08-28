@@ -278,7 +278,7 @@ describe("Core Functions", () => {
       printErrors,
     });
     expect(notify).toHaveBeenCalledWith(
-      "Request timed out after 10 seconds",
+      "Request timed out! Please try again.",
       "error",
     );
   });

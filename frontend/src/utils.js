@@ -84,7 +84,17 @@ function printErrors(errors) {
   const output = document.createDocumentFragment();
 
   errors.forEach((error) => {
-    output.appendChild(createOutputRow(error.message, `(${error.hint})`));
+    const row = createOutputRow(error.message);
+    row.classList.add("lint-message-error");
+
+    if (error.hint) {
+      const hint = document.createElement("span");
+      hint.className = "lint-error-hint";
+      hint.textContent = `Hint: ${error.hint}`;
+      row.append("\n", hint);
+    }
+
+    output.appendChild(row);
   });
 
   return output;

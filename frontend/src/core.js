@@ -46,7 +46,9 @@ function createTimeoutSignal() {
  */
 function notifyRequestFailure(error, notify) {
   notify(
-    error?.name === "TimeoutError" ? "Request timed out!" : "Operation failed!",
+    error?.name === "TimeoutError"
+      ? "Request timed out! Please try again."
+      : "Operation failed!",
     "error",
   );
 }

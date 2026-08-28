@@ -454,6 +454,19 @@ h2 {
   font-size: 11px;
   white-space: nowrap;
 }
+.lint-message-error {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 3px;
+  padding-block: 10px;
+}
+.lint-error-hint {
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
 .lint-violations-summary {
   flex: 1;
   margin-block: 10px;
