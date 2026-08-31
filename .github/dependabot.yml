@@ -12,7 +12,7 @@ updates:
           - "*"
 
   - package-ecosystem: "uv"
-    directory: "/"
+    directory: "/backend/"
     schedule:
       interval: "weekly"
     groups:
